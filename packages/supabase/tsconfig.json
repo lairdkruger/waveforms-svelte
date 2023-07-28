@@ -1,0 +1,8 @@
+{
+	"extends": "tsconfig/custom.json",
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"noEmit": true
+	},
+	"include": ["../next-env.d.ts", "**/*.ts", "**/*.tsx"]
+}

@@ -1,0 +1,31 @@
+We need to change the way that signals are structured
+
+At the moment, they have a signalID which is supposed to identify the signal,
+This ID is uploaded to the db and is used to select the correct signal function from the store.
+
+But this should be the job of a functionId, while the signalId should be used to identify the signal itself.
+Even though controls only have one signal per control for now, we should make this scalable:
+The signalId field could be:
+
+	controlId_signal_signalId
+	eg: bloomThreshold_signal_main
+
+
+Then ideally this is what we should do:
+
+Signal function fields should be extended to objects with the following structure
+
+function: {
+  type: 'audio' | 'midi',	// so we know which store to use when fetching the signal getter functions
+  id: 'functionId',	// used for fetching correct signal functions from stores (eg: get36_note_launchkeyMk261LaunchkeyMidi)
+  output: NumberFunction | BooleanFunction
+}
+
+The function type and id fields would be uploaded to db, and could be used to select correct signal output function on setup
+
+
+EXTRA TODO:
+
+Potentially need to scrap the distinction between boolean and number controls.
+It's a headache:
+Instead just insert a number -> boolean converter function in the signal chain where required

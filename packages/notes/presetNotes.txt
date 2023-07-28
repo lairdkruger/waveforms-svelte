@@ -1,0 +1,54 @@
+Goal:
+Bind midi buttons to presets so users can quickly change between presets with the control panel hidden
+
+Problem:
+Where do we store these settings?
+
+We want them to be saved in the database so they can be loaded into the control panel when the logged in user loads the page.
+
+
+Option 1:
+Extend the preset object which is currently 
+The preset object is currently set in Supabase as:
+
+export interface Preset {
+	id: string
+	name: string
+	schema: Json
+	user_id: string
+	visualizer_id: string
+}
+
+We can simply add a field to this eg:
+
+export interface Preset {
+	id: string
+	name: string
+	schema: Json
+	user_id: string
+	visualizer_id: string
+	midi_binding: MidiControlId | null
+}
+
+Do we have to change the way that presets are strutured in the ControlStore?
+I'd say yah because the supabase presets are only used by getting loaded into the store, and then aren't accessible after that
+
+QUESTION: Should we add hotkey binding for non-midi users?
+
+I think that we can just set the arrow keys to change between presets and that will be enough for non-midi users.
+And maybe the number keys can get assigned to each of the users custom presets.
+
+But do we also want to be able to assign a boolean input to cycle through the presets automatically? Say highs peaked, auto change to next preset etc?
+This is a kind of functionality that I'd like for all select inputs so maybe its a good idea?
+
+Either way, hooking up a boolean signal is a different realm to the midi bindings, so I think we're safe to implement the above, and then extend with a boolean signal down the track.
+
+
+Current Issue:
+All presets are being loaded as the default preset
+
+Another issue has arrisen posing the following questions:
+1. Should preset controls have group and folder information saved? Presets should never differ from the default folder/group structure
+
+Issue, user saves a control with group/folder info, I go and change the group/folder structure and now his control doesn't load
+Fix: So long as I still have the controlID living in a group/folder it should load. Hence group/folder info should be set locally and not stored in DB

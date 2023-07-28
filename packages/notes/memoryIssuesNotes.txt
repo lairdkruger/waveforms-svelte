@@ -1,0 +1,27 @@
+We have a problem
+
+We have memory leaks in our application
+
+Every time a control is updated, a new control object and closure function is created in the application heap memory
+It seems that the garbage collector is not clearing these objects either, as the heap memory usage keeps increasing
+
+This is most likely caused by creating closures inside of the update function.
+
+From CHAT:
+"Closures created inside loops or event listeners can cause memory leaks if they hold references to objects that are no longer needed. 
+To avoid this, try to move the closure outside of the loop or event listener, 
+or use a function that takes the loop or event listener variable as an argument."
+
+
+This is a problem as the controls are updated very frequently as the user interacts with the sliders
+
+
+Potential Solutions
+
+1. Convert all functions in controlsStore to pure functions
+This can be achieved by passing all necessary parameters as props to the function instead of referencing them externally from within the function
+
+2. Audit our immer state setters.
+Maybe instead of using get() we can use the prev state value to access things like defaultValue and transformer functions
+
+3. For testing, try removing the other external dependencies eg: bezier() from the functions
