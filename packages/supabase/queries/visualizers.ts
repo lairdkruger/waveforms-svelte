@@ -8,7 +8,7 @@ export const getVisualizers = async () => {
 		.order('name', { ascending: false })
 
 	if (error) {
-		console.log(error.message)
+		console.error(error.message)
 	}
 
 	return data || []
@@ -19,10 +19,9 @@ export const getVisualizerSlugs = async () => {
 	const { data, error } = await supabase.from('visualizers').select('slug')
 
 	const slugs = data?.map((visualizer) => visualizer.slug)
-	console.log(slugs)
 
 	if (error) {
-		console.log(error.message)
+		console.error(error.message)
 	}
 
 	return slugs || []
@@ -38,7 +37,7 @@ export const getVisualizerBySlug = async (slug: string) => {
 		.single()
 
 	if (error) {
-		console.log(error.message)
+		console.error(error.message)
 	}
 
 	return { data: data ?? null, error: error ?? null }

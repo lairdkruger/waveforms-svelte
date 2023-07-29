@@ -19,7 +19,7 @@ export const getActiveProductsWithPrices = async (): Promise<ProductWithPrice[]>
 		.order('unit_amount', { foreignTable: 'prices' })
 
 	if (error) {
-		console.log(error.message)
+		console.error(error.message)
 	}
 	// TODO: improve the typing here.
 	return (data as ProductWithPrice[]) || []
@@ -29,7 +29,7 @@ export const updateUserName = async (user: User, name: string) => {
 	await supabase
 		.from('users')
 		.update({
-			full_name: name,
+			full_name: name
 		})
 		.eq('id', user.id)
 }

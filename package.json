@@ -4,7 +4,7 @@
 	"scripts": {
 		"dev": "dotenv -- pnpm run --parallel -r dev",
 		"build": "pnpm run --parallel -r build",
-		"start": "dotenv -- pnpm run --parallel -r start",
+		"start": "dotenv -- pnpm run --parallel -r preview",
 		"lint": "pnpm run --parallel -r lint"
 	},
 	"devDependencies": {

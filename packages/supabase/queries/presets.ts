@@ -14,7 +14,7 @@ export const createNewPreset = async ({
 	name,
 	visualizerSlug,
 	userId,
-	schema,
+	schema
 }: CreateNewPresetProps) => {
 	const { data: visualizer } = await getVisualizerBySlug(visualizerSlug)
 	if (!visualizer) throw Error('Visualizer Not Found')
@@ -27,7 +27,7 @@ export const createNewPreset = async ({
 		.insert({ name: name, visualizer_id: visualizerId, user_id: userId, schema: schema })
 
 	if (error) {
-		console.log(error.message)
+		console.error(error.message)
 	}
 
 	return { error: error ?? null }
@@ -47,7 +47,7 @@ export const savePreset = async ({ id, schema, midiBinding }: SavePresetProps) =
 		.eq('id', id)
 
 	if (error) {
-		console.log(error.message)
+		console.error(error.message)
 	}
 
 	return { error: error ?? null }
@@ -62,7 +62,7 @@ export const deletePreset = async ({ id }: DeletePresetProps) => {
 	const { error } = await supabase.from('presets').delete().eq('id', id)
 
 	if (error) {
-		console.log(error.message)
+		console.error(error.message)
 	}
 
 	return { error: error ?? null }
