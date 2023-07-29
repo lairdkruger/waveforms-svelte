@@ -3,8 +3,13 @@
 	import AudioAnalyzer from '$lib/visualizers/audio/AudioAnalyzer'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
 	import { setContext } from 'svelte'
+	import Midi from '$lib/visualizers/midi/Midi'
 
 	const audioAnalyzer = new AudioAnalyzer()
+	const midi = new Midi()
+
+	$: console.log(audioAnalyzer, midi)
+
 	setContext('prototypeVisualizer', { audioAnalyzer: audioAnalyzer })
 
 	const { onFrame } = getWebglContext()
