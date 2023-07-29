@@ -19,18 +19,3 @@
 </script>
 
 <TestBox />
-
-<button
-	on:click={() =>
-		audioAnalyzer.audioInput === 'microphone'
-			? audioAnalyzer.changeAudioInput('browser')
-			: audioAnalyzer.changeAudioInput('microphone')}
-/>
-
-<style>
-	button {
-		width: 100px;
-		height: 100px;
-		background-color: blue;
-	}
-</style>

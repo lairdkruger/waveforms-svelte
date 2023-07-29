@@ -1,5 +1,6 @@
 import { map } from '../utils/Maths'
-import type { AudioInput } from './AudioTypes'
+
+export type AudioInput = 'microphone' | 'browser'
 
 export default class AudioAnalyzer {
 	audioContext

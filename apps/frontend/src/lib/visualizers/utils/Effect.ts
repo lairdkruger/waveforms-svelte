@@ -23,7 +23,7 @@ export default class Effect {
 
 		this.uniforms = {
 			source: { value: this.pingpong.write.texture },
-			amount: { value: 0 }
+			amount: { value: 0.8 }
 		}
 
 		this.quad = new Triag(this.renderer, null, effectsFragmentShader, this.uniforms)
