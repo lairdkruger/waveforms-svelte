@@ -1,3 +1,4 @@
+import type { SignalFunction, SignalFunctionId } from '../controls/types'
 import { map } from '../utils/Maths'
 
 export type AudioInput = 'microphone' | 'browser'
@@ -279,5 +280,62 @@ export default class AudioAnalyzer {
 
 	getHighsPeaked() {
 		return this.highsPeaked
+	}
+
+	// Signal Functions (unlike Midi, these are statically defined)
+	signalFunctions: Record<string, SignalFunction> = {
+		// Volume
+		getVolume: {
+			context: 'audio',
+			type: 'number',
+			id: 'getVolume',
+			output: () => this.getVolume()
+		},
+		getVolumePeaked: {
+			context: 'audio',
+			type: 'boolean',
+			id: 'getVolumePeaked',
+			output: () => this.getVolumePeaked()
+		},
+		getBassVolume: {
+			context: 'audio',
+			type: 'number',
+			id: 'getBassVolume',
+			output: () => this.getBassVolume()
+		},
+		getBassPeaked: {
+			context: 'audio',
+			type: 'boolean',
+			id: 'getBassPeaked',
+			output: () => this.getBassPeaked()
+		},
+		getMidsVolume: {
+			context: 'audio',
+			type: 'number',
+			id: 'getMidsVolume',
+			output: () => this.getMidsVolume()
+		},
+		getMidsPeaked: {
+			context: 'audio',
+			type: 'boolean',
+			id: 'getMidsPeaked',
+			output: () => this.getMidsPeaked()
+		},
+		getHighsVolume: {
+			context: 'audio',
+			type: 'number',
+			id: 'getHighsVolume',
+			output: () => this.getHighsVolume()
+		},
+		getHighsPeaked: {
+			context: 'audio',
+			type: 'boolean',
+			id: 'getHighsPeaked',
+			output: () => this.getHighsPeaked()
+		}
+	}
+
+	getSignalFunction(signalFunctionId: SignalFunctionId): SignalFunction {
+		return this.signalFunctions[signalFunctionId]
 	}
 }
