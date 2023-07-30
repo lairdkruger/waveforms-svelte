@@ -1,15 +1,10 @@
 <script>
-	import AudioAnalyzer from '$lib/visualizers/audio/AudioAnalyzer'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
 	import { onDestroy, setContext } from 'svelte'
-	import Midi from '$lib/visualizers/midi/Midi'
-	import Controls from '$lib/visualizers/controls/interface/Controls'
 	import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 
-	const audioAnalyzer = new AudioAnalyzer()
-	const midi = new Midi()
-
-	const controls = new Controls('prototypeVisualizer', null, audioAnalyzer, midi)
+	const { audioAnalyzer, midi, controls } = getVisualizerContext()
 
 	$: console.log(audioAnalyzer, midi)
 	$: console.log(controls)
@@ -24,26 +19,48 @@
 	boxMesh.position.set(0, 0, -5)
 	$: if ($scene) $scene.add(boxMesh)
 
-	const size = controls.createNumberControl(
-		`BoxSize`,
-		{ label: 'Size', group: 'group' },
+	// const size = controls.createNumberControl(
+	// 	`BoxSize`,
+	// 	{ label: 'Size', group: 'group' },
+	// 	{
+	// 		defaultValue: 2,
+	// 		range: [1, 2],
+	// 		signalFunctionConfig: {
+	// 			context: 'audio',
+	// 			id: 'getVolume'
+	// 		},
+	// 		ease: 'linear'
+	// 	}
+	// )
+
+	// const multiple = controls.createSelectControl(
+	// 	`BoxMultiple`,
+	// 	{ label: 'Size', group: 'group' },
+	// 	{
+	// 		values: ['1', '8'],
+	// 		defaultValue: '1'
+	// 	}
+	// )
+
+	const spin = controls.createBooleanControl(
+		`BoxSpinning`,
+		{ label: 'Spin?', group: 'group', folder: 'folder' },
 		{
-			defaultValue: 2,
-			range: [1, 2],
-			signalFunctionConfig: {
-				context: 'audio',
-				id: 'getVolume'
-			},
-			ease: 'linear'
+			defaultValue: 1
 		}
 	)
+
+	$: console.log($spin)
 
 	onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
 
-		boxMesh.rotation.x += 0.01
-		boxMesh.rotation.y += 0.01
-		boxMesh.scale.set(size(), size(), size())
+		if ($spin()) {
+			boxMesh.rotation.x += 0.01
+			boxMesh.rotation.y += 0.01
+		}
+
+		// boxMesh.scale.set(size(), size(), size())
 	})
 
 	onDestroy(() => {

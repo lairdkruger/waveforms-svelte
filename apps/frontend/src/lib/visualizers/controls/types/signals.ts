@@ -1,5 +1,9 @@
 import type { Ease } from '$lib/visualizers/utils/CubicBezier'
-import type { BooleanSignalFunction, NumberSignalFunction } from './functions'
+import type {
+	BooleanSignalFunction,
+	NumberSignalFunction,
+	SignalFunctionContext
+} from './functions'
 
 export type SignalId = string
 

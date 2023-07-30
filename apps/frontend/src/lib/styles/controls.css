@@ -1,0 +1,40 @@
+:root {
+	/* Control Panel */
+	/* Colors */
+	--cpColorPrimary: rgba(255, 255, 255, 1);
+	--cpColorSecondary: rgba(0, 0, 0, 1);
+
+	/* Global Scaling */
+	--cpScale: 1;
+
+	/* Sizes */
+	/* Panels */
+	--cpPanelWidth: calc(500px * var(--cpScale));
+	--cpPanelHeight: calc(400px * var(--cpScale));
+	--cpControlsPanelHeight: calc(var(--cpPanelHeight) * 0.7);
+	--cpSignalsPanelWidth: calc(var(--cpPanelWidth) * 0.44);
+	--cpSignalsPanelHeight: calc(var(--cpPanelHeight) * 0.3);
+
+	/* Components */
+	--cpFolderWidth: calc(224px * var(--cpScale));
+	--cpSignalHeight: calc(64px * var(--cpScale));
+	--cpControlHeight: calc(32px * var(--cpScale));
+	--cpControlWidth: calc(224px * var(--cpScale));
+
+	/* Inputs */
+	--cpInputSize: calc(8px * var(--cpScale));
+	--cpNumberInputWidth: calc(42px * var(--cpScale));
+	--cpSliderHandleWidth: calc(8px * var(--cpScale));
+	--cpSliderHandleHeight: calc(12px * var(--cpScale));
+
+	/* Spacing */
+	--cpSpacing2: calc(2px * var(--cpScale));
+	--cpSpacing4: calc(4px * var(--cpScale));
+	--cpSpacing8: calc(8px * var(--cpScale));
+	--cpSpacing12: calc(12px * var(--cpScale));
+	--cpSpacing16: calc(16px * var(--cpScale));
+	--cpSpacing24: calc(24px * var(--cpScale));
+	--cpLabelSize: calc(10px * var(--cpScale));
+	--cpHeadingSize: calc(10px * var(--cpScale));
+	--cpBodySize: calc(10px * var(--cpScale));
+}

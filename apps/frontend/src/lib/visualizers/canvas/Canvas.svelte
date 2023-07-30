@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import { createWebglContext } from '../contexts/webgl'
+	import Stage from './Stage.svelte'
 
 	// References
 	let canvas: HTMLCanvasElement
@@ -25,7 +26,9 @@
 />
 
 {#if started}
-	<slot />
+	<Stage>
+		<slot />
+	</Stage>
 {/if}
 
 <style>

@@ -1,5 +1,6 @@
 import type { MidiControlId } from '$lib/visualizers/midi/Midi'
 import type { Ease } from '$lib/visualizers/utils/CubicBezier'
+import type { Writable } from 'svelte/store'
 import type {
 	BooleanControlConfig,
 	ColorControlConfig,
@@ -20,15 +21,16 @@ import type { Preset, PresetId } from './presets'
 import type { Color } from './primitives'
 import type { Signal, SignalBehaviour } from './signals'
 import type { Preset as PresetDb } from 'supabase'
+import type BooleanControl from '../BooleanControl'
 
 export interface ControlsInternals {
 	_clientStateReady: boolean
 }
 
 export interface ControlsStates {
-	draggedSignalFunctionConfig: SignalFunctionConfig | null
+	draggedSignal: SignalFunctionConfig | null
 	draggedSignalTarget: string | null
-	controlPanelRef: HTMLDivElement | null
+	controlPanelRef: Writable<HTMLDivElement | null>
 	dragStartCoord: [number, number]
 	dragMouseCoords: [number, number]
 }
@@ -46,9 +48,8 @@ export interface ControlsActions {
 
 	actions: {
 		// State Setters
-		setDraggedSignalFunctionConfig: (signalFunction: SignalFunctionConfig | null) => void
+		setdraggedSignal: (signalFunction: SignalFunctionConfig | null) => void
 		setDraggedSignalTarget: (control: Control | null) => void
-		setControlPanelRef: (ref: HTMLDivElement | null) => void
 		setDragStartCoord: (coord: [number, number]) => void
 		setDragMouseCoords: (coord: [number, number]) => void
 
@@ -144,7 +145,7 @@ export interface ControlsActions {
 export interface Controls {
 	folders: Record<string, Folder>
 	groups: Record<string, Group>
-	controls: Record<string, Control>
+	controls: Record<string, BooleanControl>
 }
 
 export interface Presets {

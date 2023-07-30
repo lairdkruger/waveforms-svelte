@@ -1,4 +1,4 @@
-import type { SignalFunction, SignalFunctionId } from '../controls/types'
+import Signal from '../controls/Signal'
 import { map } from '../utils/Maths'
 
 export type AudioInput = 'microphone' | 'browser'
@@ -282,60 +282,50 @@ export default class AudioAnalyzer {
 		return this.highsPeaked
 	}
 
-	// Signal Functions (unlike Midi, these are statically defined)
-	signalFunctions: Record<string, SignalFunction> = {
-		// Volume
-		getVolume: {
+	signals: Record<string, Signal> = {
+		getVolume: new Signal({
 			context: 'audio',
-			type: 'number',
 			id: 'getVolume',
-			output: () => this.getVolume()
-		},
-		getVolumePeaked: {
+			defaultFunction: () => this.getVolume()
+		}),
+		getVolumePeaked: new Signal({
 			context: 'audio',
-			type: 'boolean',
 			id: 'getVolumePeaked',
-			output: () => this.getVolumePeaked()
-		},
-		getBassVolume: {
+			defaultFunction: () => this.getVolumePeaked()
+		}),
+		getBassVolume: new Signal({
 			context: 'audio',
-			type: 'number',
 			id: 'getBassVolume',
-			output: () => this.getBassVolume()
-		},
-		getBassPeaked: {
+			defaultFunction: () => this.getBassVolume()
+		}),
+		getBassPeaked: new Signal({
 			context: 'audio',
-			type: 'boolean',
 			id: 'getBassPeaked',
-			output: () => this.getBassPeaked()
-		},
-		getMidsVolume: {
+			defaultFunction: () => this.getBassPeaked()
+		}),
+		getMidsVolume: new Signal({
 			context: 'audio',
-			type: 'number',
 			id: 'getMidsVolume',
-			output: () => this.getMidsVolume()
-		},
-		getMidsPeaked: {
+			defaultFunction: () => this.getMidsVolume()
+		}),
+		getMidsPeaked: new Signal({
 			context: 'audio',
-			type: 'boolean',
 			id: 'getMidsPeaked',
-			output: () => this.getMidsPeaked()
-		},
-		getHighsVolume: {
+			defaultFunction: () => this.getMidsPeaked()
+		}),
+		getHighsVolume: new Signal({
 			context: 'audio',
-			type: 'number',
 			id: 'getHighsVolume',
-			output: () => this.getHighsVolume()
-		},
-		getHighsPeaked: {
+			defaultFunction: () => this.getHighsVolume()
+		}),
+		getHighsPeaked: new Signal({
 			context: 'audio',
-			type: 'boolean',
 			id: 'getHighsPeaked',
-			output: () => this.getHighsPeaked()
-		}
+			defaultFunction: () => this.getHighsPeaked()
+		})
 	}
 
-	getSignalFunction(signalFunctionId: SignalFunctionId): SignalFunction {
-		return this.signalFunctions[signalFunctionId]
+	getSignals() {
+		return this.signals
 	}
 }

@@ -23,6 +23,7 @@ export type BooleanOutput = () => 0 | 1
 export type NumberOutput = () => number
 export type ColorOutput = () => Color // Rgb
 export type SelectOutput = () => string
+export type SignalOutput = NumberOutput
 export type ControlOutput = BooleanOutput | NumberOutput | ColorOutput | SelectOutput
 
 export type Transformer = (value: number) => number
@@ -30,13 +31,13 @@ export type Transformer = (value: number) => number
 // Given to constructor functions
 export interface SignalFunctionConfig {
 	context: SignalFunctionContext
-	type?: SignalType // Even though some signals (eg: midi) are always number signals, we should still use strict types for other signals wherever possible (eg: audio)
 	id: SignalFunctionId
+	defaultFunction: SignalOutput
 }
 
 export interface SignalFunctionBase {
 	context: SignalFunctionContext
-	type?: SignalType // Even though some signals (eg: midi) are always number signals, we should still use strict types for other signals wherever possible (eg: audio)
+	type: SignalType // Even though some signals (eg: midi) are always number signals, we should still use strict types for other signals wherever possible (eg: audio)
 }
 
 export interface BooleanSignalFunction extends SignalFunctionBase {

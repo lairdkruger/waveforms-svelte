@@ -1,3 +1,4 @@
+import type BooleanControl from '../BooleanControl'
 import type { BooleanOutput, ColorOutput, NumberOutput, SelectOutput } from './functions'
 import type { BooleanSignal, NumberSignal } from './signals'
 
@@ -13,12 +14,12 @@ export interface ControlGeneric {
 	group?: string
 }
 
-export interface BooleanControl extends ControlGeneric {
-	type: 'boolean'
-	output: BooleanOutput
-	defaultValue: 1 | 0
-	signal?: BooleanSignal
-}
+// export interface BooleanControl extends ControlGeneric {
+// 	type: 'boolean'
+// 	output: BooleanOutput
+// 	defaultValue: 1 | 0
+// 	signal?: BooleanSignal
+// }
 
 // Settings are fixed and set by the visualizer (not the user)
 export type NumberControlSettings = {

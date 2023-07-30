@@ -1,0 +1,45 @@
+As expected:
+
+Reactivity will require some thinking about how the Controls class is structured.
+
+Problem:
+Svelte components will not update when nested control class properties are updated
+
+Solution:
+Any properties which the scene/ui require fresh values for should be writable stores
+This is essentially any object/property that may be modified by the user
+
+1. This is the classic state variables
+DragStartCoords [0, 0]
+etc
+
+2. Control configs
+
+3. Output functions (these can maybe be derived stores?)
+
+Perhaps best option would be to restructure the control objects to:
+
+NumberControl {
+	id
+	type
+	options: <options>{
+		folder
+		group
+		label
+	}
+
+	settings: {
+		rangeReadOnly
+		transformer
+	}
+
+	config: writable<config>{
+		defaultValue
+		range
+		signal
+	}
+
+	output: derived<() => output>
+}
+
+Lets try with the Boolean control and see how clean it ends up

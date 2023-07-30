@@ -1,0 +1,33 @@
+.cpLabel {
+	font-family: transducer, Arial, Helvetica, sans-serif;
+	font-weight: 400;
+	font-size: var(--cpLabelSize);
+	line-height: 1;
+	text-transform: uppercase;
+	margin: 0;
+	padding: 0;
+	user-select: none;
+}
+
+.cpHeading {
+	font-family: transducer, Arial, Helvetica, sans-serif;
+	font-weight: 500;
+	font-size: var(--cpHeadingSize);
+	text-transform: uppercase;
+	margin: 0;
+	padding: 0;
+	user-select: none;
+	white-space: nowrap;
+}
+
+.cpBody {
+	font-family: transducer, Arial, Helvetica, sans-serif;
+	font-weight: 400;
+	font-size: var(--cpBodySize);
+	line-height: 1;
+	text-transform: uppercase;
+	margin: 0;
+	padding: 0;
+	user-select: none;
+	white-space: nowrap;
+}

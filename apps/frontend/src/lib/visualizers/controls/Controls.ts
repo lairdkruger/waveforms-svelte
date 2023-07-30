@@ -9,12 +9,10 @@ import type {
 	ControlConfig,
 	ControlId,
 	NumberSignal,
-	Signal,
 	SignalBehaviour,
 	SignalFunctionConfig,
 	Controls as ControlsState,
 	BooleanOutput,
-	BooleanControl,
 	NumberOutput,
 	NumberControl,
 	ColorOutput,
@@ -35,12 +33,15 @@ import type {
 	SelectControlConfig,
 	ColorControlConfig,
 	Color
-} from '../types'
+} from './types'
 import type { Preset as PresetDb } from 'supabase'
-import type { PresetId } from '../types/presets'
+import type { PresetId } from './types/presets'
 import { deepClone } from '$lib/visualizers/utils/Objects'
 import type { MidiControlId } from '$lib/visualizers/midi/Midi'
 import { deepmerge } from 'deepmerge-ts'
+import { get, writable, type Readable, type Writable } from 'svelte/store'
+import BooleanControl from './BooleanControl'
+import type Signal from './Signal'
 
 export default class Controls {
 	// Internals
@@ -48,12 +49,11 @@ export default class Controls {
 	userPresets: PresetDb[] | null
 	_clientStateReady = false
 
-	// States
-	draggedSignalFunctionConfig: SignalFunctionConfig | null = null
-	draggedSignalTarget: Control | null = null
-	controlPanelRef: HTMLDivElement | null = null
-	dragStartCoord: [number, number] = [0, 0]
-	dragMouseCoords: [number, number] = [0, 0]
+	// States (shared variables that require reactivity)
+	draggedSignal: Writable<Signal | null> = writable(null)
+	draggedSignalTarget: Writable<Control | null> = writable(null)
+	controlPanelRef: Writable<HTMLDivElement | null> = writable(null)
+	dragStartCoord: Writable<[number, number]> = writable([0, 0])
 
 	audioAnalyzer: AudioAnalyzer
 	midi: Midi
@@ -104,34 +104,11 @@ export default class Controls {
 	}
 
 	///////////////////////////////////////////////
-	// State Setter Functions
-	///////////////////////////////////////////////
-	setDraggedSignalFunctionConfig(signalFunctionConfig: SignalFunctionConfig | null) {
-		this.draggedSignalFunctionConfig = signalFunctionConfig
-	}
-
-	setDraggedSignalTarget(control: Control | null) {
-		this.draggedSignalTarget = control
-	}
-
-	setControlPanelRef(ref: HTMLDivElement | null) {
-		this.controlPanelRef = ref
-	}
-
-	setDragStartCoord(coord: [number, number]) {
-		this.dragStartCoord = coord
-	}
-
-	setDragMouseCoords(coord: [number, number]) {
-		this.dragMouseCoords = coord
-	}
-
-	///////////////////////////////////////////////
 	// Utility Functions
 	///////////////////////////////////////////////
 	resetInteractions() {
-		this.draggedSignalFunctionConfig = null
-		this.draggedSignalTarget = null
+		this.draggedSignal.set(null)
+		this.draggedSignalTarget.set(null)
 	}
 
 	// Fetch signal function object from specified context
@@ -239,11 +216,11 @@ export default class Controls {
 	///////////////////////////////////////////////
 	// Update a controls signal function (by creating a new one with updated settings)
 	updateSignalFunction(controlId: ControlId) {
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 
 		if (!control || !('signal' in control)) return null
 
-		if (control.signal?.function) {
+		if (get(control).signal?.function) {
 			// Create a new signal with updated config settings
 			const config = this.getControlConfig(controlId)
 			if (!config) return null
@@ -253,17 +230,25 @@ export default class Controls {
 			// Handle edge case where signal construction failed, means audio or midi contexts weren't ready
 			if (!signal) {
 				// Set signal to undefined since contexts aren't ready yet
-				control.signal = undefined
+				// control.signal = undefined
+				control.update((control) => {
+					control.signal = undefined
+					return control
+				})
 				return null
 			}
 
 			// Set new signal to controls signal
-			control.signal = signal
+			// control.signal = signal
+			control.update((control) => {
+				control.signal = signal
+				return control
+			})
 		}
 	}
 
 	deleteConnection(controlId: ControlId) {
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 
 		if (control.type === 'select') return null
 
@@ -280,13 +265,13 @@ export default class Controls {
 		this.updateSignalFunction(controlId)
 
 		// Get control and manage escapes
-		const control = this.controls.controls[controlId]
+		const control = get(this.getControl(controlId))
 		if (!control) return () => 0
 		if (control.type !== 'boolean') return () => 0
 
 		const outputFunction = () => {
 			// Output functions must not reference external control variable (avoids cyclic closure reference)
-			const control = this.controls.controls[controlId] as BooleanControl
+			const control = get(this.getControl(controlId)) as BooleanControl
 			if (!control.signal) return control.defaultValue
 			return control.signal.function?.output() ?? control.defaultValue
 		}
@@ -300,14 +285,14 @@ export default class Controls {
 		this.updateSignalFunction(controlId)
 
 		// Get control and manage escapes
-		const control = this.controls.controls[controlId] as NumberControl
+		const control = this.getControl(controlId) as NumberControl
 
 		if (!control) return () => 0
 		if (control.type !== 'number') return () => 0
 
 		const outputFunction = () => {
 			// Output functions must not reference external control variable (avoids cyclic closure reference)
-			const control = this.controls.controls[controlId] as NumberControl
+			const control = this.getControl(controlId) as NumberControl
 			// Get transformer function default control since this controls transformer function has probably been yeeted by deepClone
 			const transformer =
 				// @ts-expect-error We can actually assume settings exists since this can be inferred that its a number control
@@ -394,7 +379,7 @@ export default class Controls {
 		this.updateSignalFunction(controlId)
 
 		// Get control and manage escapes
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 		if (!control) return () => [0, 0, 0]
 		if (control.type !== 'color') return () => [0, 0, 0]
 
@@ -405,7 +390,7 @@ export default class Controls {
 
 		const mixAmountFunction = () => {
 			// Output functions must not reference external control variable (avoids cyclic closure reference)
-			const control = this.controls.controls[controlId] as NumberControl
+			const control = this.getControl(controlId) as NumberControl
 
 			// Escape here if function is not a signal function
 			if (!control.signal) return control.defaultValue
@@ -478,7 +463,7 @@ export default class Controls {
 		const mix = () => mixAmountFunction()
 
 		const outputFunction = () => {
-			const control = this.controls.controls[controlId] as ColorControl
+			const control = this.getControl(controlId) as ColorControl
 			const mixAmount = mix()
 
 			// Get and return the two colors whose mix amounts are closest to the current mix amount
@@ -514,7 +499,7 @@ export default class Controls {
 		this.updateSignalFunction(controlId)
 
 		// Get control and manage escapes
-		const control = this.controls.controls[controlId] as SelectControl
+		const control = this.getControl(controlId) as SelectControl
 
 		const output = () => control.defaultValue
 		return output
@@ -522,21 +507,25 @@ export default class Controls {
 
 	// Generic function for updating any controls output function
 	updateControlOutput(controlId: ControlId) {
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 
 		let output: ControlOutput = () => 1
 
-		if (control.type === 'boolean') {
+		if (get(control).type === 'boolean') {
 			output = this.updatedBooleanOutput(controlId)
-		} else if (control.type === 'number') {
+		} else if (get(control).type === 'number') {
 			output = this.updatedNumberOutput(controlId)
-		} else if (control.type === 'select') {
+		} else if (get(control).type === 'select') {
 			output = this.updatedSelectOutput(controlId)
-		} else if (control.type === 'color') {
+		} else if (get(control).type === 'color') {
 			output = this.updatedColorOutput(controlId)
 		}
 
-		this.controls.controls[controlId].output = output
+		// this.getControl(controlId).output = output
+		control.update((control) => {
+			control.output = output
+			return control
+		})
 	}
 
 	///////////////////////////////////////////////
@@ -611,39 +600,42 @@ export default class Controls {
 	}
 
 	// Update global states with new control
-	pushNewControl(control: Control) {
+	pushNewControl(control: BooleanControl) {
 		// Push control to state
 		this.controls.controls[control.id] = control
 		this.presets.presets.default.controls[control.id] = control
 	}
 
 	// Contruct Control object out of options and config
-	constructBooleanControl(id: string, options?: ControlOptions, config?: BooleanControlConfig) {
-		const defaultOutputFunction: BooleanOutput = config?.defaultValue
-			? () => config.defaultValue!
-			: () => 1
-		const signal = this.createSignal(id, config)
+	// constructBooleanControl(id: string, options?: ControlOptions, config?: BooleanControlConfig) {
+	// 	const defaultOutputFunction: BooleanOutput = config?.defaultValue
+	// 		? () => config.defaultValue!
+	// 		: () => 1
+	// 	const signal = this.createSignal(id, config)
 
-		// Build control using config and options
-		const control: BooleanControl = {
-			id: id,
-			type: 'boolean',
-			label: options?.label ?? id,
-			folder: options?.folder ?? id,
-			group: options?.group ?? id,
-			signal: signal && signal.type === 'boolean' ? signal : undefined,
-			output: defaultOutputFunction,
-			defaultValue: config?.defaultValue ?? 1
-		}
+	// 	// Build control using config and options
+	// 	const control: BooleanControl = {
+	// 		id: id,
+	// 		type: 'boolean',
+	// 		label: options?.label ?? id,
+	// 		folder: options?.folder ?? id,
+	// 		group: options?.group ?? id,
+	// 		signal: signal && signal.type === 'boolean' ? signal : undefined,
+	// 		output: defaultOutputFunction,
+	// 		defaultValue: config?.defaultValue ?? 1
+	// 	}
 
-		return control
-	}
+	// 	return control
+	// }
 
-	createBooleanControl(id: string, options?: ControlOptions, config?: BooleanControlConfig) {
+	createBooleanControl(
+		id: string,
+		options: ControlOptions,
+		config: BooleanControlConfig
+	): Readable<BooleanOutput> {
 		// Escape if already exists
-		if (this.controls.controls[id]) {
-			const control = this.controls.controls[id] as BooleanControl
-			return control.output
+		if (this.getControl(id)) {
+			return this.getControl(id).output
 		}
 
 		// Create group & folder structure if required
@@ -651,20 +643,20 @@ export default class Controls {
 		const parsedOptions: ControlOptions = { ...options, folder: folder, group: group }
 
 		// Construct control object
-		const control = this.constructBooleanControl(id, parsedOptions, config)
+		const control = new BooleanControl(id, parsedOptions, config)
 
 		// Update store with new control
 		this.pushNewControl(control)
 
 		// Return singleton of updated output function
-		this.updateControlOutput(id)
-		const booleanControl = this.controls.controls[id] as BooleanControl
+		// this.updateControlOutput(id)
+		// const booleanControl = get(this.getControl(id)) as BooleanControl
 
-		return booleanControl.output
+		return control.output
 	}
 
 	getBooleanControlConfig(controlId: ControlId): BooleanControlConfig {
-		const control = this.controls.controls[controlId] as BooleanControl
+		const control = this.getControl(controlId) as BooleanControl
 		const config: BooleanControlConfig = {
 			defaultValue: control.defaultValue,
 			signalFunctionConfig: control.signal
@@ -722,8 +714,8 @@ export default class Controls {
 		settings?: NumberControlSettings
 	) {
 		// Escape if already exists
-		if (this.controls.controls[id]) {
-			const control = this.controls.controls[id] as NumberControl
+		if (this.getControl(id)) {
+			const control = this.getControl(id) as NumberControl
 			return control.output
 		}
 
@@ -739,7 +731,7 @@ export default class Controls {
 
 		// Return singleton of updated output function
 		this.updateControlOutput(id)
-		const numberControl = this.controls.controls[id] as NumberControl
+		const numberControl = this.getControl(id) as NumberControl
 
 		return numberControl.output
 	}
@@ -757,7 +749,7 @@ export default class Controls {
 	}
 
 	getNumberControlConfig(controlId: ControlId): NumberControlConfig {
-		const control = this.controls.controls[controlId] as NumberControl
+		const control = this.getControl(controlId) as NumberControl
 
 		const boosterSignalFunctionConfig =
 			control.signal && control.signal.type === 'number'
@@ -804,8 +796,8 @@ export default class Controls {
 
 	createSelectControl(id: string, options: ControlOptions, config: SelectControlConfig) {
 		// Escape if already exists
-		if (this.controls.controls[id]) {
-			const control = this.controls.controls[id] as SelectControl
+		if (this.getControl(id)) {
+			const control = this.getControl(id) as SelectControl
 			return control.output
 		}
 
@@ -821,13 +813,13 @@ export default class Controls {
 
 		// Return singleton of updated output function
 		this.updateControlOutput(id)
-		const selectControl = this.controls.controls[id] as SelectControl
+		const selectControl = this.getControl(id) as SelectControl
 
 		return selectControl.output
 	}
 
 	getSelectControlConfig(controlId: ControlId): SelectControlConfig {
-		const control = this.controls.controls[controlId] as SelectControl
+		const control = this.getControl(controlId) as SelectControl
 
 		const config: SelectControlConfig = {
 			defaultValue: control.defaultValue,
@@ -881,8 +873,8 @@ export default class Controls {
 
 	createColorControl(id: string, options?: ControlOptions, config?: ColorControlConfig) {
 		// Escape if already exists
-		if (this.controls.controls[id]) {
-			const control = this.controls.controls[id] as ColorControl
+		if (this.getControl(id)) {
+			const control = this.getControl(id) as ColorControl
 			return control.output
 		}
 
@@ -898,13 +890,13 @@ export default class Controls {
 
 		// Return singleton of updated output function
 		this.updateControlOutput(id)
-		const colorControl = this.controls.controls[id] as ColorControl
+		const colorControl = this.getControl(id) as ColorControl
 
 		return colorControl.output
 	}
 
 	getColorControlConfig(controlId: ControlId): ColorControlConfig {
-		const control = this.controls.controls[controlId] as ColorControl
+		const control = this.getControl(controlId) as ColorControl
 
 		const boosterSignalFunctionConfig =
 			control.signal && control.signal.type === 'number'
@@ -932,7 +924,7 @@ export default class Controls {
 
 	// Backward constructs a config object from a control object
 	getControlConfig(controlId: ControlId) {
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 
 		// Handle configs for different control types (just reverse construction functions)
 		if (control.type === 'number') {
@@ -952,14 +944,17 @@ export default class Controls {
 	// Controls Setter Functions
 	///////////////////////////////////////////////
 	setBooleanControlValue(controlId: ControlId, value: 0 | 1) {
-		const control = this.controls.controls[controlId]
-		control.defaultValue = value
+		const control = this.getControl(controlId)
+		control.update((control) => {
+			control.defaultValue = value
+			return control
+		})
 
 		this.updateControlOutput(controlId)
 	}
 
 	setBooleanControlSignal(controlId: ControlId, signalFunctionConfig: SignalFunctionConfig) {
-		const control = this.controls.controls[controlId] as BooleanControl
+		const control = this.getControl(controlId) as BooleanControl
 
 		// Extract config object out of control
 		let config = this.getBooleanControlConfig(controlId)
@@ -979,7 +974,7 @@ export default class Controls {
 	}
 
 	setNumberControlValue(controlId: ControlId, value: number) {
-		const control = this.controls.controls[controlId] as NumberControl
+		const control = this.getControl(controlId) as NumberControl
 		control.defaultValue = value
 
 		// Revalidate range values
@@ -995,7 +990,7 @@ export default class Controls {
 	}
 
 	setNumberControlUpperRange(controlId: ControlId, value: number) {
-		const control = this.controls.controls[controlId] as NumberControl
+		const control = this.getControl(controlId) as NumberControl
 		control.range[1] = value
 
 		// Revalidate range values
@@ -1007,7 +1002,7 @@ export default class Controls {
 	}
 
 	setNumberControlLowerRange(controlId: ControlId, value: number) {
-		const control = this.controls.controls[controlId] as NumberControl
+		const control = this.getControl(controlId) as NumberControl
 		control.range[0] = value
 
 		// Revalidate range values
@@ -1019,7 +1014,7 @@ export default class Controls {
 	}
 
 	setNumberControlSignal(controlId: ControlId, signalFunctionConfig: SignalFunctionConfig) {
-		const control = this.controls.controls[controlId] as NumberControl
+		const control = this.getControl(controlId) as NumberControl
 
 		// Extract config object out of control
 		let config = this.getNumberControlConfig(controlId)
@@ -1039,21 +1034,21 @@ export default class Controls {
 	}
 
 	setSelectControlValue(controlId: ControlId, value: string) {
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 		control.defaultValue = value
 
 		this.updateControlOutput(controlId)
 	}
 
 	setColorControlValue(controlId: ControlId, value: number) {
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 		control.defaultValue = value
 
 		this.updateControlOutput(controlId)
 	}
 
 	setColorControlSignal(controlId: ControlId, signalFunctionConfig: SignalFunctionConfig) {
-		const control = this.controls.controls[controlId] as ColorControl
+		const control = this.getControl(controlId) as ColorControl
 
 		// Extract config object out of control
 		let config = this.getNumberControlConfig(controlId)
@@ -1072,7 +1067,7 @@ export default class Controls {
 	}
 
 	setColorControlColorCoord(controlId: ControlId, colorStopId: string, value: number) {
-		const control = this.controls.controls[controlId] as ColorControl
+		const control = this.getControl(controlId) as ColorControl
 		const color = control.gradient.find((color) => color.id === colorStopId)
 		if (!color) return
 		color.coord = value
@@ -1081,21 +1076,21 @@ export default class Controls {
 	}
 
 	colorControlAddColorStop(controlId: ControlId, colorStop: ColorStop) {
-		const control = this.controls.controls[controlId] as ColorControl
+		const control = this.getControl(controlId) as ColorControl
 		control.gradient.push(colorStop)
 
 		this.updateControlOutput(controlId)
 	}
 
 	colorControlRemoveColorStop(controlId: ControlId, colorStopId: string) {
-		const control = this.controls.controls[controlId] as ColorControl
+		const control = this.getControl(controlId) as ColorControl
 		control.gradient = control.gradient.filter((colorStop) => colorStop.id !== colorStopId)
 
 		this.updateControlOutput(controlId)
 	}
 
 	colorControlSetColorStopColor(controlId: ControlId, colorStopId: string, color: Color) {
-		const control = this.controls.controls[controlId] as ColorControl
+		const control = this.getControl(controlId) as ColorControl
 		const colorStop = control.gradient.find((colorStop) => colorStop.id === colorStopId)
 		if (!colorStop) return
 		colorStop.color = color
@@ -1104,7 +1099,7 @@ export default class Controls {
 	}
 
 	setControlSignalEase(controlId: ControlId, ease: Ease) {
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 		if (control.type === 'number' || control.type === 'color') {
 			if (control.signal?.type === 'number') {
 				control.signal.ease = ease
@@ -1115,7 +1110,7 @@ export default class Controls {
 	}
 
 	setControlSignalBooster(controlId: ControlId, signalFunctionConfig: SignalFunctionConfig) {
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 		if (control.type === 'number' || control.type === 'color') {
 			if (control.signal?.type === 'number') {
 				const boosterSignal = this.createBoosterSignal(
@@ -1130,7 +1125,7 @@ export default class Controls {
 	}
 
 	deleteControlSignalBooster(controlId: ControlId) {
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 		if (control.type === 'number' || control.type === 'color') {
 			if (control.signal?.type === 'number') {
 				control.signal.booster = undefined
@@ -1141,7 +1136,7 @@ export default class Controls {
 	}
 
 	setControlSignalBehaviour(controlId: ControlId, behaviour: SignalBehaviour) {
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 		if (control.type === 'number' || control.type === 'color') {
 			if (control.signal?.type === 'number') {
 				control.signal.behaviour = behaviour
@@ -1152,7 +1147,7 @@ export default class Controls {
 	}
 
 	setControlSignalFunction(controlId: ControlId, signalFunctionConfig: SignalFunctionConfig) {
-		const control = this.controls.controls[controlId]
+		const control = this.getControl(controlId)
 
 		if (control.type === 'number') {
 			this.setNumberControlSignal(controlId, signalFunctionConfig)
@@ -1166,12 +1161,16 @@ export default class Controls {
 	///////////////////////////////////////////////
 	// Getters
 	///////////////////////////////////////////////
+	getControl(controlId: ControlId) {
+		return this.controls.controls[controlId]
+	}
+
 	getControlsInGroup(controlsIds: string[], groupId: string) {
 		let controlIds: string[] = []
 
 		for (const controlId of controlsIds) {
-			const control = this.controls.controls[controlId]
-			if (control.group === groupId) {
+			const control = this.getControl(controlId)
+			if (control.options.group === groupId) {
 				controlIds.push(control.id)
 			}
 		}
