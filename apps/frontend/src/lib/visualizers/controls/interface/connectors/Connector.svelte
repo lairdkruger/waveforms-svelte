@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import SignalOptions from './SignalOptions.svelte'
 
 	export let controlId: string
 
@@ -36,7 +37,7 @@
 			<div class="inputNodeIndicator" />
 		{/if}
 
-		<SignalOptions key={controlId} {controlId} />
+		<SignalOptions {controlId} />
 	</div>
 {/if}
 

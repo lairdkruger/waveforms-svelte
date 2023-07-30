@@ -1,5 +1,7 @@
+import type { Ease } from '$lib/visualizers/utils/CubicBezier'
+import type Signal from '../Signal'
 import type { Color } from './primitives'
-import type { SignalType } from './signals'
+import type { SignalBehaviour, SignalType } from './signals'
 
 export type SignalFunctionContext = 'audio' | 'midi'
 
@@ -33,6 +35,9 @@ export interface SignalFunctionConfig {
 	context: SignalFunctionContext
 	id: SignalFunctionId
 	defaultFunction: SignalOutput
+	behaviour?: SignalBehaviour
+	ease?: Ease
+	booster?: Signal
 }
 
 export interface SignalFunctionBase {

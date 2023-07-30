@@ -6,8 +6,23 @@ export default class SignalFunction {
 	output: Readable<SignalOutput>
 
 	constructor(config: SignalFunctionConfig) {
-		this.config = writable(config)
+		const configDefaults = this.fillDefaults(config)
+		this.config = writable(configDefaults)
+
 		this.output = derived(this.config, ($config) => this.deriveOutput($config))
+	}
+
+	fillDefaults(config: SignalFunctionConfig) {
+		const configDefaults: Partial<SignalFunctionConfig> = {
+			behaviour: 'straight',
+			ease: 'linear',
+			booster: undefined
+		}
+
+		return {
+			...configDefaults,
+			...config
+		}
 	}
 
 	deriveOutput(config: SignalFunctionConfig) {
