@@ -21,7 +21,7 @@ import type { Preset, PresetId } from './presets'
 import type { Color } from './primitives'
 import type { Signal, SignalBehaviour } from './signals'
 import type { Preset as PresetDb } from 'supabase'
-import type BooleanControl from '../BooleanControl'
+import type BooleanControl from '../library/controls/BooleanControl'
 
 export interface ControlsInternals {
 	_clientStateReady: boolean
@@ -145,7 +145,7 @@ export interface ControlsActions {
 export interface Controls {
 	folders: Record<string, Folder>
 	groups: Record<string, Group>
-	controls: Record<string, BooleanControl>
+	controls: Record<string, Control>
 }
 
 export interface Presets {

@@ -3,7 +3,6 @@
 	import InputIcon from '$lib/svgs/InputIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import type { ControlId, SelectControl } from '$lib/visualizers/controls/types'
-	import '../controls.css'
 
 	export let controlId: ControlId
 

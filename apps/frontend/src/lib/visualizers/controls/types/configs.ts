@@ -1,5 +1,5 @@
 import type { Ease } from '$lib/visualizers/utils/CubicBezier'
-import type Signal from '../Signal'
+import type Signal from '../library/signals/Signal'
 import type { ColorStop } from './controllers'
 import type { SignalFunctionConfig } from './functions'
 import type { SignalBehaviour } from './signals'
@@ -10,12 +10,12 @@ export interface BooleanControlConfig {
 }
 
 export interface NumberControlConfig {
-	signalFunctionConfig?: SignalFunctionConfig
-	defaultValue?: number
-	range?: [number, number]
-	ease?: Ease
-	booster?: SignalFunctionConfig
-	behaviour?: SignalBehaviour
+	signal: Signal | undefined
+	defaultValue: number
+	range: [number, number]
+	ease: Ease
+	booster: SignalFunctionConfig | undefined
+	behaviour: SignalBehaviour
 }
 
 export interface ColorControlConfig {

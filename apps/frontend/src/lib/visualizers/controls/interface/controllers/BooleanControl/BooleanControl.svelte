@@ -1,14 +1,14 @@
 <script lang="ts">
 	import BooleanInputIcon from '$lib/svgs/BooleanInputIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
-	import type { ControlId } from '$lib/visualizers/controls/types'
-	import '../controls.css'
+	import type { ControlId, BooleanControlConfig } from '$lib/visualizers/controls/types'
+	import type { Writable } from 'svelte/store'
 
 	export let controlId: ControlId
 
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId)
-	const config = control.config
+	const config = control.config as Writable<BooleanControlConfig>
 
 	const draggedSignal = controls.draggedSignal
 

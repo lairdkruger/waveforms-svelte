@@ -14,7 +14,6 @@ import type {
 	Controls as ControlsState,
 	BooleanOutput,
 	NumberOutput,
-	NumberControl,
 	ColorOutput,
 	ColorControl,
 	ColorStop,
@@ -40,8 +39,9 @@ import { deepClone } from '$lib/visualizers/utils/Objects'
 import type { MidiControlId } from '$lib/visualizers/midi/Midi'
 import { deepmerge } from 'deepmerge-ts'
 import { get, writable, type Readable, type Writable } from 'svelte/store'
-import BooleanControl from './BooleanControl'
-import type Signal from './Signal'
+import BooleanControl from './library/controls/BooleanControl'
+import type Signal from './library/signals/Signal'
+import NumberControl from './library/controls/NumberControl'
 
 export default class Controls {
 	// Internals
@@ -205,8 +205,6 @@ export default class Controls {
 				} as NumberSignal
 			}
 		}
-
-		console.log('signalFunc: ', signalFunction, signal)
 
 		return signal
 	}
@@ -600,7 +598,7 @@ export default class Controls {
 	}
 
 	// Update global states with new control
-	pushNewControl(control: BooleanControl) {
+	pushNewControl(control: Control) {
 		// Push control to state
 		this.controls.controls[control.id] = control
 		this.presets.presets.default.controls[control.id] = control
@@ -630,13 +628,11 @@ export default class Controls {
 
 	createBooleanControl(
 		id: string,
-		options: ControlOptions,
-		config: BooleanControlConfig
+		options?: ControlOptions,
+		config?: BooleanControlConfig
 	): Readable<BooleanOutput> {
 		// Escape if already exists
-		if (this.getControl(id)) {
-			return this.getControl(id).output
-		}
+		if (this.getControl(id)) return this.getControl(id).output
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
@@ -714,26 +710,23 @@ export default class Controls {
 		settings?: NumberControlSettings
 	) {
 		// Escape if already exists
-		if (this.getControl(id)) {
-			const control = this.getControl(id) as NumberControl
-			return control.output
-		}
+		if (this.getControl(id)) return this.getControl(id).output
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
 		const parsedOptions: ControlOptions = { ...options, folder: folder, group: group }
 
 		// Construct control object
-		const control = this.constructNumberControl(id, parsedOptions, config, settings)
+		const control = new NumberControl(id, parsedOptions, config, settings)
 
 		// Update store with new control
 		this.pushNewControl(control)
 
 		// Return singleton of updated output function
-		this.updateControlOutput(id)
-		const numberControl = this.getControl(id) as NumberControl
+		// this.updateControlOutput(id)
+		// const numberControl = this.getControl(id) as NumberControl
 
-		return numberControl.output
+		return control.output
 	}
 
 	getBoosterSignalFunctionConfig(

@@ -6,9 +6,6 @@
 
 	const { audioAnalyzer, midi, controls } = getVisualizerContext()
 
-	$: console.log(audioAnalyzer, midi)
-	$: console.log(controls)
-
 	setContext('prototypeVisualizer', { audioAnalyzer: audioAnalyzer })
 
 	const { scene, onFrame } = getWebglContext()
@@ -50,7 +47,9 @@
 		}
 	)
 
-	$: console.log($spin)
+	const doubleSize = controls.createBooleanControl('doubleSize')
+
+	const numberControl = controls.createNumberControl('numberControl')
 
 	onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
@@ -59,6 +58,12 @@
 			boxMesh.rotation.x += 0.01
 			boxMesh.rotation.y += 0.01
 		}
+
+		boxMesh.scale.set(
+			1 + $numberControl() + 2 * $doubleSize(),
+			1 + $numberControl() + 2 * $doubleSize(),
+			1 + $numberControl() + 2 * $doubleSize()
+		)
 
 		// boxMesh.scale.set(size(), size(), size())
 	})

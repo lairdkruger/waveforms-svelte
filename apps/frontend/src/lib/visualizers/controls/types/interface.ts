@@ -7,20 +7,20 @@ export interface Folder {
 export interface Group {
 	id: string
 	label: string
-	folder: string
+	folder?: string
 }
 
 export interface FolderOptions {
-	label: string
+	label?: string
 }
 
 export interface GroupOptions {
-	label: string
-	folder: string
+	label?: string
+	folder?: string
 }
 
 export interface ControlOptions {
-	label: string
-	folder: string
-	group: string
+	label?: string
+	folder?: string
+	group?: string
 }

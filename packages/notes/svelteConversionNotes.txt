@@ -20,8 +20,8 @@ etc
 Perhaps best option would be to restructure the control objects to:
 
 NumberControl {
-	id
 	type
+	id
 	options: <options>{
 		folder
 		group

@@ -1,4 +1,4 @@
-import Signal from '../controls/Signal'
+import Signal from '../controls/library/signals/Signal'
 import { map } from '../utils/Maths'
 
 export type AudioInput = 'microphone' | 'browser'

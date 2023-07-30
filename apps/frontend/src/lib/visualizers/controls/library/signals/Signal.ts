@@ -1,5 +1,5 @@
 import SignalFunction from './SignalFunction'
-import type { SignalFunctionConfig } from './types'
+import type { SignalFunctionConfig } from '../../types'
 
 export default class Signal {
 	id

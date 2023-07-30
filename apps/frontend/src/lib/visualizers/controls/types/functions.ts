@@ -1,5 +1,5 @@
 import type { Ease } from '$lib/visualizers/utils/CubicBezier'
-import type Signal from '../Signal'
+import type Signal from '../library/signals/Signal'
 import type { Color } from './primitives'
 import type { SignalBehaviour, SignalType } from './signals'
 

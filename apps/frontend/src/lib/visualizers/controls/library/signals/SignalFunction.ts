@@ -1,5 +1,5 @@
 import { derived, writable, type Readable, type Writable } from 'svelte/store'
-import type { SignalFunctionConfig, SignalOutput } from './types'
+import type { SignalFunctionConfig, SignalOutput } from '../../types'
 
 export default class SignalFunction {
 	config: Writable<SignalFunctionConfig>

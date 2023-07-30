@@ -1,4 +1,5 @@
 <script lang="ts">
+	import './controls.css'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import SignalsPanel from './signals/SignalsPanel.svelte'
 	import ControlsPanel from './controls/ControlsPanel.svelte'

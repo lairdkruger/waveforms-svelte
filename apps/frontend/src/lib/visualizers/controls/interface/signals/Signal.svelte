@@ -2,7 +2,7 @@
 	import SignalIconBoolean from '$lib/svgs/SignalIconBoolean.svelte'
 	import SignalIconNumber from '$lib/svgs/SignalIconNumber.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
-	import type Signal from '../../Signal'
+	import type Signal from '../../library/signals/Signal'
 	import type { SignalType } from '../../types'
 
 	export let signal: Signal

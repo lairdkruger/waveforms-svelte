@@ -9,8 +9,6 @@
 	const config = control.config
 	$: signalConfig = $config.signal?.function.config
 
-	$: console.log('signal: ', $signalConfig)
-
 	const audioSignalWidths: Record<string, string> = {
 		getVolume: '0.440',
 		getVolumePeaked: '0.412',

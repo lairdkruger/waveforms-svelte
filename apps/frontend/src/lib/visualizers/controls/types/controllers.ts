@@ -1,4 +1,5 @@
-import type BooleanControl from '../BooleanControl'
+import type BooleanControl from '../library/controls/BooleanControl'
+import type NumberControl from '../library/controls/NumberControl'
 import type { BooleanOutput, ColorOutput, NumberOutput, SelectOutput } from './functions'
 import type { BooleanSignal, NumberSignal } from './signals'
 
@@ -27,14 +28,14 @@ export type NumberControlSettings = {
 	transformer?: Transformer
 }
 
-export interface NumberControl extends ControlGeneric {
-	type: 'number'
-	output: NumberOutput
-	defaultValue: number
-	range: [number, number]
-	settings?: NumberControlSettings
-	signal?: NumberSignal | BooleanSignal
-}
+// export interface NumberControl extends ControlGeneric {
+// 	type: 'number'
+// 	output: NumberOutput
+// 	defaultValue: number
+// 	range: [number, number]
+// 	settings?: NumberControlSettings
+// 	signal?: NumberSignal | BooleanSignal
+// }
 
 export type ColorStop = {
 	id?: string
@@ -42,19 +43,20 @@ export type ColorStop = {
 	color: [number, number, number] // [R, G, B]
 }
 
-export interface ColorControl extends ControlGeneric {
-	type: 'color'
-	output: ColorOutput
-	defaultValue: number
-	gradient: ColorStop[]
-	signal?: NumberSignal | BooleanSignal
-}
+// export interface ColorControl extends ControlGeneric {
+// 	type: 'color'
+// 	output: ColorOutput
+// 	defaultValue: number
+// 	gradient: ColorStop[]
+// 	signal?: NumberSignal | BooleanSignal
+// }
 
-export interface SelectControl extends ControlGeneric {
-	type: 'select'
-	output: SelectOutput
-	defaultValue: string
-	values: string[]
-}
+// export interface SelectControl extends ControlGeneric {
+// 	type: 'select'
+// 	output: SelectOutput
+// 	defaultValue: string
+// 	values: string[]
+// }
 
-export type Control = BooleanControl | NumberControl | ColorControl | SelectControl
+// export type Control = BooleanControl | NumberControl | ColorControl | SelectControl
+export type Control = BooleanControl | NumberControl
