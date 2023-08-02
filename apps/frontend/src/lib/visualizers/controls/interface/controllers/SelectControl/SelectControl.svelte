@@ -2,18 +2,21 @@
 	import DropdownIcon from '$lib/svgs/DropdownIcon.svelte'
 	import InputIcon from '$lib/svgs/InputIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
-	import type { ControlId, SelectControl } from '$lib/visualizers/controls/types'
+	import type { ControlId, SelectControlConfig } from '$lib/visualizers/controls/types'
+	import type { Writable } from 'svelte/store'
 
 	export let controlId: ControlId
 
 	const { controls } = getVisualizerContext()
-	const controlsStore = controls.controls.controls
-	$: control = $controlsStore[controlId]
+	const control = controls.getControl(controlId)
+	const config = control.config as Writable<SelectControlConfig>
 
 	const handleChange = (event: Event) => {
 		const target = event.target as HTMLSelectElement
-		controls.setSelectControlValue(control.id, target.value)
-		// control = control // Enable svelte reactivity
+		config.update((config) => {
+			config.defaultValue = target.value
+			return config
+		})
 	}
 </script>
 
@@ -23,18 +26,18 @@
 	</div>
 
 	<div class="g-label">
-		<span class="cpBody">{control.label}</span>
+		<span class="cpBody">{control.options.label}</span>
 	</div>
 
 	<div class="g-controller">
 		<div class="select">
-			<span class="cpHeading">{control.defaultValue}</span>
+			<span class="cpHeading">{$config.defaultValue}</span>
 			<div class="dropdownIcon">
 				<DropdownIcon />
 			</div>
 
-			<select class="selectInput" value={control.defaultValue} on:change={handleChange}>
-				{#each control.values as value}
+			<select class="selectInput" value={$config.defaultValue} on:change={handleChange}>
+				{#each $config.values as value}
 					<option {value}>
 						{value}
 					</option>

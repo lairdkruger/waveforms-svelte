@@ -19,12 +19,12 @@ export interface NumberControlConfig {
 }
 
 export interface ColorControlConfig {
-	signalFunctionConfig?: SignalFunctionConfig
-	defaultValue?: number
-	gradient?: ColorStop[]
-	ease?: Ease
-	booster?: SignalFunctionConfig
-	behaviour?: SignalBehaviour
+	signal: Signal | undefined
+	defaultValue: number
+	gradient: ColorStop[]
+	ease: Ease
+	booster: SignalFunctionConfig | undefined
+	behaviour: SignalBehaviour
 }
 
 export interface SelectControlConfig {

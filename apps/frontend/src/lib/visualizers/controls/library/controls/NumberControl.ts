@@ -19,7 +19,7 @@ export default class NumberControl extends Control {
 		config?: Partial<NumberControlConfig>,
 		settings?: NumberControlSettings
 	) {
-		super('number', id, options, config)
+		super('number', id, options)
 
 		this.settings = this.populateSettings(settings)
 		this.config = writable(this.populateConfig(config))

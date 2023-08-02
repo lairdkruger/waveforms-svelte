@@ -19,14 +19,12 @@
 	const draggedSignal = controls.draggedSignal
 	$: hasSignalInput = $config.signal ? true : false
 
-	let dragTarget: HTMLDivElement
-	let gesture: DragGesture
-	const position = spring(0)
-
 	// Dimensions
 	const width = 72
 	const handleWidth = 24
 	const trackWidth = width - handleWidth
+
+	const position = spring(0)
 
 	$: {
 		let value = map($position, 0, trackWidth, $config.range[0], $config.range[1])
@@ -34,9 +32,12 @@
 		control.setDefaultValue(valueClamped)
 	}
 
+	let gesture: DragGesture
+	let gestureTarget: HTMLDivElement
+
 	onMount(() => {
 		gesture = new DragGesture(
-			dragTarget,
+			gestureTarget,
 			({ offset: [offsetX] }) => {
 				position.set(offsetX)
 			},
@@ -102,7 +103,7 @@
 			<div class="handleWrapper">
 				<div
 					class="handle"
-					bind:this={dragTarget}
+					bind:this={gestureTarget}
 					style="transform: translate({$position}px, 0px)"
 				>
 					<div class="handleBar" />

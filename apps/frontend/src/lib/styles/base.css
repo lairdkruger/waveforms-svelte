@@ -41,6 +41,13 @@ body {
 }
 
 /* css resets */
+*,
+*::before,
+*::after {
+	box-sizing: inherit;
+	margin: 0;
+}
+
 input,
 button {
 	font-size: inherit;
@@ -70,6 +77,12 @@ input[type='number']::-webkit-outer-spin-button {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
+}
+
+input,
+textarea {
+	width: 100%;
+	max-width: 100%;
 }
 
 ::-webkit-input-placeholder {

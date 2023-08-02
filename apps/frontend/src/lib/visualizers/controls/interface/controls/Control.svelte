@@ -2,6 +2,7 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import Connector from '../connectors/Connector.svelte'
 	import BooleanControl from '../controllers/BooleanControl/BooleanControl.svelte'
+	import ColorControl from '../controllers/ColorControl/ColorControl.svelte'
 	import NumberControl from '../controllers/NumberControl/NumberControl.svelte'
 	import SelectControl from '../controllers/SelectControl/SelectControl.svelte'
 
@@ -19,9 +20,9 @@
 		{:else if control.type === 'boolean'}
 			<BooleanControl {controlId} />
 		{:else if control.type === 'select'}
-			<!-- <SelectControl {controlId} /> -->
+			<SelectControl {controlId} />
 		{:else if control.type === 'color'}
-			<!-- <ColorControl {controlId} /> -->
+			<ColorControl {controlId} />
 		{/if}
 	</div>
 

@@ -1,5 +1,7 @@
 import type BooleanControl from '../library/controls/BooleanControl'
+import type ColorControl from '../library/controls/ColorControl'
 import type NumberControl from '../library/controls/NumberControl'
+import type SelectControl from '../library/controls/SelectControl'
 import type { BooleanOutput, ColorOutput, NumberOutput, SelectOutput } from './functions'
 import type { BooleanSignal, NumberSignal } from './signals'
 
@@ -38,7 +40,7 @@ export type NumberControlSettings = {
 // }
 
 export type ColorStop = {
-	id?: string
+	id: string
 	coord: number // Position on gradient [0...1]
 	color: [number, number, number] // [R, G, B]
 }
@@ -59,4 +61,4 @@ export type ColorStop = {
 // }
 
 // export type Control = BooleanControl | NumberControl | ColorControl | SelectControl
-export type Control = BooleanControl | NumberControl
+export type Control = BooleanControl | NumberControl | SelectControl | ColorControl

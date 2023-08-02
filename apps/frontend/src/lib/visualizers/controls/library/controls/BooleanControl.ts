@@ -7,7 +7,7 @@ export default class BooleanControl extends Control {
 	output: Readable<BooleanOutput>
 
 	constructor(id: ControlId, options: ControlOptions, config?: Partial<BooleanControlConfig>) {
-		super('boolean', id, options, config)
+		super('boolean', id, options)
 
 		this.config = writable(this.populateConfig(config))
 		this.output = derived(this.config, ($config) => this.deriveOutput($config))

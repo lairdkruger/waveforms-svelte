@@ -15,10 +15,8 @@ import type {
 	BooleanOutput,
 	NumberOutput,
 	ColorOutput,
-	ColorControl,
 	ColorStop,
 	SelectOutput,
-	SelectControl,
 	ControlOutput,
 	FolderOptions,
 	Folder,
@@ -42,6 +40,8 @@ import { get, writable, type Readable, type Writable } from 'svelte/store'
 import BooleanControl from './library/controls/BooleanControl'
 import type Signal from './library/signals/Signal'
 import NumberControl from './library/controls/NumberControl'
+import SelectControl from './library/controls/SelectControl'
+import ColorControl from './library/controls/ColorControl'
 
 export default class Controls {
 	// Internals
@@ -632,7 +632,7 @@ export default class Controls {
 		config?: BooleanControlConfig
 	): Readable<BooleanOutput> {
 		// Escape if already exists
-		if (this.getControl(id)) return this.getControl(id).output
+		if (this.getControl(id)) return this.getControl(id).output as Readable<BooleanOutput>
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
@@ -666,42 +666,42 @@ export default class Controls {
 	}
 
 	// Contruct Control object out of options and config
-	constructNumberControl(
-		id: string,
-		options?: ControlOptions,
-		config?: NumberControlConfig,
-		settings?: NumberControlSettings
-	) {
-		const defaultOutputFunction: NumberOutput = config?.defaultValue
-			? () => config.defaultValue!
-			: () => 1
+	// constructNumberControl(
+	// 	id: string,
+	// 	options?: ControlOptions,
+	// 	config?: NumberControlConfig,
+	// 	settings?: NumberControlSettings
+	// ) {
+	// 	const defaultOutputFunction: NumberOutput = config?.defaultValue
+	// 		? () => config.defaultValue!
+	// 		: () => 1
 
-		const signal = this.createSignal(id, config)
+	// 	const signal = this.createSignal(id, config)
 
-		// Check to see if default value is out of range
-		const defaultValue = config?.defaultValue ?? 1
-		const inRange =
-			config?.range &&
-			defaultValue >= Math.min(config.range[0], config.range[1]) &&
-			config?.range &&
-			defaultValue <= Math.max(config.range[0], config.range[1])
+	// 	// Check to see if default value is out of range
+	// 	const defaultValue = config?.defaultValue ?? 1
+	// 	const inRange =
+	// 		config?.range &&
+	// 		defaultValue >= Math.min(config.range[0], config.range[1]) &&
+	// 		config?.range &&
+	// 		defaultValue <= Math.max(config.range[0], config.range[1])
 
-		// Build control using config and options
-		const control: NumberControl = {
-			id: id,
-			type: 'number',
-			label: options?.label ?? id,
-			folder: options?.folder ?? id,
-			group: options?.group ?? id,
-			signal: signal ? signal : undefined,
-			output: defaultOutputFunction,
-			defaultValue: config?.defaultValue ?? 1,
-			range: inRange && config?.range ? config.range : [defaultValue - 1, defaultValue + 1],
-			settings: settings
-		}
+	// 	// Build control using config and options
+	// 	const control: NumberControl = {
+	// 		id: id,
+	// 		type: 'number',
+	// 		label: options?.label ?? id,
+	// 		folder: options?.folder ?? id,
+	// 		group: options?.group ?? id,
+	// 		signal: signal ? signal : undefined,
+	// 		output: defaultOutputFunction,
+	// 		defaultValue: config?.defaultValue ?? 1,
+	// 		range: inRange && config?.range ? config.range : [defaultValue - 1, defaultValue + 1],
+	// 		settings: settings
+	// 	}
 
-		return control
-	}
+	// 	return control
+	// }
 
 	createNumberControl(
 		id: string,
@@ -710,7 +710,7 @@ export default class Controls {
 		settings?: NumberControlSettings
 	) {
 		// Escape if already exists
-		if (this.getControl(id)) return this.getControl(id).output
+		if (this.getControl(id)) return this.getControl(id).output as Readable<NumberOutput>
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
@@ -729,209 +729,204 @@ export default class Controls {
 		return control.output
 	}
 
-	getBoosterSignalFunctionConfig(
-		boosterSignal: BooleanSignal | undefined
-	): SignalFunctionConfig | undefined {
-		if (!boosterSignal) return undefined
-		const config: SignalFunctionConfig = {
-			context: boosterSignal.function.context,
-			id: boosterSignal.function.id
-		}
+	// getBoosterSignalFunctionConfig(
+	// 	boosterSignal: BooleanSignal | undefined
+	// ): SignalFunctionConfig | undefined {
+	// 	if (!boosterSignal) return undefined
+	// 	const config: SignalFunctionConfig = {
+	// 		context: boosterSignal.function.context,
+	// 		id: boosterSignal.function.id
+	// 	}
 
-		return config
-	}
+	// 	return config
+	// }
 
-	getNumberControlConfig(controlId: ControlId): NumberControlConfig {
-		const control = this.getControl(controlId) as NumberControl
+	// getNumberControlConfig(controlId: ControlId): NumberControlConfig {
+	// 	const control = this.getControl(controlId) as NumberControl
 
-		const boosterSignalFunctionConfig =
-			control.signal && control.signal.type === 'number'
-				? this.getBoosterSignalFunctionConfig(control.signal.booster)
-				: undefined
+	// 	const boosterSignalFunctionConfig =
+	// 		control.signal && control.signal.type === 'number'
+	// 			? this.getBoosterSignalFunctionConfig(control.signal.booster)
+	// 			: undefined
 
-		const config: NumberControlConfig = {
-			defaultValue: control.defaultValue,
-			signalFunctionConfig: control.signal
-				? {
-						context: control.signal?.function.context,
-						id: control.signal?.function.id
-				  }
-				: undefined,
-			range: control.range,
-			ease: control.signal && control.signal.type === 'number' ? control.signal.ease : undefined,
-			booster: boosterSignalFunctionConfig,
-			behaviour:
-				control.signal && control.signal.type === 'number'
-					? control.signal.behaviour
-					: undefined
-		}
-		return config
-	}
+	// 	const config: NumberControlConfig = {
+	// 		defaultValue: control.defaultValue,
+	// 		signalFunctionConfig: control.signal
+	// 			? {
+	// 					context: control.signal?.function.context,
+	// 					id: control.signal?.function.id
+	// 			  }
+	// 			: undefined,
+	// 		range: control.range,
+	// 		ease: control.signal && control.signal.type === 'number' ? control.signal.ease : undefined,
+	// 		booster: boosterSignalFunctionConfig,
+	// 		behaviour:
+	// 			control.signal && control.signal.type === 'number'
+	// 				? control.signal.behaviour
+	// 				: undefined
+	// 	}
+	// 	return config
+	// }
 
 	// Contruct Control object out of options and config
-	constructSelectControl(id: string, options: ControlOptions, config: SelectControlConfig) {
-		const defaultOutputFunction: SelectOutput = () => config.defaultValue
+	// constructSelectControl(id: string, options: ControlOptions, config: SelectControlConfig) {
+	// 	const defaultOutputFunction: SelectOutput = () => config.defaultValue
 
-		// Build control using config and options
-		const control: SelectControl = {
-			id: id,
-			type: 'select',
-			label: options?.label ?? id,
-			folder: options?.folder ?? id,
-			group: options?.group ?? id,
-			output: defaultOutputFunction,
-			defaultValue: config.defaultValue,
-			values: config.values
-		}
+	// 	// Build control using config and options
+	// 	const control: SelectControl = {
+	// 		id: id,
+	// 		type: 'select',
+	// 		label: options?.label ?? id,
+	// 		folder: options?.folder ?? id,
+	// 		group: options?.group ?? id,
+	// 		output: defaultOutputFunction,
+	// 		defaultValue: config.defaultValue,
+	// 		values: config.values
+	// 	}
 
-		return control
-	}
+	// 	return control
+	// }
 
-	createSelectControl(id: string, options: ControlOptions, config: SelectControlConfig) {
+	createSelectControl(id: string, options?: ControlOptions, config?: SelectControlConfig) {
 		// Escape if already exists
-		if (this.getControl(id)) {
-			const control = this.getControl(id) as SelectControl
-			return control.output
-		}
+		if (this.getControl(id)) return this.getControl(id).output as Readable<SelectOutput>
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
 		const parsedOptions: ControlOptions = { ...options, folder: folder, group: group }
 
 		// Construct control object
-		const control = this.constructSelectControl(id, parsedOptions, config)
+		const control = new SelectControl(id, parsedOptions, config)
 
 		// Update store with new control
 		this.pushNewControl(control)
 
-		// Return singleton of updated output function
-		this.updateControlOutput(id)
-		const selectControl = this.getControl(id) as SelectControl
+		// // Return singleton of updated output function
+		// this.updateControlOutput(id)
+		// const selectControl = this.getControl(id) as SelectControl
 
-		return selectControl.output
+		return control.output
 	}
 
-	getSelectControlConfig(controlId: ControlId): SelectControlConfig {
-		const control = this.getControl(controlId) as SelectControl
+	// getSelectControlConfig(controlId: ControlId): SelectControlConfig {
+	// 	const control = this.getControl(controlId) as SelectControl
 
-		const config: SelectControlConfig = {
-			defaultValue: control.defaultValue,
-			values: control.values
-		}
+	// 	const config: SelectControlConfig = {
+	// 		defaultValue: control.defaultValue,
+	// 		values: control.values
+	// 	}
 
-		return config
-	}
+	// 	return config
+	// }
 
 	// Contruct Control object out of options and config
-	constructColorControl(id: string, options?: ControlOptions, config?: ColorControlConfig) {
-		const defaultOutputFunction: () => [number, number, number] = () => [1, 1, 1]
+	// constructColorControl(id: string, options?: ControlOptions, config?: ColorControlConfig) {
+	// 	const defaultOutputFunction: () => [number, number, number] = () => [1, 1, 1]
 
-		const defaultGradient: ColorStop[] = [
-			{
-				id: crypto.randomUUID(), // Assign random key
-				coord: 0,
-				color: [0, 0, 0]
-			},
-			{
-				id: crypto.randomUUID(), // Assign random key
-				coord: 1,
-				color: [1, 1, 1]
-			}
-		]
+	// 	const defaultGradient: ColorStop[] = [
+	// 		{
+	// 			id: crypto.randomUUID(), // Assign random key
+	// 			coord: 0,
+	// 			color: [0, 0, 0]
+	// 		},
+	// 		{
+	// 			id: crypto.randomUUID(), // Assign random key
+	// 			coord: 1,
+	// 			color: [1, 1, 1]
+	// 		}
+	// 	]
 
-		// Attach keys to config gradient if given
-		if (config?.gradient) {
-			for (let colorStop of config.gradient) {
-				colorStop.id = crypto.randomUUID()
-			}
-		}
+	// 	// Attach keys to config gradient if given
+	// 	if (config?.gradient) {
+	// 		for (let colorStop of config.gradient) {
+	// 			colorStop.id = crypto.randomUUID()
+	// 		}
+	// 	}
 
-		const signal = this.createSignal(id, config)
+	// 	const signal = this.createSignal(id, config)
 
-		// Build control using config and options
-		const control: ColorControl = {
-			id: id,
-			type: 'color',
-			label: options?.label ?? id,
-			folder: options?.folder ?? id,
-			group: options?.group ?? id,
-			signal: signal ? signal : undefined,
-			output: defaultOutputFunction,
-			defaultValue: config?.defaultValue ?? 1,
-			gradient: config?.gradient ?? defaultGradient
-		}
+	// 	// Build control using config and options
+	// 	const control: ColorControl = {
+	// 		id: id,
+	// 		type: 'color',
+	// 		label: options?.label ?? id,
+	// 		folder: options?.folder ?? id,
+	// 		group: options?.group ?? id,
+	// 		signal: signal ? signal : undefined,
+	// 		output: defaultOutputFunction,
+	// 		defaultValue: config?.defaultValue ?? 1,
+	// 		gradient: config?.gradient ?? defaultGradient
+	// 	}
 
-		return control
-	}
+	// 	return control
+	// }
 
 	createColorControl(id: string, options?: ControlOptions, config?: ColorControlConfig) {
 		// Escape if already exists
-		if (this.getControl(id)) {
-			const control = this.getControl(id) as ColorControl
-			return control.output
-		}
+		if (this.getControl(id)) return this.getControl(id).output as Readable<ColorOutput>
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
 		const parsedOptions: ControlOptions = { ...options, folder: folder, group: group }
 
 		// Construct control object
-		const control = this.constructColorControl(id, parsedOptions, config)
+		const control = new ColorControl(id, parsedOptions, config)
 
 		// Update store with new control
 		this.pushNewControl(control)
 
-		// Return singleton of updated output function
-		this.updateControlOutput(id)
-		const colorControl = this.getControl(id) as ColorControl
+		// // Return singleton of updated output function
+		// this.updateControlOutput(id)
+		// const colorControl = this.getControl(id) as ColorControl
 
-		return colorControl.output
+		// return colorControl.output
+		return control.output
 	}
 
-	getColorControlConfig(controlId: ControlId): ColorControlConfig {
-		const control = this.getControl(controlId) as ColorControl
+	// getColorControlConfig(controlId: ControlId): ColorControlConfig {
+	// 	const control = this.getControl(controlId) as ColorControl
 
-		const boosterSignalFunctionConfig =
-			control.signal && control.signal.type === 'number'
-				? this.getBoosterSignalFunctionConfig(control.signal.booster)
-				: undefined
+	// 	const boosterSignalFunctionConfig =
+	// 		control.signal && control.signal.type === 'number'
+	// 			? this.getBoosterSignalFunctionConfig(control.signal.booster)
+	// 			: undefined
 
-		const config: ColorControlConfig = {
-			defaultValue: control.defaultValue,
-			signalFunctionConfig: control.signal
-				? {
-						context: control.signal?.function.context,
-						id: control.signal?.function.id
-				  }
-				: undefined,
-			gradient: control.gradient,
-			ease: control.signal && control.signal.type === 'number' ? control.signal.ease : undefined,
-			booster: boosterSignalFunctionConfig,
-			behaviour:
-				control.signal && control.signal.type === 'number'
-					? control.signal.behaviour
-					: undefined
-		}
-		return config
-	}
+	// 	const config: ColorControlConfig = {
+	// 		defaultValue: control.defaultValue,
+	// 		signalFunctionConfig: control.signal
+	// 			? {
+	// 					context: control.signal?.function.context,
+	// 					id: control.signal?.function.id
+	// 			  }
+	// 			: undefined,
+	// 		gradient: control.gradient,
+	// 		ease: control.signal && control.signal.type === 'number' ? control.signal.ease : undefined,
+	// 		booster: boosterSignalFunctionConfig,
+	// 		behaviour:
+	// 			control.signal && control.signal.type === 'number'
+	// 				? control.signal.behaviour
+	// 				: undefined
+	// 	}
+	// 	return config
+	// }
 
 	// Backward constructs a config object from a control object
-	getControlConfig(controlId: ControlId) {
-		const control = this.getControl(controlId)
+	// getControlConfig(controlId: ControlId) {
+	// 	const control = this.getControl(controlId)
 
-		// Handle configs for different control types (just reverse construction functions)
-		if (control.type === 'number') {
-			return this.getNumberControlConfig(controlId)
-		} else if (control.type === 'boolean') {
-			return this.getBooleanControlConfig(controlId)
-		} else if (control.type === 'select') {
-			return this.getSelectControlConfig(controlId)
-		} else if (control.type === 'color') {
-			return this.getColorControlConfig(controlId)
-		} else {
-			return null
-		}
-	}
+	// 	// Handle configs for different control types (just reverse construction functions)
+	// 	if (control.type === 'number') {
+	// 		return this.getNumberControlConfig(controlId)
+	// 	} else if (control.type === 'boolean') {
+	// 		return this.getBooleanControlConfig(controlId)
+	// 	} else if (control.type === 'select') {
+	// 		return this.getSelectControlConfig(controlId)
+	// 	} else if (control.type === 'color') {
+	// 		return this.getColorControlConfig(controlId)
+	// 	} else {
+	// 		return null
+	// 	}
+	// }
 
 	///////////////////////////////////////////////
 	// Controls Setter Functions

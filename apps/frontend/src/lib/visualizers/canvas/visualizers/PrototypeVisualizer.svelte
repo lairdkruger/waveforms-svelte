@@ -51,6 +51,17 @@
 
 	const numberControl = controls.createNumberControl('numberControl')
 
+	const selectControl = controls.createSelectControl(
+		'selectControl',
+		{},
+		{
+			values: ['wireframe', 'solid'],
+			defaultValue: 'wireframe'
+		}
+	)
+
+	const colorControl = controls.createColorControl('colorControl')
+
 	onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
 
@@ -64,6 +75,12 @@
 			1 + $numberControl() + 2 * $doubleSize(),
 			1 + $numberControl() + 2 * $doubleSize()
 		)
+
+		if ($selectControl() === 'wireframe') {
+			boxMaterial.wireframe = true
+		} else {
+			boxMaterial.wireframe = false
+		}
 
 		// boxMesh.scale.set(size(), size(), size())
 	})
