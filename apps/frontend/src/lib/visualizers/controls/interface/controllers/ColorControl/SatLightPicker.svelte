@@ -21,17 +21,13 @@
 	const control = controls.getControl(controlId) as ColorControl
 	const config = control.config as Writable<ColorControlConfig>
 
-	const initialSat = rgbToHsv(
-		denormalizeRgb($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
-	)[1]
-
 	$: cssColor = denormalizeRgb(
 		$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
 	)
-	const hsl = rgbToHsv(
+
+	$: hsl = rgbToHsv(
 		denormalizeRgb($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
 	)
-	const hue = hsl[0]
 
 	// Dimensions
 	const width = 80
@@ -46,21 +42,47 @@
 		const saturation = map(sat, 0, trackWidth, 0, 100)
 		const lightness = 100 - map(light, 0, trackHeight, 0, 100)
 
-		const rgb = hsvToRgb([hue, saturation, lightness])
+		const rgb = hsvToRgb([hsl[0], saturation, lightness])
 		const normalizedRgb = normalizeRgb(rgb)
 
 		config.update((config) => {
 			const colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
 			colorStop.color = normalizedRgb
 
+			// Sync local states
+			cssColor = denormalizeRgb(colorStop.color)
+			hsl = rgbToHsv(denormalizeRgb(colorStop.color))
+
 			return config
 		})
 	}
 
-	// const positionSat = spring(map(hsl[1], 0, 100, 0, trackWidth))
-	// const positionLight = spring(map(hsl[2], 0, 100, 0, trackHeight))
-	const positionSat = spring()
-	const positionLight = spring(0)
+	const positionSat = spring(
+		map(
+			rgbToHsv(
+				denormalizeRgb(
+					$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
+				)
+			)[1],
+			0,
+			100,
+			0,
+			trackWidth
+		)
+	)
+	const positionLight = spring(
+		map(
+			rgbToHsv(
+				denormalizeRgb(
+					$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
+				)
+			)[2],
+			0,
+			100,
+			0,
+			trackHeight
+		)
+	)
 
 	$: updateControl($positionSat, $positionLight)
 

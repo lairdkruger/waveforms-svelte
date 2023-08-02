@@ -39,6 +39,10 @@
 	// 	}
 	// )
 
+	const colorControl = controls.createColorControl('colorControl')
+
+	$: console.log($colorControl())
+
 	const spin = controls.createBooleanControl(
 		`BoxSpinning`,
 		{ label: 'Spin?', group: 'group', folder: 'folder' },
@@ -56,11 +60,9 @@
 		{},
 		{
 			values: ['wireframe', 'solid'],
-			defaultValue: 'wireframe'
+			defaultValue: 'solid'
 		}
 	)
-
-	const colorControl = controls.createColorControl('colorControl')
 
 	onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
@@ -81,6 +83,8 @@
 		} else {
 			boxMaterial.wireframe = false
 		}
+
+		boxMaterial.color.set(...$colorControl())
 
 		// boxMesh.scale.set(size(), size(), size())
 	})

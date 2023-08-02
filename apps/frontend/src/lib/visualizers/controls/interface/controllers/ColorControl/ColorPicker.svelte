@@ -28,7 +28,7 @@
 	<HuePicker {controlId} {colorStopId} />
 
 	<div class="utilities">
-		<HexPicker {controlId} {colorStopId} />
+		<!-- <HexPicker {controlId} {colorStopId} /> -->
 
 		<button
 			class="remove"

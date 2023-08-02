@@ -33,9 +33,9 @@
 
 	const position = spring(
 		map(
-			$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord,
+			rgbToHsv($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)[0],
 			0,
-			1,
+			360,
 			0,
 			trackWidth
 		)
@@ -54,6 +54,9 @@
 			const normalizedRgb = normalizeRgb(rgb)
 
 			colorStop.color = normalizedRgb
+
+			// Sync local state
+			cssColor = denormalizeRgb(colorStop.color)
 
 			return config
 		})
@@ -108,7 +111,8 @@
 	.hue {
 		position: relative;
 
-		width: 100%;
+		/* width: 100%; */
+		width: 80px;
 		height: 8px;
 
 		background-image: linear-gradient(
