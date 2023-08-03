@@ -23,11 +23,15 @@ export default class BooleanControl extends Control {
 	}
 
 	deriveOutput(config: BooleanControlConfig) {
-		if (config.signal) {
-			const output = config.signal?.function.output
-			return get(output)
+		function outputFunction() {
+			if (!config.signal) return config.defaultValue
+
+			const signalOutput = get(config.signal.function.output)()
+			const output = signalOutput > 0.5 ? 1 : 0
+
+			return output
 		}
 
-		return () => config.defaultValue
+		return () => outputFunction()
 	}
 }

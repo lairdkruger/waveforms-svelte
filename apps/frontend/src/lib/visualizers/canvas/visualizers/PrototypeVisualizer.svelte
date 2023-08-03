@@ -16,17 +16,23 @@
 	boxMesh.position.set(0, 0, -5)
 	$: if ($scene) $scene.add(boxMesh)
 
+	const folder = controls.createFolder('folder', { label: 'Folder' })
+
 	const colorControl = controls.createColorControl('colorControl', {}, { defaultValue: 0.5 })
 
 	const spin = controls.createBooleanControl(
 		`BoxSpinning`,
-		{ label: 'Spin?', group: 'group', folder: 'folder' },
+		{ label: 'Spin?', folder: folder },
 		{
 			defaultValue: 1
 		}
 	)
 
-	const doubleSize = controls.createBooleanControl('doubleSize', {}, { defaultValue: 0 })
+	const doubleSize = controls.createBooleanControl(
+		'doubleSize',
+		{ folder: folder },
+		{ defaultValue: 0 }
+	)
 
 	const numberControl = controls.createNumberControl('numberControl')
 
