@@ -8,6 +8,7 @@
 		normalizeRgb,
 		rgbToHex
 	} from '$lib/visualizers/utils/ColorFunctions'
+	import { tick } from 'svelte'
 	import type { Writable } from 'svelte/store'
 
 	export let controlId: ControlId
@@ -16,28 +17,43 @@
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId) as ColorControl
 	const config = control.config as Writable<ColorControlConfig>
-	const colorStop = $config.gradient.find((colorStop) => colorStop.id === colorStopId)!
-	const currentHex = rgbToHex(denormalizeRgb(colorStop.color))
 
-	let inputHex = currentHex
+	let currentHex = rgbToHex(
+		denormalizeRgb($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+	)
+	$: liveHex = rgbToHex(
+		denormalizeRgb($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+	)
+	$: currentHex = liveHex
 
-	const handleHexChange = (event: Event) => {
-		const target = event.target as HTMLInputElement
-		const value = target.value
-		inputHex = value
-	}
+	let focused = false
 
 	function handleHexSubmit() {
-		let hex = inputHex
+		config.update((config) => {
+			const colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
 
-		if (hex?.slice(0, 1) !== '#') {
-			hex = '#' + hex
-		}
+			if (currentHex?.slice(0, 1) !== '#') {
+				currentHex = '#' + currentHex
+			}
 
-		const rgb = hexToRgb(hex)
-		const normalizedRgb = normalizeRgb(rgb)
+			const rgb = hexToRgb(currentHex)
+			const normalizedRgb = normalizeRgb(rgb)
 
-		colorStop.color = normalizedRgb
+			colorStop.color = normalizedRgb
+
+			// Sync local state
+			currentHex = rgbToHex(rgb)
+
+			return config
+		})
+	}
+
+	function handleHexChange(event: Event) {
+		const target = event.target as HTMLInputElement
+		const value = target.value
+
+		// Sync local state
+		currentHex = value
 	}
 </script>
 
@@ -48,7 +64,17 @@
 			handleHexSubmit()
 		}}
 	>
-		<input class="hexInput" placeholder="Hex" value={inputHex} on:change={handleHexChange} />
+		<input
+			class="hexInput"
+			placeholder="Hex"
+			value={focused ? currentHex : liveHex}
+			on:change={handleHexChange}
+			on:focus={() => {
+				tick()
+				focused = true
+			}}
+			on:blur={() => (focused = false)}
+		/>
 	</form>
 </div>
 

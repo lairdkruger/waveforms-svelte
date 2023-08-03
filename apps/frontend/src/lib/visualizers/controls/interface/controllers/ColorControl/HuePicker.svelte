@@ -21,6 +21,10 @@
 	const control = controls.getControl(controlId) as ColorControl
 	const config = control.config as Writable<ColorControlConfig>
 
+	let initialHue = rgbToHsv(
+		$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
+	)[0]
+
 	$: cssColor = denormalizeRgb(
 		$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
 	)
@@ -31,15 +35,7 @@
 
 	const trackWidth = width - handleWidth
 
-	const position = spring(
-		map(
-			rgbToHsv($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)[0],
-			0,
-			360,
-			0,
-			trackWidth
-		)
-	)
+	const position = spring(map(initialHue, 0, 360, 0, trackWidth))
 	$: updateControl($position)
 
 	function updateControl(value: number) {

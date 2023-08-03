@@ -21,6 +21,13 @@
 	const control = controls.getControl(controlId) as ColorControl
 	const config = control.config as Writable<ColorControlConfig>
 
+	let initialSat = rgbToHsv(
+		denormalizeRgb($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+	)[1]
+	let initialLight = rgbToHsv(
+		denormalizeRgb($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+	)[2]
+
 	$: cssColor = denormalizeRgb(
 		$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
 	)
@@ -57,32 +64,8 @@
 		})
 	}
 
-	const positionSat = spring(
-		map(
-			rgbToHsv(
-				denormalizeRgb(
-					$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
-				)
-			)[1],
-			0,
-			100,
-			0,
-			trackWidth
-		)
-	)
-	const positionLight = spring(
-		map(
-			rgbToHsv(
-				denormalizeRgb(
-					$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
-				)
-			)[2],
-			0,
-			100,
-			trackHeight,
-			0
-		)
-	)
+	const positionSat = spring(map(initialSat, 0, 100, 0, trackWidth))
+	const positionLight = spring(map(initialLight, 0, 100, trackHeight, 0))
 
 	$: updateControl($positionSat, $positionLight)
 

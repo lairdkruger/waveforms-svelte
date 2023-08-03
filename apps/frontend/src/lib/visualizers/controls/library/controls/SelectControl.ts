@@ -24,10 +24,10 @@ export default class SelectControl extends Control {
 	}
 
 	deriveOutput(config: SelectControlConfig) {
+		let currentIndex = config.values.indexOf(config.defaultValue)
+
 		function outputFunction() {
 			if (!config.signal) return config.defaultValue
-
-			let currentIndex = config.values.indexOf(config.defaultValue)
 
 			const signalOutput = get(config.signal.function.output)()
 			const cycleOutput = signalOutput > 0.5
