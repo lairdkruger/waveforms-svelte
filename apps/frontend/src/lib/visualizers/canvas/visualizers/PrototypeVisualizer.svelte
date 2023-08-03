@@ -16,29 +16,6 @@
 	boxMesh.position.set(0, 0, -5)
 	$: if ($scene) $scene.add(boxMesh)
 
-	// const size = controls.createNumberControl(
-	// 	`BoxSize`,
-	// 	{ label: 'Size', group: 'group' },
-	// 	{
-	// 		defaultValue: 2,
-	// 		range: [1, 2],
-	// 		signalFunctionConfig: {
-	// 			context: 'audio',
-	// 			id: 'getVolume'
-	// 		},
-	// 		ease: 'linear'
-	// 	}
-	// )
-
-	// const multiple = controls.createSelectControl(
-	// 	`BoxMultiple`,
-	// 	{ label: 'Size', group: 'group' },
-	// 	{
-	// 		values: ['1', '8'],
-	// 		defaultValue: '1'
-	// 	}
-	// )
-
 	const colorControl = controls.createColorControl('colorControl', {}, { defaultValue: 0.5 })
 
 	const spin = controls.createBooleanControl(
@@ -64,8 +41,6 @@
 
 	onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
-
-		console.log($numberControl())
 
 		if ($spin()) {
 			boxMesh.rotation.x += 0.01
