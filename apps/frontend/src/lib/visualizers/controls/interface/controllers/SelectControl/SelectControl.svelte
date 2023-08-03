@@ -1,9 +1,9 @@
 <script lang="ts">
 	import DropdownIcon from '$lib/svgs/DropdownIcon.svelte'
-	import InputIcon from '$lib/svgs/InputIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import type { ControlId, SelectControlConfig } from '$lib/visualizers/controls/types'
 	import type { Writable } from 'svelte/store'
+	import InputNode from '../../connectors/InputNode.svelte'
 
 	export let controlId: ControlId
 
@@ -21,9 +21,7 @@
 </script>
 
 <div class="g-control">
-	<div class="g-inputNode">
-		<InputIcon active={false} />
-	</div>
+	<InputNode {controlId} boolean={true} />
 
 	<div class="g-label">
 		<span class="cpBody">{control.options.label}</span>

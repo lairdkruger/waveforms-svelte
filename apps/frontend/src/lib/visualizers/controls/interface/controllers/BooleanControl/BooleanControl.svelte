@@ -1,53 +1,18 @@
 <script lang="ts">
-	import BooleanInputIcon from '$lib/svgs/BooleanInputIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import type { ControlId, BooleanControlConfig } from '$lib/visualizers/controls/types'
 	import type { Writable } from 'svelte/store'
+	import InputNode from '../../connectors/InputNode.svelte'
 
 	export let controlId: ControlId
 
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId)
 	const config = control.config as Writable<BooleanControlConfig>
-
-	const draggedSignal = controls.draggedSignal
-
-	$: hasSignalInput = $config.signal ? true : false
 </script>
 
-<div
-	class="g-control"
-	on:pointerenter={() => {
-		if ($draggedSignal) {
-			controls.draggedSignalTarget.set(control)
-		}
-	}}
-	on:pointerleave={() => {
-		if ($draggedSignal) {
-			controls.draggedSignalTarget.set(null)
-		}
-	}}
-	on:pointerup={() => {
-		// Set controller input to signal function
-		config.update((config) => {
-			config.signal = $draggedSignal ?? undefined
-			return config
-		})
-	}}
->
-	<div
-		class="g-inputNode"
-		on:pointerdown={() => {
-			if (hasSignalInput) {
-				config.update((config) => {
-					config.signal = undefined
-					return config
-				})
-			}
-		}}
-	>
-		<BooleanInputIcon active={hasSignalInput} />
-	</div>
+<div class="g-control">
+	<InputNode {controlId} boolean={true} />
 
 	<div class="g-label">
 		<span class="cpBody">{control.options.label}</span>

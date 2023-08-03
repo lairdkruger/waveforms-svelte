@@ -10,18 +10,18 @@ export interface BooleanControlConfig {
 }
 
 export interface NumberControlConfig {
-	signal: Signal | undefined
 	defaultValue: number
 	range: [number, number]
+	signal: Signal | undefined
 	ease: Ease
 	booster: SignalFunctionConfig | undefined
 	behaviour: SignalBehaviour
 }
 
 export interface ColorControlConfig {
-	signal: Signal | undefined
 	defaultValue: number
 	gradient: ColorStop[]
+	signal: Signal | undefined
 	ease: Ease
 	booster: SignalFunctionConfig | undefined
 	behaviour: SignalBehaviour
@@ -30,6 +30,7 @@ export interface ColorControlConfig {
 export interface SelectControlConfig {
 	defaultValue: string
 	values: string[]
+	signal: Signal | undefined
 }
 
 export type ControlConfig =

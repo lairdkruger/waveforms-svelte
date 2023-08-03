@@ -10,11 +10,11 @@
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { DragGesture } from '@use-gesture/vanilla'
 	import { onDestroy, onMount } from 'svelte'
-	import InputIcon from '$lib/svgs/InputIcon.svelte'
 	import ColorStop from './ColorStop.svelte'
 	import { gradientToCSS } from '$lib/visualizers/utils/ColorFunctions'
 	import ColorHandleIcon from '$lib/svgs/ColorHandleIcon.svelte'
 	import { spring } from 'svelte/motion'
+	import InputNode from '../../connectors/InputNode.svelte'
 
 	export let controlId: ControlId
 
@@ -23,9 +23,6 @@
 	const config = control.config as Writable<ColorControlConfig>
 
 	$: gradient = gradientToCSS($config.gradient)
-
-	const draggedSignal = controls.draggedSignal
-	$: hasSignalInput = $config.signal ? true : false
 
 	// Dimensions
 	const width = 120
@@ -84,39 +81,8 @@
 	})
 </script>
 
-<div
-	class="g-control"
-	on:pointerenter={() => {
-		if ($draggedSignal) {
-			controls.draggedSignalTarget.set(control)
-		}
-	}}
-	on:pointerleave={() => {
-		if ($draggedSignal) {
-			controls.draggedSignalTarget.set(null)
-		}
-	}}
-	on:pointerup={() => {
-		// Set controller input to signal function
-		config.update((config) => {
-			config.signal = $draggedSignal ?? undefined
-			return config
-		})
-	}}
->
-	<div
-		class="g-inputNode"
-		on:pointerdown={() => {
-			if (hasSignalInput) {
-				config.update((config) => {
-					config.signal = undefined
-					return config
-				})
-			}
-		}}
-	>
-		<InputIcon active={hasSignalInput} />
-	</div>
+<div class="g-control">
+	<InputNode {controlId} />
 
 	<div class="g-label">
 		<span class="cpBody">{control.options.label}</span>
