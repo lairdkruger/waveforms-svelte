@@ -286,7 +286,8 @@ export default class AudioAnalyzer {
 		getVolume: new Signal({
 			context: 'audio',
 			id: 'getVolume',
-			defaultFunction: () => this.getVolume()
+			defaultFunction: () => this.getVolume(),
+			range: [() => 0, () => this.getPeakVolume()]
 		}),
 		getVolumePeaked: new Signal({
 			context: 'audio',
@@ -296,7 +297,8 @@ export default class AudioAnalyzer {
 		getBassVolume: new Signal({
 			context: 'audio',
 			id: 'getBassVolume',
-			defaultFunction: () => this.getBassVolume()
+			defaultFunction: () => this.getBassVolume(),
+			range: [() => 0, () => this.getPeakBassVolume()]
 		}),
 		getBassPeaked: new Signal({
 			context: 'audio',
@@ -306,7 +308,8 @@ export default class AudioAnalyzer {
 		getMidsVolume: new Signal({
 			context: 'audio',
 			id: 'getMidsVolume',
-			defaultFunction: () => this.getMidsVolume()
+			defaultFunction: () => this.getMidsVolume(),
+			range: [() => 0, () => this.getPeakMidsVolume()]
 		}),
 		getMidsPeaked: new Signal({
 			context: 'audio',
@@ -316,7 +319,8 @@ export default class AudioAnalyzer {
 		getHighsVolume: new Signal({
 			context: 'audio',
 			id: 'getHighsVolume',
-			defaultFunction: () => this.getHighsVolume()
+			defaultFunction: () => this.getHighsVolume(),
+			range: [() => 0, () => this.getPeakHighsVolume()]
 		}),
 		getHighsPeaked: new Signal({
 			context: 'audio',

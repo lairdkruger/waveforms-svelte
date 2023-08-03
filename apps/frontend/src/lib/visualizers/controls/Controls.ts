@@ -861,7 +861,7 @@ export default class Controls {
 	// 	return control
 	// }
 
-	createColorControl(id: string, options?: ControlOptions, config?: ColorControlConfig) {
+	createColorControl(id: string, options?: ControlOptions, config?: Partial<ColorControlConfig>) {
 		// Escape if already exists
 		if (this.getControl(id)) return this.getControl(id).output as Readable<ColorOutput>
 

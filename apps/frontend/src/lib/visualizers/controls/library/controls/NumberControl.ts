@@ -7,6 +7,7 @@ import type {
 	NumberControlSettings,
 	NumberOutput
 } from '../../types'
+import { map } from '$lib/visualizers/utils/Maths'
 
 export default class NumberControl extends Control {
 	config: Writable<NumberControlConfig>
@@ -49,12 +50,16 @@ export default class NumberControl extends Control {
 	}
 
 	deriveOutput(config: NumberControlConfig) {
-		if (config.signal) {
-			const output = config.signal?.function.output
-			return get(output)
+		function outputFunction() {
+			if (!config.signal) return config.defaultValue
+
+			const signalOutput = get(config.signal.function.output)()
+			const output = map(signalOutput, 0, 1, config.range[0], config.range[1])
+
+			return output
 		}
 
-		return () => config.defaultValue
+		return () => outputFunction()
 	}
 
 	setLowerRange(value: number) {

@@ -35,9 +35,10 @@ export interface SignalFunctionConfig {
 	context: SignalFunctionContext
 	id: SignalFunctionId
 	defaultFunction: SignalOutput
-	behaviour?: SignalBehaviour
-	ease?: Ease
-	booster?: Signal
+	range: [() => number, () => number]
+	behaviour: SignalBehaviour
+	ease: Ease
+	booster: Signal | undefined
 }
 
 export interface SignalFunctionBase {

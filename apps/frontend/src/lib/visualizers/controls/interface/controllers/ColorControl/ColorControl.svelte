@@ -66,8 +66,6 @@
 	let gesture: DragGesture
 	let gestureTarget: HTMLDivElement
 
-	$: console.log($config.gradient)
-
 	onMount(() => {
 		gesture = new DragGesture(
 			gestureTarget,

@@ -5,7 +5,7 @@ export default class Signal {
 	id
 	function
 
-	constructor(config: SignalFunctionConfig) {
+	constructor(config: Partial<SignalFunctionConfig>) {
 		this.id = config.id
 		this.function = new SignalFunction(config)
 	}

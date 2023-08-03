@@ -39,9 +39,7 @@
 	// 	}
 	// )
 
-	const colorControl = controls.createColorControl('colorControl')
-
-	$: console.log($colorControl())
+	const colorControl = controls.createColorControl('colorControl', {}, { defaultValue: 0.5 })
 
 	const spin = controls.createBooleanControl(
 		`BoxSpinning`,
@@ -51,7 +49,7 @@
 		}
 	)
 
-	const doubleSize = controls.createBooleanControl('doubleSize')
+	const doubleSize = controls.createBooleanControl('doubleSize', {}, { defaultValue: 0 })
 
 	const numberControl = controls.createNumberControl('numberControl')
 
@@ -66,6 +64,8 @@
 
 	onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
+
+		console.log($numberControl())
 
 		if ($spin()) {
 			boxMesh.rotation.x += 0.01
