@@ -3,6 +3,17 @@
 	import '$lib/styles/spacing.css'
 	import '$lib/styles/controls.css'
 	import '$lib/styles/typography.css'
+	import Header from '$lib/components/Header.svelte'
 </script>
 
+<svelte:head>
+	<title>WAVEFORMS</title>
+	<meta
+		name="description"
+		content="Web-based realtime audio visualizers. Control and customise visuals for Spotify, Soundcloud and other audio sources in real-time."
+	/>
+	<meta name="creator" content="Laird Kruger" />
+</svelte:head>
+
+<Header />
 <slot />

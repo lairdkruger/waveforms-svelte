@@ -17,15 +17,18 @@
 	})
 </script>
 
-<canvas
-	class="canvas"
-	bind:this={canvas}
-	on:click={() => {
-		started = true
-	}}
-/>
+<canvas class="canvas" bind:this={canvas} />
 
-{#if started}
+{#if !started}
+	<button
+		class="start-button"
+		on:click={() => {
+			started = true
+		}}
+	>
+		Start
+	</button>
+{:else}
 	<Stage>
 		<slot />
 	</Stage>
@@ -37,5 +40,12 @@
 		z-index: -1;
 		top: 0;
 		left: 0;
+	}
+
+	.start-button {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 </style>

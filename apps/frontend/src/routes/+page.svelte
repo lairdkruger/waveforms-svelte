@@ -1,8 +1,9 @@
 <script>
-	import Canvas from '$lib/visualizers/canvas/Canvas.svelte'
-	import PrototypeVisualizer from '$lib/visualizers/canvas/visualizers/PrototypeVisualizer.svelte'
+	import HomePage from '$lib/pages/home/HomePage.svelte'
+
+	export let data
+
+	console.log(data)
 </script>
 
-<Canvas>
-	<PrototypeVisualizer />
-</Canvas>
+<HomePage visualizersData={data.visualizers} />

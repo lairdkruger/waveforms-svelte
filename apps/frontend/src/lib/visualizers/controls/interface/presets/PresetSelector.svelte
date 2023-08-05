@@ -75,5 +75,6 @@
 
 	.dropdownIcon {
 		margin-left: var(--cpSpacing4);
+		display: flex;
 	}
 </style>
