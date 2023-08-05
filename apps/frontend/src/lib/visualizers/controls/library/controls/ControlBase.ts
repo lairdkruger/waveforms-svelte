@@ -5,7 +5,7 @@ export default class ControlBase {
 	id
 	options
 
-	constructor(type: ControlType, id: ControlId, options: Partial<ControlOptions>) {
+	constructor(type: ControlType, id: ControlId, options?: Partial<ControlOptions>) {
 		this.type = type
 		this.id = id
 
@@ -13,7 +13,7 @@ export default class ControlBase {
 		this.options = populatedOptions
 	}
 
-	populateOptions(options: Partial<ControlOptions>) {
+	populateOptions(options?: Partial<ControlOptions>) {
 		const defaultOptions: ControlOptions = {
 			label: this.id,
 			folder: this.id,

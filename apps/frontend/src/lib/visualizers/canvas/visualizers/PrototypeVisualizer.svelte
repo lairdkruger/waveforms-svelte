@@ -39,8 +39,8 @@
 	const selectControl = controls.createSelectControl(
 		'selectControl',
 		{},
+		{ values: ['wireframe', 'solid'] },
 		{
-			values: ['wireframe', 'solid'],
 			defaultValue: 'solid'
 		}
 	)
@@ -54,6 +54,9 @@
 			},
 			spin: {
 				defaultValue: 0
+			},
+			selectControl: {
+				defaultValue: 'wireframe'
 			}
 		}
 	)

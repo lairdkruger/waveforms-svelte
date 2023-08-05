@@ -29,7 +29,6 @@ export interface ColorControlConfig {
 
 export interface SelectControlConfig {
 	defaultValue: string
-	values: string[]
 	signal: Signal | undefined
 }
 

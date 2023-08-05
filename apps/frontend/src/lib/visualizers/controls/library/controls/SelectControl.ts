@@ -1,26 +1,42 @@
 import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
 import ControlBase from './ControlBase'
-import type { SelectControlConfig, SelectOutput, ControlId, ControlOptions } from '../../types'
+import type {
+	SelectControlConfig,
+	SelectOutput,
+	ControlId,
+	ControlOptions,
+	SelectControlSettings
+} from '../../types'
 
 export default class SelectControl extends ControlBase {
+	settings: SelectControlSettings
 	config: Writable<SelectControlConfig>
 	output: Readable<SelectOutput>
 
 	constructor(
 		id: ControlId,
-		options: Partial<ControlOptions>,
+		options?: Partial<ControlOptions>,
+		settings?: Partial<SelectControlSettings>,
 		config?: Partial<SelectControlConfig>
 	) {
 		super('select', id, options)
 
+		this.settings = this.populateSettings(settings)
 		this.config = writable(this.populateConfig(config))
 		this.output = derived(this.config, ($config) => this.deriveOutput($config))
+	}
+
+	populateSettings(settings?: Partial<SelectControlSettings>) {
+		const defaultSettings: SelectControlSettings = {
+			values: ['Default']
+		}
+
+		return { ...defaultSettings, ...settings }
 	}
 
 	populateConfig(config?: Partial<SelectControlConfig>) {
 		const defaultConfig: SelectControlConfig = {
 			defaultValue: 'default',
-			values: ['default'],
 			signal: undefined
 		}
 
@@ -28,16 +44,16 @@ export default class SelectControl extends ControlBase {
 	}
 
 	deriveOutput(config: SelectControlConfig) {
-		let currentIndex = config.values.indexOf(config.defaultValue)
+		let currentIndex = this.settings.values.indexOf(config.defaultValue)
 
-		function outputFunction() {
+		const outputFunction = () => {
 			if (!config.signal) return config.defaultValue
 
 			const signalOutput = get(config.signal.function.output)()
 			const cycleOutput = signalOutput > 0.5
-			if (cycleOutput) currentIndex = (currentIndex + 1) % config.values.length
+			if (cycleOutput) currentIndex = (currentIndex + 1) % this.settings.values.length
 
-			return config.values[currentIndex]
+			return this.settings.values[currentIndex]
 		}
 
 		return () => outputFunction()

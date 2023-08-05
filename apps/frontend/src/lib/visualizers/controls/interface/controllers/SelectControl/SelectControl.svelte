@@ -4,11 +4,12 @@
 	import type { ControlId, SelectControlConfig } from '$lib/visualizers/controls/types'
 	import type { Writable } from 'svelte/store'
 	import InputNode from '../../connectors/InputNode.svelte'
+	import type SelectControl from '../../../library/controls/SelectControl'
 
 	export let controlId: ControlId
 
 	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId)
+	const control = controls.getControl(controlId) as SelectControl
 	const config = control.config as Writable<SelectControlConfig>
 
 	const handleChange = (event: Event) => {
@@ -35,7 +36,7 @@
 			</div>
 
 			<select class="selectInput" value={$config.defaultValue} on:change={handleChange}>
-				{#each $config.values as value}
+				{#each control.settings.values as value}
 					<option {value}>
 						{value}
 					</option>

@@ -60,5 +60,9 @@ export type ColorStop = {
 // 	values: string[]
 // }
 
+export type SelectControlSettings = {
+	values: string[]
+}
+
 // export type Control = BooleanControl | NumberControl | ColorControl | SelectControl
 export type Control = BooleanControl | NumberControl | SelectControl | ColorControl

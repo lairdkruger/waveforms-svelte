@@ -8,7 +8,7 @@ export default class BooleanControl extends ControlBase {
 
 	constructor(
 		id: ControlId,
-		options: Partial<ControlOptions>,
+		options?: Partial<ControlOptions>,
 		config?: Partial<BooleanControlConfig>
 	) {
 		super('boolean', id, options)

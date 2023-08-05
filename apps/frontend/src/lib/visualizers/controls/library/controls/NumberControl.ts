@@ -16,9 +16,9 @@ export default class NumberControl extends ControlBase {
 
 	constructor(
 		id: ControlId,
-		options: Partial<ControlOptions>,
-		config?: Partial<NumberControlConfig>,
-		settings?: NumberControlSettings
+		options?: Partial<ControlOptions>,
+		settings?: Partial<NumberControlSettings>,
+		config?: Partial<NumberControlConfig>
 	) {
 		super('number', id, options)
 
@@ -27,7 +27,7 @@ export default class NumberControl extends ControlBase {
 		this.output = derived(this.config, ($config) => this.deriveOutput($config))
 	}
 
-	populateSettings(settings?: NumberControlSettings) {
+	populateSettings(settings?: Partial<NumberControlSettings>) {
 		const defaultSettings: NumberControlSettings = {
 			rangeReadOnly: false,
 			transformer: undefined

@@ -15,7 +15,7 @@ export default class ColorControl extends ControlBase {
 
 	constructor(
 		id: ControlId,
-		options: Partial<ControlOptions>,
+		options?: Partial<ControlOptions>,
 		config?: Partial<ColorControlConfig>
 	) {
 		super('color', id, options)
