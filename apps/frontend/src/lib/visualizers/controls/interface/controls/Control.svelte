@@ -27,7 +27,9 @@
 	</div>
 
 	<div class="connector">
-		<Connector {controlId} />
+		{#if folderExpanded}
+			<Connector {controlId} />
+		{/if}
 	</div>
 </div>
 

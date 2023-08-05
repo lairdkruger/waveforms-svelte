@@ -1,6 +1,7 @@
 <script lang="ts">
 	import ExpandIcon from '$lib/svgs/ExpandIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { slide } from 'svelte/transition'
 	import Group from './Group.svelte'
 
 	export let folderId: string
@@ -27,11 +28,13 @@
 		</div>
 	</button>
 	<div class="accordion">
-		<div class="content">
-			{#each relevantGroups as [groupId, _]}
-				<Group {groupId} folderExpanded={expanded} />
-			{/each}
-		</div>
+		{#if expanded}
+			<div class="content" transition:slide>
+				{#each relevantGroups as [groupId, _]}
+					<Group {groupId} folderExpanded={expanded} />
+				{/each}
+			</div>
+		{/if}
 	</div>
 </div>
 

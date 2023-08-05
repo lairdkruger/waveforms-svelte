@@ -6,6 +6,7 @@
 	import OptionsLoopIcon from '$lib/svgs/OptionsLoopIcon.svelte'
 	import OptionsStraightIcon from '$lib/svgs/OptionsStraightIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { spring } from 'svelte/motion'
 
 	export let controlId: string
 
@@ -15,6 +16,13 @@
 	$: signalConfig = $config.signal?.function.config
 
 	let expanded = false
+	const opacity = spring(0)
+	const width = spring(16)
+	const height = spring(16)
+
+	$: opacity.set(expanded ? 1 : 0)
+	$: width.set(expanded ? 139 : 16)
+	$: height.set(expanded ? 162 : 16)
 </script>
 
 <div class="signalOptions">
@@ -22,8 +30,19 @@
 		<OptionsIcon />
 	</button>
 
-	<div class="wrapper">
-		<div class="content">
+	<div
+		class="wrapper"
+		style="
+		width: {$width}px;
+		height: {$height}px;
+	"
+	>
+		<div
+			class="content"
+			style="
+			opacity: {$opacity};
+		"
+		>
 			<div class="group">
 				<div class="label">
 					<span class="">Behaviour</span>
@@ -200,7 +219,6 @@
 		border-radius: 9px;
 
 		pointer-events: auto;
-		cursor: pointer;
 	}
 
 	.icon {
@@ -215,6 +233,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		cursor: pointer;
 	}
 
 	.wrapper {
