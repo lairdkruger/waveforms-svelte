@@ -17,11 +17,11 @@ import type {
 	SignalFunctionConfig
 } from './functions'
 import type { ControlOptions, Folder, FolderOptions, Group, GroupOptions } from './interface'
-import type { Preset, PresetId } from './presets'
+import type { PresetId } from './presets'
 import type { Color } from './primitives'
 import type { Signal, SignalBehaviour } from './signals'
 import type { Preset as PresetDb } from 'supabase'
-import type BooleanControl from '../library/controls/BooleanControl'
+import type Preset from '../library/presets/Preset'
 
 export interface ControlsInternals {
 	_clientStateReady: boolean

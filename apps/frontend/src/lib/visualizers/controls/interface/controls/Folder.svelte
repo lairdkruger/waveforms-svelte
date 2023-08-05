@@ -11,7 +11,7 @@
 	const groups = controls.controls.groups
 	const relevantGroups = Object.entries(groups).filter(([, group]) => group.folder === folder.id)
 
-	let expanded = false
+	let expanded = true
 </script>
 
 <div class="folder">

@@ -1,12 +1,16 @@
 import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
-import Control from './Control'
+import ControlBase from './ControlBase'
 import type { BooleanControlConfig, BooleanOutput, ControlId, ControlOptions } from '../../types'
 
-export default class BooleanControl extends Control {
+export default class BooleanControl extends ControlBase {
 	config: Writable<BooleanControlConfig>
 	output: Readable<BooleanOutput>
 
-	constructor(id: ControlId, options: ControlOptions, config?: Partial<BooleanControlConfig>) {
+	constructor(
+		id: ControlId,
+		options: Partial<ControlOptions>,
+		config?: Partial<BooleanControlConfig>
+	) {
 		super('boolean', id, options)
 
 		this.config = writable(this.populateConfig(config))

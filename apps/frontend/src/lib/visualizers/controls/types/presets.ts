@@ -1,10 +1,10 @@
-import type { Control } from './controllers'
+import type { ControlConfig } from './configs'
+import type { ControlId } from './controllers'
 
 export type PresetId = string
 
-export interface Preset {
-	id: PresetId
-	name: string
-	controls: Record<string, Control>
-	midiBinding: string | null
+export interface PresetOptions {
+	label: string
 }
+
+export type PresetConfigs = Record<ControlId, Partial<ControlConfig>>

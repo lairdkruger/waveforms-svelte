@@ -60,9 +60,11 @@ button {
 	padding: 0;
 }
 
-a {
+a,
+button {
 	color: inherit;
 	text-decoration: none;
+	cursor: pointer;
 }
 
 /* Extras */

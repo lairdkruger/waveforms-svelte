@@ -5,7 +5,7 @@ import type { SignalFunctionConfig } from './functions'
 import type { SignalBehaviour } from './signals'
 
 export interface BooleanControlConfig {
-	signal?: Signal
+	signal: Signal | undefined
 	defaultValue: 0 | 1
 }
 

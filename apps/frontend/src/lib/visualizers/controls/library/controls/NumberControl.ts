@@ -1,5 +1,5 @@
 import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
-import Control from './Control'
+import ControlBase from './ControlBase'
 import type {
 	ControlId,
 	ControlOptions,
@@ -9,14 +9,14 @@ import type {
 } from '../../types'
 import { map } from '$lib/visualizers/utils/Maths'
 
-export default class NumberControl extends Control {
+export default class NumberControl extends ControlBase {
 	config: Writable<NumberControlConfig>
 	settings: NumberControlSettings
 	output: Readable<NumberOutput>
 
 	constructor(
 		id: ControlId,
-		options: ControlOptions,
+		options: Partial<ControlOptions>,
 		config?: Partial<NumberControlConfig>,
 		settings?: NumberControlSettings
 	) {

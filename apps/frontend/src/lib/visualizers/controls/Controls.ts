@@ -25,16 +25,17 @@ import type {
 	ColorControlConfig
 } from './types'
 import type { Preset as PresetDb } from 'supabase'
-import type { PresetId } from './types/presets'
+import type { PresetConfigs, PresetId, PresetOptions } from './types/presets'
 import { deepClone } from '$lib/visualizers/utils/Objects'
 import type { MidiControlId } from '$lib/visualizers/midi/Midi'
 import { deepmerge } from 'deepmerge-ts'
-import { writable, type Readable, type Writable } from 'svelte/store'
+import { writable, type Readable, type Writable, get } from 'svelte/store'
 import BooleanControl from './library/controls/BooleanControl'
 import type Signal from './library/signals/Signal'
 import NumberControl from './library/controls/NumberControl'
 import SelectControl from './library/controls/SelectControl'
 import ColorControl from './library/controls/ColorControl'
+import Preset from './library/presets/Preset'
 
 export default class Controls {
 	// Internals
@@ -60,12 +61,7 @@ export default class Controls {
 	presets: Presets = {
 		preset: 'default',
 		presets: {
-			default: {
-				id: 'default',
-				name: 'default',
-				controls: {},
-				midiBinding: null
-			}
+			default: new Preset('default', { label: 'Default' }, {}, {})
 		}
 	}
 
@@ -189,7 +185,7 @@ export default class Controls {
 	}
 
 	// Creates groups & folders if they don't already exist
-	createStructure(id: string, options?: ControlOptions) {
+	createStructure(id: string, options?: Partial<ControlOptions>) {
 		const folderId = options?.folder ?? id
 		const groupId = options?.group ?? id
 
@@ -221,20 +217,22 @@ export default class Controls {
 	pushNewControl(control: Control) {
 		// Push control to state
 		this.controls.controls[control.id] = control
-		this.presets.presets.default.controls[control.id] = control
+		this.presets.presets.default.configs[control.id] = get(control.config)
+
+		console.log(this)
 	}
 
 	createBooleanControl(
 		id: string,
-		options?: ControlOptions,
-		config?: BooleanControlConfig
+		options?: Partial<ControlOptions>,
+		config?: Partial<BooleanControlConfig>
 	): Readable<BooleanOutput> {
 		// Escape if already exists
 		if (this.getControl(id)) return this.getControl(id).output as Readable<BooleanOutput>
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
-		const parsedOptions: ControlOptions = { ...options, folder: folder, group: group }
+		const parsedOptions: Partial<ControlOptions> = { ...options, folder: folder, group: group }
 
 		// Construct control object
 		const control = new BooleanControl(id, parsedOptions, config)
@@ -247,16 +245,16 @@ export default class Controls {
 
 	createNumberControl(
 		id: string,
-		options?: ControlOptions,
-		config?: NumberControlConfig,
-		settings?: NumberControlSettings
+		options?: Partial<ControlOptions>,
+		config?: Partial<NumberControlConfig>,
+		settings?: Partial<NumberControlSettings>
 	) {
 		// Escape if already exists
 		if (this.getControl(id)) return this.getControl(id).output as Readable<NumberOutput>
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
-		const parsedOptions: ControlOptions = { ...options, folder: folder, group: group }
+		const parsedOptions: Partial<ControlOptions> = { ...options, folder: folder, group: group }
 
 		// Construct control object
 		const control = new NumberControl(id, parsedOptions, config, settings)
@@ -267,13 +265,17 @@ export default class Controls {
 		return control.output
 	}
 
-	createSelectControl(id: string, options?: ControlOptions, config?: SelectControlConfig) {
+	createSelectControl(
+		id: string,
+		options?: Partial<ControlOptions>,
+		config?: Partial<SelectControlConfig>
+	) {
 		// Escape if already exists
 		if (this.getControl(id)) return this.getControl(id).output as Readable<SelectOutput>
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
-		const parsedOptions: ControlOptions = { ...options, folder: folder, group: group }
+		const parsedOptions: Partial<ControlOptions> = { ...options, folder: folder, group: group }
 
 		// Construct control object
 		const control = new SelectControl(id, parsedOptions, config)
@@ -284,13 +286,17 @@ export default class Controls {
 		return control.output
 	}
 
-	createColorControl(id: string, options?: ControlOptions, config?: Partial<ColorControlConfig>) {
+	createColorControl(
+		id: string,
+		options?: Partial<ControlOptions>,
+		config?: Partial<ColorControlConfig>
+	) {
 		// Escape if already exists
 		if (this.getControl(id)) return this.getControl(id).output as Readable<ColorOutput>
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
-		const parsedOptions: ControlOptions = { ...options, folder: folder, group: group }
+		const parsedOptions: Partial<ControlOptions> = { ...options, folder: folder, group: group }
 
 		// Construct control object
 		const control = new ColorControl(id, parsedOptions, config)
@@ -327,156 +333,159 @@ export default class Controls {
 	///////////////////////////////////////////////
 	// Creates and appends preset to presets (used for creating the default presets)
 	// Requires an existing default state so must be called after all createControl functions in visualizer
-	createPreset(presetId: PresetId, configs: Record<string, ControlConfig>) {
+	createPreset(presetId: PresetId, options: PresetOptions, configs: PresetConfigs) {
 		// Escape if preset already exists
 		if (this.presets.presets[presetId]) return
 
-		// Deep clone the default state to use as template control object
-		let presetControls = deepClone(this.presets.presets.default.controls) as Record<
-			string,
-			Control
-		>
-
-		// Merge controls of default state with control options given as config of preset and update control output function
-		for (const [controlId, control] of Object.entries(presetControls)) {
-			let returnedControl: Control | undefined = undefined
-
-			// If control has new settings specified in config
-			if (Object.keys(configs).includes(controlId)) {
-				// Gets corresponding control from default template
-				const controlTemplate = deepClone(control) as Control
-
-				// Construct options object from template control
-				const options: ControlOptions = {
-					label: controlTemplate.label,
-					group: controlTemplate.group,
-					folder: controlTemplate.folder
-				}
-
-				// Construct config and create new control for each config based on control types
-				let signalFunctionConfig: SignalFunctionConfig | undefined
-				// Create signal function config
-				if (
-					controlTemplate.type === 'boolean' ||
-					controlTemplate.type === 'number' ||
-					controlTemplate.type === 'color'
-				) {
-					signalFunctionConfig = controlTemplate.signal
-						? {
-								context: controlTemplate.signal.function.context,
-								type: controlTemplate.signal.function.type,
-								id: controlTemplate.signal.function.id
-						  }
-						: undefined
-				}
-
-				// Boolean
-				if (controlTemplate.type === 'boolean') {
-					const configTemplate: BooleanControlConfig = {
-						signalFunctionConfig: signalFunctionConfig,
-						defaultValue: controlTemplate.defaultValue
-					}
-
-					// Custom config
-					const typedConfig = configs[controlTemplate.id] as BooleanControlConfig
-
-					// Merge configs into complete config
-					const config: BooleanControlConfig = { ...configTemplate, ...typedConfig }
-
-					returnedControl = this.constructBooleanControl(controlTemplate.id, options, config)
-
-					// Number
-				} else if (controlTemplate.type === 'number') {
-					const configTemplate: NumberControlConfig = {
-						signalFunctionConfig: signalFunctionConfig,
-						defaultValue: controlTemplate.defaultValue,
-						range: controlTemplate.range,
-						ease:
-							controlTemplate.signal?.type === 'number' ? controlTemplate.signal.ease : 'in',
-						behaviour:
-							controlTemplate.signal?.type === 'number'
-								? controlTemplate.signal.behaviour
-								: 'straight'
-					}
-
-					// Custom config
-					const typedConfig = configs[controlTemplate.id] as NumberControlConfig
-
-					// Merge configs into complete config
-					const config: NumberControlConfig = { ...configTemplate, ...typedConfig }
-
-					returnedControl = this.constructNumberControl(controlTemplate.id, options, config)
-
-					// Color
-				} else if (controlTemplate.type === 'color') {
-					const configTemplate: ColorControlConfig = {
-						signalFunctionConfig: signalFunctionConfig,
-						defaultValue: controlTemplate.defaultValue,
-						gradient: controlTemplate.gradient,
-						ease:
-							controlTemplate.signal?.type === 'number'
-								? controlTemplate.signal.ease
-								: undefined,
-						behaviour:
-							controlTemplate.signal?.type === 'number'
-								? controlTemplate.signal.behaviour
-								: undefined
-					}
-
-					// Custom config
-					const typedConfig = configs[controlTemplate.id] as ColorControlConfig
-
-					// Merge configs into complete config
-					const config: ColorControlConfig = { ...configTemplate, ...typedConfig }
-
-					returnedControl = this.constructColorControl(controlTemplate.id, options, config)
-
-					// Select
-				} else if (controlTemplate.type === 'select') {
-					const configTemplate: SelectControlConfig = {
-						defaultValue: controlTemplate.defaultValue,
-						values: controlTemplate.values
-					}
-
-					// Custom config
-					const typedConfig = configs[controlTemplate.id] as SelectControlConfig
-
-					// Merge configs into complete config
-					const config: SelectControlConfig = { ...configTemplate, ...typedConfig }
-
-					returnedControl = this.constructSelectControl(controlTemplate.id, options, config)
-				}
-
-				if (returnedControl) {
-					presetControls[controlId] = returnedControl
-				}
-			}
-		}
+		// Create a new preset by recreating existing controls based off merging the default state with the preset configs provided
+		let preset = new Preset(presetId, options, configs)
 
 		// Update state with new preset
-		this.presets.presets[presetId] = {
-			id: presetId,
-			name: presetId,
-			controls: presetControls,
-			midiBinding: null
-		}
+		this.presets.presets[presetId] = preset
 	}
+
+	// createPreset(presetId: PresetId, configs: Record<string, ControlConfig>) {
+	// 	// Escape if preset already exists
+	// 	if (this.presets.presets[presetId]) return
+
+	// 	// Deep clone the default state to use as template control object
+	// 	let presetControls = deepClone(this.presets.presets.default.controls) as Record<
+	// 		string,
+	// 		Control
+	// 	>
+
+	// 	// Merge controls of default state with control options given as config of preset and update control output function
+	// 	for (const [controlId, control] of Object.entries(presetControls)) {
+	// 		let returnedControl: Control | undefined = undefined
+
+	// 		// If control has new settings specified in config
+	// 		if (Object.keys(configs).includes(controlId)) {
+	// 			// Gets corresponding control from default template
+	// 			const controlTemplate = deepClone(control) as Control
+
+	// 			// Boolean
+	// 			if (controlTemplate.type === 'boolean') {
+	// 				const configTemplate: BooleanControlConfig = {
+	// 					signalFunctionConfig: signalFunctionConfig,
+	// 					defaultValue: controlTemplate.defaultValue
+	// 				}
+
+	// 				// Custom config
+	// 				const defaultConfig = controlTemplate.config as BooleanControlConfig
+	// 				const presetConfig = configs[controlTemplate.id] as BooleanControlConfig
+
+	// 				// Merge configs into complete config
+	// 				const config: BooleanControlConfig = { ...get(control.config), ...typedConfig }
+
+	// 				// returnedControl = this.constructBoolenControl(controlTemplate.id, options, config)
+
+	// 				returnedControl = new BooleanControl(controlTemplate.id, controlTemplate.options, config)
+
+	// 				// Number
+	// 			} else if (controlTemplate.type === 'number') {
+	// 				const configTemplate: NumberControlConfig = {
+	// 					signalFunctionConfig: signalFunctionConfig,
+	// 					defaultValue: controlTemplate.defaultValue,
+	// 					range: controlTemplate.range,
+	// 					ease:
+	// 						controlTemplate.signal?.type === 'number' ? controlTemplate.signal.ease : 'in',
+	// 					behaviour:
+	// 						controlTemplate.signal?.type === 'number'
+	// 							? controlTemplate.signal.behaviour
+	// 							: 'straight'
+	// 				}
+
+	// 				// Custom config
+	// 				const typedConfig = configs[controlTemplate.id] as NumberControlConfig
+
+	// 				// Merge configs into complete config
+	// 				const config: NumberControlConfig = { ...configTemplate, ...typedConfig }
+
+	// 				returnedControl = this.constructNumberControl(controlTemplate.id, options, config)
+
+	// 				// Color
+	// 			} else if (controlTemplate.type === 'color') {
+	// 				const configTemplate: ColorControlConfig = {
+	// 					signalFunctionConfig: signalFunctionConfig,
+	// 					defaultValue: controlTemplate.defaultValue,
+	// 					gradient: controlTemplate.gradient,
+	// 					ease:
+	// 						controlTemplate.signal?.type === 'number'
+	// 							? controlTemplate.signal.ease
+	// 							: undefined,
+	// 					behaviour:
+	// 						controlTemplate.signal?.type === 'number'
+	// 							? controlTemplate.signal.behaviour
+	// 							: undefined
+	// 				}
+
+	// 				// Custom config
+	// 				const typedConfig = configs[controlTemplate.id] as ColorControlConfig
+
+	// 				// Merge configs into complete config
+	// 				const config: ColorControlConfig = { ...configTemplate, ...typedConfig }
+
+	// 				returnedControl = this.constructColorControl(controlTemplate.id, options, config)
+
+	// 				// Select
+	// 			} else if (controlTemplate.type === 'select') {
+	// 				const configTemplate: SelectControlConfig = {
+	// 					defaultValue: controlTemplate.defaultValue,
+	// 					values: controlTemplate.values
+	// 				}
+
+	// 				// Custom config
+	// 				const typedConfig = configs[controlTemplate.id] as SelectControlConfig
+
+	// 				// Merge configs into complete config
+	// 				const config: SelectControlConfig = { ...configTemplate, ...typedConfig }
+
+	// 				returnedControl = this.constructSelectControl(controlTemplate.id, options, config)
+	// 			}
+
+	// 			if (returnedControl) {
+	// 				presetControls[controlId] = returnedControl
+	// 			}
+	// 		}
+	// 	}
+
+	// 	// Update state with new preset
+	// 	this.presets.presets[presetId] = {
+	// 		id: presetId,
+	// 		name: presetId,
+	// 		controls: presetControls,
+	// 		midiBinding: null
+	// 	}
+	// }
 
 	// Handle changing of presets
 	changePreset(presetId: PresetId) {
-		// Fetch new control state settings from preset
-		const newControlState = this.presets.presets[presetId].controls
+		// Loop through controls
+		for (const [controlId, control] of Object.entries(this.controls.controls)) {
+			// Fetch corresponding preset config
+			const presetConfig = this.presets.presets[presetId].configs[controlId]
 
-		// Update state to use fresh deep clone preset
-		// ISSUE: There is an issue here as we do actually need the transformer function to get copied across and deepClone doesn't include functions
-		this.presets.preset = presetId
-		this.controls.controls = deepClone(newControlState) as Record<string, Control>
-
-		// Update output functions for each control
-		for (const controlId of Object.keys(this.controls.controls)) {
-			this.updateControlOutput(controlId)
+			// Merge preset config with control config
+			control.config.update((config) => {
+				return { ...config, ...presetConfig }
+			})
 		}
 	}
+
+	// changePreset(presetId: PresetId) {
+	// 	// Fetch new control state settings from preset
+	// 	const newControlState = this.presets.presets[presetId].controls
+
+	// 	// Update state to use fresh deep clone preset
+	// 	// ISSUE: There is an issue here as we do actually need the transformer function to get copied across and deepClone doesn't include functions
+	// 	this.presets.preset = presetId
+	// 	this.controls.controls = deepClone(newControlState) as Record<string, Control>
+
+	// 	// Update output functions for each control
+	// 	for (const controlId of Object.keys(this.controls.controls)) {
+	// 		this.updateControlOutput(controlId)
+	// 	}
+	// }
 
 	loadUserPreset(preset: PresetDb) {
 		// convert json to object

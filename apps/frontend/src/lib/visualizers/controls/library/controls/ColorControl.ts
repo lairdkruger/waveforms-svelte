@@ -1,5 +1,5 @@
 import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
-import Control from './Control'
+import ControlBase from './ControlBase'
 import type {
 	ControlId,
 	ControlOptions,
@@ -9,11 +9,15 @@ import type {
 } from '../../types'
 import { closest2, lerpColors, map } from '$lib/visualizers/utils/Maths'
 
-export default class ColorControl extends Control {
+export default class ColorControl extends ControlBase {
 	config: Writable<ColorControlConfig>
 	output: Readable<ColorOutput>
 
-	constructor(id: ControlId, options: ControlOptions, config?: Partial<ColorControlConfig>) {
+	constructor(
+		id: ControlId,
+		options: Partial<ControlOptions>,
+		config?: Partial<ColorControlConfig>
+	) {
 		super('color', id, options)
 
 		this.config = writable(this.populateConfig(config))

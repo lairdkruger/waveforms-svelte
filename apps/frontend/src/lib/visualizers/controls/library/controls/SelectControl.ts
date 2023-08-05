@@ -1,12 +1,16 @@
 import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
-import Control from './Control'
+import ControlBase from './ControlBase'
 import type { SelectControlConfig, SelectOutput, ControlId, ControlOptions } from '../../types'
 
-export default class SelectControl extends Control {
+export default class SelectControl extends ControlBase {
 	config: Writable<SelectControlConfig>
 	output: Readable<SelectOutput>
 
-	constructor(id: ControlId, options: ControlOptions, config?: Partial<SelectControlConfig>) {
+	constructor(
+		id: ControlId,
+		options: Partial<ControlOptions>,
+		config?: Partial<SelectControlConfig>
+	) {
 		super('select', id, options)
 
 		this.config = writable(this.populateConfig(config))

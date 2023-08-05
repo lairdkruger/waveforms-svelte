@@ -1,11 +1,11 @@
 import type { ControlId, ControlOptions, ControlType } from '../../types'
 
-export default class Control {
+export default class ControlBase {
 	type
 	id
 	options
 
-	constructor(type: ControlType, id: ControlId, options: ControlOptions) {
+	constructor(type: ControlType, id: ControlId, options: Partial<ControlOptions>) {
 		this.type = type
 		this.id = id
 
@@ -13,8 +13,8 @@ export default class Control {
 		this.options = populatedOptions
 	}
 
-	populateOptions(options: ControlOptions) {
-		const defaultOptions: Partial<ControlOptions> = {
+	populateOptions(options: Partial<ControlOptions>) {
+		const defaultOptions: ControlOptions = {
 			label: this.id,
 			folder: this.id,
 			group: this.id

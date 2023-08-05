@@ -4,6 +4,7 @@
 	import SignalsPanel from './signals/SignalsPanel.svelte'
 	import ControlsPanel from './controls/ControlsPanel.svelte'
 	import DragConnector from './connectors/DragConnector.svelte'
+	import PresetPanel from './presets/PresetPanel.svelte'
 
 	let controlPanel: HTMLDivElement
 	const { controls } = getVisualizerContext()
@@ -24,9 +25,9 @@
 			<SignalsPanel />
 		</div>
 		<DragConnector />
-		<!-- <div class="presets">
+		<div class="presets">
 			<PresetPanel />
-		</div> -->
+		</div>
 	</div>
 </div>
 

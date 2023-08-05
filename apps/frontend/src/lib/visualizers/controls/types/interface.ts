@@ -11,16 +11,16 @@ export interface Group {
 }
 
 export interface FolderOptions {
-	label?: string
+	label: string
 }
 
 export interface GroupOptions {
-	label?: string
-	folder?: string
+	label: string
+	folder: string
 }
 
 export interface ControlOptions {
-	label?: string
-	folder?: string
-	group?: string
+	label: string
+	folder: string
+	group: string
 }

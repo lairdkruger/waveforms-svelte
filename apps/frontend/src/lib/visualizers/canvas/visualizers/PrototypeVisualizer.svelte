@@ -21,7 +21,7 @@
 	const colorControl = controls.createColorControl('colorControl', {}, { defaultValue: 0.5 })
 
 	const spin = controls.createBooleanControl(
-		`BoxSpinning`,
+		`spin`,
 		{ label: 'Spin?', folder: folder },
 		{
 			defaultValue: 1
@@ -42,6 +42,19 @@
 		{
 			values: ['wireframe', 'solid'],
 			defaultValue: 'solid'
+		}
+	)
+
+	const preset = controls.createPreset(
+		'presetId',
+		{ label: 'Preset Label' },
+		{
+			doubleSize: {
+				defaultValue: 1
+			},
+			spin: {
+				defaultValue: 0
+			}
 		}
 	)
 
