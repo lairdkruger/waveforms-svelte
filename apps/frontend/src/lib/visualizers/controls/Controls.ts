@@ -22,7 +22,8 @@ import type {
 	NumberControlConfig,
 	NumberControlSettings,
 	SelectControlConfig,
-	ColorControlConfig
+	ColorControlConfig,
+	SelectControlSettings
 } from './types'
 import type { Preset as PresetDb } from 'supabase'
 import type { PresetConfigs, PresetId, PresetOptions } from './types/presets'
@@ -257,7 +258,7 @@ export default class Controls {
 		const parsedOptions: Partial<ControlOptions> = { ...options, folder: folder, group: group }
 
 		// Construct control object
-		const control = new NumberControl(id, parsedOptions, config, settings)
+		const control = new NumberControl(id, parsedOptions, settings, config)
 
 		// Update store with new control
 		this.pushNewControl(control)
@@ -267,7 +268,8 @@ export default class Controls {
 
 	createSelectControl(
 		id: string,
-		options?: Partial<ControlOptions>,
+		options: Partial<ControlOptions>,
+		settings: Partial<SelectControlSettings>,
 		config?: Partial<SelectControlConfig>
 	) {
 		// Escape if already exists
@@ -278,7 +280,7 @@ export default class Controls {
 		const parsedOptions: Partial<ControlOptions> = { ...options, folder: folder, group: group }
 
 		// Construct control object
-		const control = new SelectControl(id, parsedOptions, config)
+		const control = new SelectControl(id, parsedOptions, settings, config)
 
 		// Update store with new control
 		this.pushNewControl(control)

@@ -16,16 +16,27 @@
 	const control = controls.getControl(controlId) as NumberControl
 	const config = control.config as Writable<NumberControlConfig>
 
+	const preset = controls.presets.preset
+
+	let initialValue = $config.defaultValue
+
 	// Dimensions
 	const width = 72
 	const handleWidth = 24
 	const trackWidth = width - handleWidth
 
-	const position = spring(0)
+	const position = spring(initialValue)
 
+	// Tie defaultValue to position (instant preset changes)
 	$: {
-		let value = map($position, 0, trackWidth, $config.range[0], $config.range[1])
-		let valueClamped = clamp(value, $config.range[0], $config.range[1])
+		let valueMapped = map($config.defaultValue, $config.range[0], $config.range[1], 0, trackWidth)
+		position.set(valueMapped, { hard: true })
+	}
+
+	// Tie position to control defaultValue
+	$: {
+		let valueMapped = map($position, 0, trackWidth, $config.range[0], $config.range[1])
+		let valueClamped = clamp(valueMapped, $config.range[0], $config.range[1])
 		control.setDefaultValue(valueClamped)
 	}
 

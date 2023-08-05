@@ -34,7 +34,7 @@
 		{ defaultValue: 0 }
 	)
 
-	const numberControl = controls.createNumberControl('numberControl')
+	const numberControl = controls.createNumberControl('numberControl', {}, { defaultValue: 0.0 })
 
 	const selectControl = controls.createSelectControl(
 		'selectControl',
@@ -49,14 +49,14 @@
 		'presetId',
 		{ label: 'Preset Label' },
 		{
-			doubleSize: {
-				defaultValue: 1
-			},
 			spin: {
 				defaultValue: 0
 			},
 			selectControl: {
 				defaultValue: 'wireframe'
+			},
+			numberControl: {
+				defaultValue: 1.5
 			}
 		}
 	)

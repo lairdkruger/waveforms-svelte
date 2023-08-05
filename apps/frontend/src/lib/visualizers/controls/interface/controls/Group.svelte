@@ -6,6 +6,8 @@
 	export let folderExpanded: boolean
 
 	const { controls } = getVisualizerContext()
+	$: preset = controls.presets.preset
+
 	const group = controls.controls.groups[groupId]
 	const controlsIds = Object.keys(controls.controls.controls)
 	const relevantControlsIds = controls.getControlsInGroup(controlsIds, group.id)
