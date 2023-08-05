@@ -29,16 +29,23 @@
 	const handleWidth = 12
 	const trackWidth = width - handleWidth
 
-	function updateControl(value: number) {
-		const mappedValue = map(value, 0, trackWidth, 0, 1)
+	const position = spring(map($config.defaultValue, 0, 1, 0, trackWidth))
+
+	// Tie defaultValue to position (instant preset changes)
+	$: {
+		let valueMapped = map($config.defaultValue, 0, 1, 0, trackWidth)
+		position.set(valueMapped, { hard: true })
+	}
+
+	// Tie position to control defaultValue
+	$: {
+		let valueMapped = map($position, 0, trackWidth, 0, 1)
+		let valueClamped = clamp(valueMapped, 0, 1)
 		config.update((config) => {
-			config.defaultValue = mappedValue
+			config.defaultValue = valueClamped
 			return config
 		})
 	}
-
-	const position = spring(map($config.defaultValue, 0, 1, 0, trackWidth))
-	$: updateControl($position)
 
 	const addColorStop = (event: MouseEvent) => {
 		const target = event.target as HTMLDivElement

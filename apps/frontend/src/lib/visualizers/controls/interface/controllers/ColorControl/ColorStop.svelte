@@ -3,7 +3,7 @@
 	import type ColorControl from '$lib/visualizers/controls/library/controls/ColorControl'
 	import type { ColorControlConfig, ControlId } from '$lib/visualizers/controls/types'
 	import { denormalizeRgb } from '$lib/visualizers/utils/ColorFunctions'
-	import { map } from '$lib/visualizers/utils/Maths'
+	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { DragGesture } from '@use-gesture/vanilla'
 	import { onDestroy, onMount } from 'svelte'
 	import { spring } from 'svelte/motion'
@@ -18,6 +18,7 @@
 	const control = controls.getControl(controlId) as ColorControl
 	const config = control.config as Writable<ColorControlConfig>
 
+	let initialCoord = $config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord
 	$: cssColor = denormalizeRgb(
 		$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
 	)
@@ -29,16 +30,26 @@
 	const width = trackWidth - colorStopWidth
 
 	// Coords
-	const position = spring(
-		map($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord, 0, 1, 0, width)
-	)
-	$: updateControl($position)
+	const position = spring(map(initialCoord, 0, 1, 0, width))
 
-	function updateControl(value: number) {
+	// Tie defaultValue to position (instant preset changes)
+	$: {
+		const colorStop = $config.gradient.find((colorStop) => colorStop.id === colorStopId)!
+		let valueMapped = map(colorStop.coord, 0, 1, 0, width)
+
+		console.log(colorStop)
+
+		position.set(valueMapped, { hard: true })
+	}
+
+	// Tie position to control defaultValue
+	$: {
 		config.update((config) => {
+			let valueMapped = map($position, 0, width, 0, 1)
+			let valueClamped = clamp(valueMapped, 0, 1)
+
 			const colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
-			const mappedValue = map(value, 0, width, 0, 1)
-			colorStop.coord = mappedValue
+			colorStop.coord = valueClamped
 
 			return config
 		})

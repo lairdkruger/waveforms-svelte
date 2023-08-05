@@ -18,7 +18,35 @@
 
 	const folder = controls.createFolder('folder', { label: 'Folder' })
 
-	const colorControl = controls.createColorControl('colorControl', {}, { defaultValue: 0.5 })
+	const colorControl = controls.createColorControl(
+		'colorControl',
+		{},
+		{
+			defaultValue: 0.5,
+			gradient: [
+				{
+					id: '0',
+					coord: 0,
+					color: [0, 0, 0]
+				},
+				{
+					id: '1',
+					coord: 0.33,
+					color: [0.33, 0.33, 0.33]
+				},
+				{
+					id: '2',
+					coord: 0.66,
+					color: [0.66, 0.66, 0.66]
+				},
+				{
+					id: '3',
+					coord: 1,
+					color: [1, 1, 1]
+				}
+			]
+		}
+	)
 
 	const spin = controls.createBooleanControl(
 		`spin`,
@@ -57,6 +85,26 @@
 			},
 			numberControl: {
 				defaultValue: 1.5
+			},
+			colorControl: {
+				defaultValue: 0.2,
+				gradient: [
+					{
+						id: '7',
+						coord: 0,
+						color: [1, 0, 0]
+					},
+					{
+						id: '4',
+						coord: 0.5,
+						color: [0, 1, 0]
+					},
+					{
+						id: '5',
+						coord: 1,
+						color: [0, 0, 1]
+					}
+				]
 			}
 		}
 	)

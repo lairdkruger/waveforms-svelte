@@ -25,9 +25,6 @@ export default class NumberControl extends ControlBase {
 		this.settings = this.populateSettings(settings)
 		this.config = writable(this.populateConfig(config))
 		this.output = derived(this.config, ($config) => this.deriveOutput($config))
-
-		// Ensure range values are valid
-		this.setDefaultValue(get(this.config).defaultValue)
 	}
 
 	populateSettings(settings?: Partial<NumberControlSettings>) {
@@ -43,10 +40,7 @@ export default class NumberControl extends ControlBase {
 		const defaultConfig: NumberControlConfig = {
 			signal: undefined,
 			defaultValue: 1,
-			range:
-				config?.defaultValue !== undefined
-					? [config.defaultValue - 1, config.defaultValue + 1]
-					: [1, 2],
+			range: [0, 2],
 			ease: 'in',
 			behaviour: 'straight',
 			booster: undefined
