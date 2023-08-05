@@ -103,7 +103,7 @@ Method 1 (bit ugly):
 	We might have some trouble with typescript 
 
 Method 2 (bit prettier)
-	We extend the current SignalFunction Id from a string to a SignalId object with more identifying features:
+	We extend the current Signal Id from a string to a SignalId object with more identifying features:
 
 	type SignalIdType = 'audio' | 'midi'
 	type AudioSignalId = AudioBooleanSignalId | AudioNumberSignalId

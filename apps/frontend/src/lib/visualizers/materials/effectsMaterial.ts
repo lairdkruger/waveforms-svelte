@@ -36,7 +36,7 @@ export const effectsFragmentShader = /* glsl */ `
 		// sample the input texture (pingpong input) 
 		vec4 b = texture2D(diffuse, uv);
 		
-		float mixAmount = min(amount, 0.95);
+		float mixAmount = min(amount, 0.99);
 		vec4 fragColor = mix(a, b, mixAmount);
 
 		// blend the source texture over the feedback texture

@@ -53,7 +53,7 @@ export default class NumberControl extends ControlBase {
 		function outputFunction() {
 			if (!config.signal) return config.defaultValue
 
-			const signalOutput = get(config.signal.function.output)()
+			const signalOutput = get(config.signal.output)()
 			const output = map(signalOutput, 0, 1, config.range[0], config.range[1])
 
 			return output

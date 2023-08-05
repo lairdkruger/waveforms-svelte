@@ -31,11 +31,9 @@
 		}
 	}}
 >
-	<div class="signalLabel">
-		<span class="cpLabel">
-			{type === 'number' ? 'Level' : type === 'boolean' ? 'Peaked' : ''}
-		</span>
-	</div>
+	<span class="cpLabel">
+		{type === 'number' ? 'Level' : type === 'boolean' ? 'Peaked' : ''}
+	</span>
 
 	<div class="signalIcon" class:boolean={type === 'boolean'} bind:this={signalIcon}>
 		{#if type === 'number'}

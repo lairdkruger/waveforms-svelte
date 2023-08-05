@@ -8,27 +8,22 @@ import type {
 	NumberControlConfig,
 	SelectControlConfig
 } from './configs'
-import type { ColorStop, Control, ControlId, NumberControlSettings } from './controllers'
-import type {
-	BooleanOutput,
-	ColorOutput,
-	NumberOutput,
-	SelectOutput,
-	SignalFunctionConfig
-} from './functions'
-import type { ControlOptions, Folder, FolderOptions, Group, GroupOptions } from './interface'
+import type { Control, ControlId, NumberControlSettings } from './controllers'
+import type { ColorOutput, NumberOutput, SelectOutput, SignalConfig } from './functions'
+import type { ControlOptions, Folder, FolderOptions, Group, GroupOptions } from './structure'
 import type { PresetId } from './presets'
-import type { Color } from './primitives'
-import type { Signal, SignalBehaviour } from './signals'
+import type { Color, ColorStop } from './primitives'
+import type { SignalBehaviour } from './signals'
 import type { Preset as PresetDb } from 'supabase'
 import type Preset from '../library/presets/Preset'
+import type Signal from '../library/signals/Signal'
 
 export interface ControlsInternals {
 	_clientStateReady: boolean
 }
 
 export interface ControlsStates {
-	draggedSignal: SignalFunctionConfig | null
+	draggedSignal: SignalConfig | null
 	draggedSignalTarget: string | null
 	controlPanelRef: Writable<HTMLDivElement | null>
 	dragStartCoord: [number, number]
@@ -48,7 +43,7 @@ export interface ControlsActions {
 
 	actions: {
 		// State Setters
-		setdraggedSignal: (signalFunction: SignalFunctionConfig | null) => void
+		setdraggedSignal: (signalFunction: SignalConfig | null) => void
 		setDraggedSignalTarget: (control: Control | null) => void
 		setDragStartCoord: (coord: [number, number]) => void
 		setDragMouseCoords: (coord: [number, number]) => void
@@ -71,7 +66,7 @@ export interface ControlsActions {
 			id: string,
 			options?: ControlOptions,
 			config?: BooleanControlConfig
-		) => BooleanOutput
+		) => NumberOutput
 		createNumberControl: (
 			id: string,
 			options?: ControlOptions,
@@ -91,25 +86,16 @@ export interface ControlsActions {
 
 		// Control Setters
 		setBooleanControlValue: (controlId: ControlId, value: 0 | 1) => void
-		setBooleanControlSignal: (
-			controlId: ControlId,
-			signalFunctionConfig: SignalFunctionConfig
-		) => void
+		setBooleanControlSignal: (controlId: ControlId, signalFunctionConfig: SignalConfig) => void
 
 		setNumberControlValue: (controlId: ControlId, value: number) => void
 		setNumberControlUpperRange: (controlId: ControlId, value: number) => void
 		setNumberControlLowerRange: (controlId: ControlId, value: number) => void
-		setNumberControlSignal: (
-			controlId: ControlId,
-			signalFunctionConfig: SignalFunctionConfig
-		) => void
+		setNumberControlSignal: (controlId: ControlId, signalFunctionConfig: SignalConfig) => void
 		setSelectControlValue: (controlId: ControlId, value: string) => void
 
 		setColorControlValue: (controlId: ControlId, value: number) => void
-		setColorControlSignal: (
-			controlId: ControlId,
-			signalFunctionConfig: SignalFunctionConfig
-		) => void
+		setColorControlSignal: (controlId: ControlId, signalFunctionConfig: SignalConfig) => void
 		setColorControlColorCoord: (controlId: ControlId, colorStopId: string, value: number) => void
 		colorControlAddColorStop: (controlId: ControlId, colorStop: ColorStop) => void
 		colorControlRemoveColorStop: (controlId: ControlId, colorStopId: string) => void
@@ -120,16 +106,10 @@ export interface ControlsActions {
 		) => void
 
 		setControlSignalEase: (controlId: ControlId, ease: Ease) => void
-		setControlSignalBooster: (
-			controlId: ControlId,
-			signalFunctionConfig: SignalFunctionConfig
-		) => void
+		setControlSignalBooster: (controlId: ControlId, signalFunctionConfig: SignalConfig) => void
 		deleteControlSignalBooster: (controlId: ControlId) => void
 		setControlSignalBehaviour: (controlId: ControlId, behaviour: SignalBehaviour) => void
-		setControlSignalFunction: (
-			controlId: ControlId,
-			signalFunctionConfig: SignalFunctionConfig
-		) => void
+		setControlSignal: (controlId: ControlId, signalFunctionConfig: SignalConfig) => void
 
 		// Getters
 		getControlsInGroup: (controlsIds: string[], groupId: string) => string[]

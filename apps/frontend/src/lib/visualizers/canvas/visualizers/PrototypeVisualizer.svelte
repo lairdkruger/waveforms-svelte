@@ -8,7 +8,7 @@
 
 	setContext('prototypeVisualizer', { audioAnalyzer: audioAnalyzer })
 
-	const { scene, onFrame } = getWebglContext()
+	const { scene, effects, onFrame } = getWebglContext()
 
 	let boxGeometry = new BoxGeometry(1, 1, 1)
 	let boxMaterial = new MeshBasicMaterial({ color: 0xf00000 })
@@ -63,6 +63,12 @@
 	)
 
 	const numberControl = controls.createNumberControl('numberControl', {}, { defaultValue: 0.0 })
+	const persistance = controls.createNumberControl(
+		'persistance',
+		{},
+		{ defaultValue: 0.5, range: [0, 1] },
+		{ rangeReadOnly: true }
+	)
 
 	const selectControl = controls.createSelectControl(
 		'selectControl',
@@ -104,7 +110,8 @@
 						coord: 1,
 						color: [0, 0, 1]
 					}
-				]
+				],
+				signal: audioAnalyzer.signals['getVolume']
 			}
 		}
 	)
@@ -130,6 +137,10 @@
 		}
 
 		boxMaterial.color.set(...$colorControl())
+
+		if ($effects?.uniforms.amount.value !== undefined) {
+			$effects.uniforms.amount.value = $persistance()
+		}
 
 		// boxMesh.scale.set(size(), size(), size())
 	})

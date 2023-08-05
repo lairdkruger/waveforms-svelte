@@ -49,7 +49,7 @@ export default class SelectControl extends ControlBase {
 		const outputFunction = () => {
 			if (!config.signal) return config.defaultValue
 
-			const signalOutput = get(config.signal.function.output)()
+			const signalOutput = get(config.signal.output)()
 			const cycleOutput = signalOutput > 0.5
 			if (cycleOutput) currentIndex = (currentIndex + 1) % this.settings.values.length
 

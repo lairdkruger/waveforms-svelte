@@ -26,6 +26,8 @@
 }
 
 .g-label {
+	display: flex;
+
 	overflow: hidden;
 	text-align: start;
 }
@@ -39,6 +41,7 @@
 	border: 1px solid var(--black);
 	border-radius: 2px;
 	font-family: monospace;
+	font-size: 10px;
 }
 
 .g-numberInput:disabled {

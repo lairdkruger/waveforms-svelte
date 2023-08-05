@@ -283,50 +283,39 @@ export default class AudioAnalyzer {
 	}
 
 	signals: Record<string, Signal> = {
-		getVolume: new Signal({
-			context: 'audio',
-			id: 'getVolume',
-			defaultFunction: () => this.getVolume(),
-			range: [() => 0, () => this.getPeakVolume()]
-		}),
-		getVolumePeaked: new Signal({
-			context: 'audio',
-			id: 'getVolumePeaked',
-			defaultFunction: () => this.getVolumePeaked()
-		}),
-		getBassVolume: new Signal({
-			context: 'audio',
-			id: 'getBassVolume',
-			defaultFunction: () => this.getBassVolume(),
-			range: [() => 0, () => this.getPeakBassVolume()]
-		}),
-		getBassPeaked: new Signal({
-			context: 'audio',
-			id: 'getBassPeaked',
-			defaultFunction: () => this.getBassPeaked()
-		}),
-		getMidsVolume: new Signal({
-			context: 'audio',
-			id: 'getMidsVolume',
-			defaultFunction: () => this.getMidsVolume(),
-			range: [() => 0, () => this.getPeakMidsVolume()]
-		}),
-		getMidsPeaked: new Signal({
-			context: 'audio',
-			id: 'getMidsPeaked',
-			defaultFunction: () => this.getMidsPeaked()
-		}),
-		getHighsVolume: new Signal({
-			context: 'audio',
-			id: 'getHighsVolume',
-			defaultFunction: () => this.getHighsVolume(),
-			range: [() => 0, () => this.getPeakHighsVolume()]
-		}),
-		getHighsPeaked: new Signal({
-			context: 'audio',
-			id: 'getHighsPeaked',
-			defaultFunction: () => this.getHighsPeaked()
-		})
+		getVolume: new Signal('audio', 'getVolume', () => this.getVolume(), [
+			() => 0,
+			() => this.getPeakVolume()
+		]),
+		getVolumePeaked: new Signal('audio', 'getVolumePeaked', () => this.getVolumePeaked(), [
+			() => 0,
+			() => 1
+		]),
+		getBassVolume: new Signal('audio', 'getBassVolume', () => this.getBassVolume(), [
+			() => 0,
+			() => this.getPeakBassVolume()
+		]),
+		getBassPeaked: new Signal('audio', 'getBassPeaked', () => this.getBassPeaked(), [
+			() => 0,
+			() => 1
+		]),
+		getMidsVolume: new Signal('audio', 'getMidsVolume', () => this.getMidsVolume(), [
+			() => 0,
+			() => this.getPeakMidsVolume()
+		]),
+		getMidsPeaked: new Signal('audio', 'getMidsPeaked', () => this.getMidsPeaked(), [
+			() => 0,
+			() => 1
+		]),
+		getHighsVolume: new Signal('audio', 'getHighsVolume', () => this.getHighsVolume(), [
+			() => 0,
+
+			() => this.getPeakHighsVolume()
+		]),
+		getHighsPeaked: new Signal('audio', 'getHighsPeaked', () => this.getHighsPeaked(), [
+			() => 0,
+			() => 1
+		])
 	}
 
 	getSignals() {

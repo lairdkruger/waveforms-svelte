@@ -1,10 +1,10 @@
 import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
 import ControlBase from './ControlBase'
-import type { BooleanControlConfig, BooleanOutput, ControlId, ControlOptions } from '../../types'
+import type { BooleanControlConfig, NumberOutput, ControlId, ControlOptions } from '../../types'
 
 export default class BooleanControl extends ControlBase {
 	config: Writable<BooleanControlConfig>
-	output: Readable<BooleanOutput>
+	output: Readable<NumberOutput>
 
 	constructor(
 		id: ControlId,
@@ -30,7 +30,7 @@ export default class BooleanControl extends ControlBase {
 		function outputFunction() {
 			if (!config.signal) return config.defaultValue
 
-			const signalOutput = get(config.signal.function.output)()
+			const signalOutput = get(config.signal.output)()
 			const output = signalOutput > 0.5 ? 1 : 0
 
 			return output

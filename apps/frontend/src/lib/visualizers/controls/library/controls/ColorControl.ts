@@ -47,9 +47,7 @@ export default class ColorControl extends ControlBase {
 
 	deriveOutput(config: ColorControlConfig): ColorOutput {
 		function outputFunction() {
-			const mixAmount = config.signal
-				? get(config.signal.function.output)()
-				: config.defaultValue
+			const mixAmount = config.signal ? get(config.signal.output)() : config.defaultValue
 
 			// Get and return the two colors whose mix amounts are closest to the current mix amount
 			function getColorsMix(mix: number, gradient: ColorStop[]): [ColorStop, ColorStop] {

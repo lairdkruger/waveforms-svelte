@@ -13,7 +13,7 @@
 	const { controls, audioAnalyzer } = getVisualizerContext()
 	const control = controls.getControl(controlId)
 	const config = control.config
-	$: signalConfig = $config.signal?.function.config
+	$: signalConfig = $config.signal?.config
 
 	let expanded = false
 	const opacity = spring(0)
@@ -45,7 +45,7 @@
 		>
 			<div class="group">
 				<div class="label">
-					<span class="">Behaviour</span>
+					<span class="cpLabel">Behaviour</span>
 				</div>
 				<div class="buttons">
 					<button
@@ -75,7 +75,7 @@
 
 			<div class="group">
 				<div class="label">
-					<span class="">Shape</span>
+					<span class="cpLabel">Shape</span>
 				</div>
 				<div class="buttons">
 					<button
@@ -116,7 +116,7 @@
 
 			<div class="group">
 				<div class="label">
-					<span class="">Boost</span>
+					<span class="cpLabel">Boost</span>
 				</div>
 				<div class="buttons">
 					<button
@@ -128,7 +128,7 @@
 								return config
 							})}
 					>
-						<span class="">Bass</span>
+						<span class="cpLabel">Bass</span>
 					</button>
 					<button
 						class="button textLabel"
@@ -139,7 +139,7 @@
 								return config
 							})}
 					>
-						<span class="">Mids</span>
+						<span class="cpLabel">Mids</span>
 					</button>
 					<button
 						class="button textLabel"
@@ -150,7 +150,7 @@
 								return config
 							})}
 					>
-						<span class="">High</span>
+						<span class="cpLabel">High</span>
 					</button>
 				</div>
 
@@ -164,7 +164,7 @@
 								return config
 							})}
 					>
-						<span class="">Volume</span>
+						<span class="cpLabel">Volume</span>
 					</button>
 					<button
 						class="button textLabel"
@@ -175,7 +175,7 @@
 								return config
 							})}
 					>
-						<span class="">None</span>
+						<span class="cpLabel">None</span>
 					</button>
 				</div>
 				<!-- <div class="buttons">
@@ -183,15 +183,15 @@
 						class="button textLabel"
 						class:enabled={$signalConfig.booster?.function.context === 'midi'}
 						on:click={async () => {
-							const midiSignalFunctionId = await listenForMidiInput()
-						if (!midiSignalFunctionId) return null
+							const midiSignalId = await listenForMidiInput()
+						if (!midiSignalId) return null
 
-						const newMidiSignalFunctionConfig: SignalFunctionConfig = {
+						const newMidiSignalConfig: SignalConfig = {
 							context: 'midi',
-							id: midiSignalFunctionId,
+							id: midiSignalId,
 						}
 
-						modifyBooster(newMidiSignalFunctionConfig)
+						modifyBooster(newMidiSignalConfig)
 						}}
 					>
 				

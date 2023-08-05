@@ -60,17 +60,17 @@ export default class Midi {
 		return midiControlId
 	}
 
-	createMidiSignalFunctionId(controlId: MidiControlId) {
+	createMidiSignalId(controlId: MidiControlId) {
 		return `get${controlId}`
 	}
 
-	// Opposite of createMidiSignalFunctionId
+	// Opposite of createMidiSignalId
 	createMidiControlId(signalFunctionId: string) {
 		// Removes the 'get' prefix
 		return signalFunctionId.slice(3)
 	}
 
-	createSignalFunction(signalFunctionId: string, midiControlId: MidiControlId) {
+	createSignal(signalFunctionId: string, midiControlId: MidiControlId) {
 		const signalFunction = {
 			context: 'midi',
 			type: 'number',
@@ -89,10 +89,10 @@ export default class Midi {
 		this[midiControlId] = 0
 
 		// Create a new signalFunctionId
-		const signalFunctionId = this.createMidiSignalFunctionId(midiControlId)
+		const signalFunctionId = this.createMidiSignalId(midiControlId)
 
 		// Create a new signalFunction and append it to the state
-		this.createSignalFunction(signalFunctionId, midiControlId)
+		this.createSignal(signalFunctionId, midiControlId)
 
 		this.listening = false
 	}
@@ -174,12 +174,12 @@ export default class Midi {
 					console.log('New input detected" ', newInput)
 
 					// Once a new input is detected return it's signal function id
-					const controlSignalFunctionId = this.createMidiSignalFunctionId(newInput)
+					const controlSignalId = this.createMidiSignalId(newInput)
 					// Stop listening
 					this.listening = false
 
 					clearInterval(interval)
-					resolve(controlSignalFunctionId)
+					resolve(controlSignalId)
 				}
 
 				// Handle case where listening is cancelled
@@ -197,13 +197,13 @@ export default class Midi {
 	}
 
 	// Manually create a midi signal function (eg: loading presets)
-	createMidiSignalFunction(signalFunctionId: string) {
+	createMidiSignal(signalFunctionId: string) {
 		const midiControlId = this.createMidiControlId(signalFunctionId)
 		// Append a new midi control signal to the state
 		this[midiControlId] = 0
 
 		// Create a new signalFunction from existing id and append it to the state
-		const signalFunction = this.createSignalFunction(signalFunctionId, midiControlId)
+		const signalFunction = this.createSignal(signalFunctionId, midiControlId)
 		return signalFunction
 	}
 }

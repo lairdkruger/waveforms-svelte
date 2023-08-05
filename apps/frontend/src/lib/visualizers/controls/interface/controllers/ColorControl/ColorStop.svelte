@@ -37,8 +37,6 @@
 		const colorStop = $config.gradient.find((colorStop) => colorStop.id === colorStopId)!
 		let valueMapped = map(colorStop.coord, 0, 1, 0, width)
 
-		console.log(colorStop)
-
 		position.set(valueMapped, { hard: true })
 	}
 
