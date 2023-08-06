@@ -10,7 +10,7 @@
 
 		padding-left: var(--margin);
 		padding-right: var(--margin);
-		margin-top: var(--spacing200);
+		padding-top: var(--spacing200);
 
 		display: grid;
 		grid-template-columns: repeat(12, var(--column));
