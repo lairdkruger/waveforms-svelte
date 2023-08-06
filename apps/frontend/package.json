@@ -12,8 +12,10 @@
 	"dependencies": {
 		"@use-gesture/vanilla": "^10.2.27",
 		"deepmerge-ts": "^5.1.0",
+		"postmark": "^3.0.19",
 		"supabase": "workspace:supabase",
-		"three": "^0.155.0"
+		"three": "^0.155.0",
+		"zod": "^3.21.4"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-vercel": "^3.0.2",

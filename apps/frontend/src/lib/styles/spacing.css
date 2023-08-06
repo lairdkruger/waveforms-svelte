@@ -33,6 +33,7 @@
 					((var(--numberOfColumns) - 1) * (var(--gutter)))
 			)
 	);
+	--row: 250px;
 }
 
 @media (max-width: 900px) {
