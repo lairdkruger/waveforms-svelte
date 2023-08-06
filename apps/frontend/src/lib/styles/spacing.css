@@ -23,9 +23,9 @@
 	--spacing300: 300px;
 
 	/* Grid Variables */
-	--numberOfColumns: 24;
+	--numberOfColumns: 12;
 	--margin: 16px;
-	--gutter: 16px;
+	--gutter: 0px;
 	--column: calc(
 		(1 / var(--numberOfColumns)) *
 			(

@@ -1,9 +1,13 @@
 <script lang="ts">
 	import '$lib/styles/base.css'
-	import '$lib/styles/spacing.css'
+	import '$lib/styles/colors.css'
 	import '$lib/styles/controls.css'
+	import '$lib/styles/motion.css'
+	import '$lib/styles/spacing.css'
 	import '$lib/styles/typography.css'
+
 	import Header from '$lib/components/Header.svelte'
+	import Footer from '$lib/components/Footer.svelte'
 </script>
 
 <svelte:head>
@@ -17,3 +21,4 @@
 
 <Header />
 <slot />
+<Footer />

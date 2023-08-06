@@ -2,11 +2,10 @@
 	import WaveformsIcon from '$lib/svgs/WaveformsIcon.svelte'
 
 	let user = false
-	const currentYear = new Date().getFullYear()
 </script>
 
 <header>
-	<nav class="navigation">
+	<nav>
 		<a class="logo" href="/">
 			<div class="logoImage">
 				<WaveformsIcon />
@@ -20,20 +19,30 @@
 		{:else}
 			<a class="account" href="/enter"> Login / Register </a>
 		{/if}
-		<h1 class="copyright">{`Waveforms © ${currentYear} : VER.BETA.1.0`}</h1>
 	</nav>
 </header>
 
 <style>
-	.navigation {
+	header {
+		position: fixed;
+		z-index: 2;
+		top: 0;
+		left: 0;
+		width: 100%;
+
+		color: var(--white);
+		mix-blend-mode: var(--mixBlendMode);
+	}
+
+	nav {
+		width: 100%;
+		padding: var(--spacing16) var(--margin);
+
 		display: grid;
 		grid-template-columns: repeat(12, var(--column));
 		grid-template-areas: 'logo . . . . . nav-1 nav-1 nav-2 nav-2 nav-3 nav-3';
 		justify-items: end;
 		align-items: start;
-
-		color: var(--white);
-		mix-blend-mode: var(--mixBlendMode);
 	}
 
 	.logo {
@@ -65,7 +74,7 @@
 		left: var(--margin);
 	}
 
-	@media screen and (max-width: 768px) {
+	@media (max-width: 768px) {
 		.logo {
 			position: absolute;
 			top: var(--margin);
