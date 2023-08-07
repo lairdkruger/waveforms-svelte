@@ -1,15 +1,16 @@
 // https://github.com/vercel/nextjs-subscription-payments/blob/main/utils/supabase-client.ts
+import { SupabaseClient, createClient, type User } from '@supabase/supabase-js'
+import { Database, ProductWithPrice } from './types'
 
-import { User, createClient } from '@supabase/supabase-js'
-import { ProductWithPrice } from './types'
-import { Database } from './types'
-
-export const supabase = createClient<Database>(
-	process.env.PUBLIC_SUPABASE_URL || '',
-	process.env.PUBLIC_SUPABASE_ANON_KEY || ''
+// For some reason, during build - the env variables causing errors here unless placeholder strings are provided.
+export const supabaseClient = createClient<Database>(
+	process.env.PUBLIC_SUPABASE_URL || 'https://www.url.com',
+	process.env.PUBLIC_SUPABASE_ANON_KEY || 'supabase-anon-key'
 )
 
-export const getActiveProductsWithPrices = async (): Promise<ProductWithPrice[]> => {
+export const getActiveProductsWithPrices = async (
+	supabase: SupabaseClient<Database>
+): Promise<ProductWithPrice[]> => {
 	const { data, error } = await supabase
 		.from('products')
 		.select('*, prices(*)')
@@ -25,7 +26,11 @@ export const getActiveProductsWithPrices = async (): Promise<ProductWithPrice[]>
 	return (data as ProductWithPrice[]) || []
 }
 
-export const updateUserName = async (user: User, name: string) => {
+export const updateUserName = async (
+	supabase: SupabaseClient<Database>,
+	user: User,
+	name: string
+) => {
 	await supabase
 		.from('users')
 		.update({

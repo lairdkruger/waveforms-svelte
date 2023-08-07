@@ -7,9 +7,10 @@ import { Database } from './types'
 
 // Note: supabaseAdmin uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
 // as it has admin priviliges and overwrites RLS policies!
+// For some reason, during build - the env variables causing errors here unless placeholder strings are provided.
 const supabaseAdmin = createClient<Database>(
-	process.env.PUBLIC_SUPABASE_URL || '',
-	process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+	process.env.PUBLIC_SUPABASE_URL || 'https://www.url.com',
+	process.env.SUPABASE_SERVICE_ROLE_KEY || 'supabase-service-role-key'
 )
 
 const upsertProductRecord = async (product: StripeTypes.Product) => {

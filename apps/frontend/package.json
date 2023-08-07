@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@supabase/auth-helpers-sveltekit": "^0.10.2",
 		"@supabase/supabase-js": "^2.31.0",
+		"@sveltejs/adapter-auto": "^2.1.0",
 		"@use-gesture/vanilla": "^10.2.27",
 		"deepmerge-ts": "^5.1.0",
 		"postmark": "^3.0.19",

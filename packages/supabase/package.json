@@ -4,6 +4,7 @@
 	"private": true,
 	"main": "index.ts",
 	"types": "index.ts",
+	"type": "module",
 	"scripts": {
 		"supabase-login": "supabase login",
 		"supabase-init": "supabase init",
@@ -19,7 +20,7 @@
 	},
 	"devDependencies": {
 		"eslint": "^7.32.0",
-		"eslint-config-custom":"workspace:eslint-config-custom",
+		"eslint-config-custom": "workspace:eslint-config-custom",
 		"tsconfig": "workspace:tsconfig",
 		"typescript": "^4.5.2"
 	}

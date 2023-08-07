@@ -16,10 +16,6 @@ export async function handleCheckout() {
 		credentials: 'same-origin'
 	})
 
-	console.log(fetchCheckout)
-
 	const { url: checkoutUrl } = await fetchCheckout.json()
-	console.log(checkoutUrl)
-
 	goto(checkoutUrl)
 }

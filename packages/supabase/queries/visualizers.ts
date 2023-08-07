@@ -1,8 +1,8 @@
-import { supabase } from '../client'
+import { supabaseClient } from '../client'
 
 // Returns array of visualizer data
 export const getVisualizers = async () => {
-	const { data, error } = await supabase
+	const { data, error } = await supabaseClient
 		.from('visualizers')
 		.select()
 		.order('name', { ascending: false })
@@ -16,7 +16,7 @@ export const getVisualizers = async () => {
 
 // Returns array of visualizer slugs
 export const getVisualizerSlugs = async () => {
-	const { data, error } = await supabase.from('visualizers').select('slug')
+	const { data, error } = await supabaseClient.from('visualizers').select('slug')
 
 	const slugs = data?.map((visualizer) => visualizer.slug)
 
@@ -29,7 +29,7 @@ export const getVisualizerSlugs = async () => {
 
 // Return visualizer ID from its slug
 export const getVisualizerBySlug = async (slug: string) => {
-	const { data, error } = await supabase
+	const { data, error } = await supabaseClient
 		.from('visualizers')
 		.select()
 		.eq('slug', slug)

@@ -1,4 +1,4 @@
-import { supabase } from '../client'
+import { supabaseClient } from '../client'
 import { Json } from '../types'
 import { getVisualizerBySlug } from './visualizers'
 
@@ -22,7 +22,7 @@ export const createNewPreset = async ({
 	const visualizerId = visualizer.id
 	if (!visualizerId) throw Error('Visualizer ID Missing')
 
-	const { error } = await supabase
+	const { error } = await supabaseClient
 		.from('presets')
 		.insert({ name: name, visualizer_id: visualizerId, user_id: userId, schema: schema })
 
@@ -41,7 +41,7 @@ interface SavePresetProps {
 
 // Update a preset by ID
 export const savePreset = async ({ id, schema, midiBinding }: SavePresetProps) => {
-	const { error } = await supabase
+	const { error } = await supabaseClient
 		.from('presets')
 		.update({ schema: schema, midi_binding: midiBinding })
 		.eq('id', id)
@@ -59,7 +59,7 @@ interface DeletePresetProps {
 
 // Delete a preset by ID
 export const deletePreset = async ({ id }: DeletePresetProps) => {
-	const { error } = await supabase.from('presets').delete().eq('id', id)
+	const { error } = await supabaseClient.from('presets').delete().eq('id', id)
 
 	if (error) {
 		console.error(error.message)

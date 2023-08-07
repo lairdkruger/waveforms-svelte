@@ -33,7 +33,7 @@ export const POST = async ({ url, locals: { getSession } }) => {
 
 		if (checkoutSession.url) return new Response(JSON.stringify({ url: checkoutSession.url }))
 	} catch (error) {
-		console.log(error)
+		console.error(error)
 	}
 
 	// Return success

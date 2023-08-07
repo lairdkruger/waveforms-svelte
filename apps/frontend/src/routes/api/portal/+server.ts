@@ -18,7 +18,7 @@ export const POST = async ({ url, locals: { getSession } }) => {
 
 		return new Response(JSON.stringify({ url: portalSession.url }))
 	} catch (error) {
-		console.log(error)
+		console.error(error)
 	}
 
 	// Return success
