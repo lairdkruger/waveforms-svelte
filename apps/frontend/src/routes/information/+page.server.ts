@@ -12,10 +12,8 @@ const contactSchema = z.object({
 	message: z.string().min(1, 'Required')
 })
 
-export type ContactFormAction = Awaited<ReturnType<typeof actions.contact>>
-
 export const actions = {
-	contact: async ({ cookies, request }) => {
+	contact: async ({ request }) => {
 		// Construct data
 		const formData = await request.formData()
 		const data = {
@@ -25,12 +23,13 @@ export const actions = {
 			message: formData.get('message') as string
 		}
 
-		// Validate data
+		// Validation
 		const safeParse = contactSchema.safeParse(data)
 
 		if (!safeParse.success)
 			return fail(400, { success: false, data: data, issues: safeParse.error.issues })
 
+		// Actions
 		const requestData = {
 			From: String(POSTMARK_FROM_ADDRESS),
 			replyTo: data.email,

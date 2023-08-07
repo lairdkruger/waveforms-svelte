@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/stores'
-	import TextAreaInput from './inputs/TextAreaInput.svelte'
 	import TextInput from './inputs/TextInput.svelte'
 	import extractZodIssues from './utils/extractZodIssues'
 
@@ -8,10 +7,12 @@
 	const disabled = formData?.success
 
 	const issues = extractZodIssues(formData)
+
+	let submitted = false
+	$: buttonText = formData?.success ? 'Updated' : submitted ? 'Updating...' : 'Update'
 </script>
 
-<form method="POST" action="?/contact" novalidate>
-	<TextInput name="name" issue={issues?.['name']} value={formData?.data?.['name']} {disabled} />
+<form method="POST" action="?/update" novalidate on:submit={() => (submitted = true)}>
 	<TextInput
 		name="email"
 		type="email"
@@ -20,19 +21,18 @@
 		{disabled}
 	/>
 	<TextInput
-		name="subject"
-		issue={issues?.['subject']}
-		value={formData?.data?.['subject']}
-		{disabled}
-	/>
-	<TextAreaInput
-		name="message"
-		issue={issues?.['message']}
-		value={formData?.data?.['message']}
+		name="password"
+		type="password"
+		issue={issues?.['password']}
+		value={formData?.data?.['password']}
 		{disabled}
 	/>
 
-	<button type="submit" {disabled}>Submit</button>
+	{#if formData?.message}
+		<p>{formData?.message}</p>
+	{/if}
+
+	<button type="submit" {disabled}>{buttonText}</button>
 </form>
 
 <style>

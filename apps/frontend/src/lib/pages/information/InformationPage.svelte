@@ -1,9 +1,6 @@
 <script lang="ts">
 	import ContactForm from '$lib/forms/ContactForm.svelte'
 	import GridLayout from '$lib/layouts/GridLayout.svelte'
-	import type { ActionData } from '../../../routes/$types'
-
-	export let contactFormData: ActionData
 
 	let showCheckoutButton = false
 	let showSignUpButton = false
@@ -76,7 +73,7 @@
 
 	<div class="contact">
 		<h2>Contact</h2>
-		<ContactForm formData={contactFormData} />
+		<ContactForm />
 	</div>
 </GridLayout>
 

@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { page } from '$app/stores'
 	import WaveformsIcon from '$lib/svgs/WaveformsIcon.svelte'
 
-	let user = false
+	const user = $page.data.session?.user
 </script>
 
 <header>

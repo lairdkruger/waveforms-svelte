@@ -45,7 +45,7 @@
 		padding-right: var(--column);
 	}
 
-	@media screen and (max-width: 768px) {
+	@media (max-width: 768px) {
 		.list {
 			padding-right: 0;
 		}
