@@ -17,7 +17,7 @@
 <div class="folder">
 	<button class="head" on:click={() => (expanded = !expanded)}>
 		<div class="label">
-			<h3 class="cpHeading">Folder</h3>
+			<h3 class="cpHeading">{folder.label}</h3>
 		</div>
 		<div class="expand">
 			<div class="folderExpandIcon">

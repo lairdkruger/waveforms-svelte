@@ -40,23 +40,23 @@ export default class NumberControl extends ControlBase {
 		const defaultConfig: NumberControlConfig = {
 			signal: undefined,
 			defaultValue: 1,
-			range: [0, 2],
-			ease: 'in',
-			behaviour: 'straight',
-			booster: undefined
+			range: [0, 2]
 		}
 
 		return { ...defaultConfig, ...config }
 	}
 
 	deriveOutput(config: NumberControlConfig) {
-		function outputFunction() {
-			if (!config.signal) return config.defaultValue
+		const outputFunction = () => {
+			if (!config.signal)
+				return this.settings.transformer
+					? this.settings.transformer(config.defaultValue)
+					: config.defaultValue
 
 			const signalOutput = get(config.signal.output)()
 			const output = map(signalOutput, 0, 1, config.range[0], config.range[1])
 
-			return output
+			return this.settings.transformer ? this.settings.transformer(output) : output
 		}
 
 		return () => outputFunction()

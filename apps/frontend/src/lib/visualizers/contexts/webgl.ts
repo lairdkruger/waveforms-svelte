@@ -54,6 +54,9 @@ export function createWebglContext(key?: any) {
 			})
 		)
 
+		const camera = get(cameraCurrent)
+		camera?.position.set(0, 0, 5)
+
 		const renderer = get(rendererCurrent)
 		renderer!.setPixelRatio(window.devicePixelRatio * 1.5)
 		renderer!.setSize(window.innerWidth, window.innerHeight)
@@ -101,9 +104,9 @@ export function createWebglContext(key?: any) {
 	}
 
 	function loop() {
-		requestAnimationFrame(loop)
 		callbacks.forEach((callback) => callback())
 		render()
+		requestAnimationFrame(loop)
 	}
 
 	return setContext<WebglContext>(contextKey, {

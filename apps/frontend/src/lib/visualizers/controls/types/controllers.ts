@@ -2,6 +2,7 @@ import type BooleanControl from '../library/controls/BooleanControl'
 import type ColorControl from '../library/controls/ColorControl'
 import type NumberControl from '../library/controls/NumberControl'
 import type SelectControl from '../library/controls/SelectControl'
+import type { Transformer } from './functions'
 
 // Controller types
 export type ControlType = 'boolean' | 'number' | 'color' | 'select'

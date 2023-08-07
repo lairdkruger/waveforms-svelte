@@ -1,8 +1,8 @@
 <script>
 	import Canvas from '$lib/visualizers/canvas/Canvas.svelte'
-	import PrototypeVisualizer from '$lib/visualizers/canvas/visualizers/PrototypeVisualizer.svelte'
+	import Primitive from '$lib/visualizers/canvas/visualizers/Primitive.svelte'
 </script>
 
 <Canvas>
-	<PrototypeVisualizer />
+	<Primitive />
 </Canvas>
