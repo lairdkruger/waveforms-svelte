@@ -1,10 +1,13 @@
 <script lang="ts">
+	import { page } from '$app/stores'
 	import ContactForm from '$lib/forms/ContactForm.svelte'
 	import GridLayout from '$lib/layouts/GridLayout.svelte'
 
-	let showCheckoutButton = false
-	let showSignUpButton = false
-	let subscribed = false
+	const user = $page.data.session?.user
+	const subscribed = $page.data.subscribed
+
+	let showCheckoutButton = user && !subscribed
+	let showSignUpButton = !user
 
 	function handleCheckout() {}
 </script>
@@ -13,9 +16,10 @@
 	<div class="project">
 		<h2>Project</h2>
 		<p>WAVEFORMS is a collection of customisable real-time web audio visualizers</p>
+		<br />
 		<p>
-			It is the hobby project of{` `}
-			<a href="https://www.lairdkruger.com" target="_blank" rel="noreferrer"> Laird Kruger </a>
+			Check out my other work at
+			<a href="https://www.lairdkruger.com" target="_blank" rel="noreferrer">lairdkruger.com</a>
 		</p>
 	</div>
 

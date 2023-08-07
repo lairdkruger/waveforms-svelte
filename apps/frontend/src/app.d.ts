@@ -12,7 +12,7 @@ declare global {
 		}
 		interface PageData {
 			session: Session | null
-			subscription: boolean
+			subscribed: boolean
 		}
 		// interface Platform {}
 	}
