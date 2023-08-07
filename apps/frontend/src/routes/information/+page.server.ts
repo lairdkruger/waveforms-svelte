@@ -1,8 +1,9 @@
+import { POSTMARK_FROM_ADDRESS, POSTMARK_TOKEN, POSTMARK_TO_ADDRESS } from '$env/static/private'
 import { fail } from '@sveltejs/kit'
 import { ServerClient } from 'postmark'
 import { z } from 'zod'
 
-const postmarkClient = new ServerClient(process.env.POSTMARK_TOKEN!)
+const postmarkClient = new ServerClient(POSTMARK_TOKEN)
 
 const contactSchema = z.object({
 	name: z.string().min(1, 'Required'),
@@ -31,9 +32,9 @@ export const actions = {
 			return fail(400, { success: false, data: data, issues: safeParse.error.issues })
 
 		const requestData = {
-			From: String(process.env.POSTMARK_FROM_ADDRESS),
+			From: String(POSTMARK_FROM_ADDRESS),
 			replyTo: data.email,
-			To: String(process.env.POSTMARK_TO_ADDRESS),
+			To: String(POSTMARK_TO_ADDRESS),
 			Subject: data.subject!,
 			TextBody: data.message
 		}
