@@ -15,6 +15,7 @@
 		"@use-gesture/vanilla": "^10.2.27",
 		"deepmerge-ts": "^5.1.0",
 		"postmark": "^3.0.19",
+		"stripe": "workspace:stripe",
 		"supabase": "workspace:supabase",
 		"three": "^0.155.0",
 		"zod": "^3.21.4"

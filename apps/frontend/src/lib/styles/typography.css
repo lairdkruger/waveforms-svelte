@@ -35,6 +35,11 @@ button:hover {
 	opacity: 0.5;
 }
 
+a:disabled,
+button:disabled {
+	opacity: 0.5;
+}
+
 .heading-large {
 	font-family: transducer-extended, Arial, Helvetica, sans-serif;
 	font-weight: 900;

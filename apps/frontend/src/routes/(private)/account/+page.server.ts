@@ -20,13 +20,11 @@ export const actions = {
 		// Filter empty values from form as we don't want to update these
 		Object.keys(data).forEach((key) => {
 			// @ts-ignore
-			if (data[key] === undefined || data[key] === '' || data[key] === []) {
+			if (data[key] == undefined || data[key] == '' || data[key] == []) {
 				// @ts-ignore
 				delete data[key]
 			}
 		})
-
-		console.log(data)
 
 		// Validate data
 		const safeParse = updateUserSchema.safeParse(data)

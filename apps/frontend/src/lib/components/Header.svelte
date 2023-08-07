@@ -69,12 +69,6 @@
 		grid-area: nav-3;
 	}
 
-	.copyright {
-		position: absolute;
-		bottom: var(--margin);
-		left: var(--margin);
-	}
-
 	@media (max-width: 768px) {
 		.logo {
 			position: absolute;

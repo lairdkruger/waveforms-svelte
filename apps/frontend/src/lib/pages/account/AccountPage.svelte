@@ -1,6 +1,10 @@
 <script lang="ts">
+	import { page } from '$app/stores'
 	import UpdateAccountForm from '$lib/forms/UpdateAccountForm.svelte'
 	import GridLayout from '$lib/layouts/GridLayout.svelte'
+	import { handleCheckout, handleCustomerPortal } from '$lib/services/stripe'
+
+	const subscribed = $page.data.subscribed
 </script>
 
 <GridLayout>
@@ -11,12 +15,12 @@
 	<div class="information">
 		<h2>Manage Account</h2>
 
-		<!-- <button class="link" on:click={() => handleCheckout()} disabled={subscribed}>
+		<button class="link" on:click={() => handleCheckout()} disabled={subscribed}>
 			Become a Supporter
 		</button>
 		<button class="link" on:click={() => handleCustomerPortal()} disabled={!subscribed}>
 			Stripe Customer Portal
-		</button> -->
+		</button>
 	</div>
 
 	<div class="logout">

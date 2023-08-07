@@ -16,5 +16,17 @@ export const load = async ({ fetch, data, depends }) => {
 		data: { session }
 	} = await supabase.auth.getSession()
 
-	return { supabase, session }
+	// Check for subscription
+	// User has subscribed if a subscription record is found and its status is active
+	const { data: subscriptionData, error } = await supabase
+		.from('subscriptions')
+		.select('user_id, status')
+		.eq('user_id', session?.user.id)
+		.eq('status', 'active')
+		.limit(1)
+		.single()
+
+	const subscribed = subscriptionData ? true : false
+
+	return { supabase, session, subscribed }
 }
