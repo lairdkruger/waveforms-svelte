@@ -6,29 +6,29 @@
 	export let active: boolean
 	export let inactive: boolean
 
-	let width = 12
+	let arrowWidth = 72
 </script>
 
 <a href="/visualizers/test">
 	<div
 		class="wrapper"
 		style="
-		transform: translateX({active ? -width - 10 : 0}px);
+		transform: translateX({active ? -arrowWidth : 0}px);
 		color: active ? '#ffffff' : '#000000';
 		mixBlendMode: active ? 'difference' : 'normal'
 	"
 	>
-		<div class="arrowWrapper">
+		<div class="arrowWrapper" bind:clientWidth={arrowWidth}>
 			<div class="arrow">
 				<ArrowIcon />
 			</div>
 		</div>
 
-		<div class="headingWrapper">
-			<h2 class="heading" style="opacity: {inactive ? 0 : 1}">
+		<div class="heading-wrapper">
+			<h2 class="heading-large" style="opacity: {inactive ? 0 : 1}">
 				{visualizer.name}
 			</h2>
-			<h2 class="heading outlined" style=" opacity: {inactive ? 1 : 0} ">
+			<h2 class="heading-large outlined" style=" opacity: {inactive ? 1 : 0} ">
 				{visualizer.name}
 			</h2>
 		</div>
@@ -41,12 +41,17 @@
 </a>
 
 <style>
+	a:hover {
+		opacity: 1;
+	}
+
 	.wrapper {
 		cursor: pointer;
 		display: flex;
 		flex-direction: row-reverse;
 		margin-bottom: 0;
-		color: var(--black);
+		color: var(--white);
+		transition: transform var(--motionDefault);
 	}
 
 	.arrowWrapper {
@@ -59,22 +64,23 @@
 		position: relative;
 		right: -100%;
 		height: 100%;
-		width: calc(var(--largeHeadingSize) + 20px);
+		width: calc(7.5vw + 20px);
 		padding-left: 20px;
+		color: var(--white);
 	}
 
-	.headingWrapper {
+	.heading-wrapper {
 		position: relative;
 		margin-bottom: 0;
 	}
 
-	.heading.outlined {
+	.heading-large.outlined {
 		position: absolute;
 		top: 0;
 		left: 0;
 		color: transparent;
 		-webkit-text-stroke-width: 1px;
-		-webkit-text-stroke-color: var(--black);
+		-webkit-text-stroke-color: var(--white);
 	}
 
 	.info {
@@ -93,7 +99,7 @@
 			margin-bottom: 2.5rem;
 		}
 
-		.heading {
+		.heading-large {
 			margin-bottom: 1.25rem;
 		}
 	}
