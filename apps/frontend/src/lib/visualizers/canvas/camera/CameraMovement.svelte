@@ -22,7 +22,7 @@
 	const verticalSpeed = controls.createNumberControl(
 		'verticalSpeed',
 		{ label: 'Speed Vertical', group: group },
-		{ defaultValue: 1, range: [0, 10] },
+		{ defaultValue: 0, range: [0, 10] },
 		{
 			transformer: (value) => value / 1000
 		}

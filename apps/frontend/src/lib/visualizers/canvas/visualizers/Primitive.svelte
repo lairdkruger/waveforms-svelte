@@ -6,30 +6,43 @@
 	import TestBox from '../objects/TestBox.svelte'
 	import CameraMovement from '../camera/CameraMovement.svelte'
 	import EffectParams from '../effects/EffectParams.svelte'
+	import WaveLine from '../objects/WaveLine.svelte'
 
-	const { audioAnalyzer, midi, controls } = getVisualizerContext()
+	const { audioAnalyzer } = getVisualizerContext()
 
 	setContext('primitiveVisualizer', { audioAnalyzer: audioAnalyzer })
 
-	const { scene, effects, onFrame } = getWebglContext()
+	const { scene, onFrame } = getWebglContext()
 
-	const group = new Group()
+	const boxGroup = new Group()
+	const waveformGroup = new Group()
+
+	waveformGroup.rotateY(Math.PI / 2)
 
 	onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
+		audioAnalyzer.analyzeWaveform()
 	})
 
 	$: if ($scene) {
-		$scene.add(group)
+		$scene.add(boxGroup)
+		$scene.add(waveformGroup)
 	}
 
-	onDestroy(() => {})
+	onDestroy(() => {
+		if ($scene) {
+			$scene.remove(boxGroup)
+			$scene.remove(waveformGroup)
+		}
+	})
 </script>
+
+<WaveLine parent={waveformGroup} label="Top Line" />
 
 <CameraMovement />
 <EffectParams />
 
-<TestBox parent={group} range="bass" />
-<TestBox parent={group} range="mids" />
-<TestBox parent={group} range="highs" />
-<TestBox parent={group} range="" />
+<TestBox parent={boxGroup} range="bass" />
+<TestBox parent={boxGroup} range="mids" />
+<TestBox parent={boxGroup} range="highs" />
+<TestBox parent={boxGroup} range="" />

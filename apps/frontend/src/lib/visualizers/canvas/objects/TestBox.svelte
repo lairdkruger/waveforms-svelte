@@ -8,7 +8,7 @@
 	export let range: '' | 'bass' | 'mids' | 'highs'
 
 	const { controls, audioAnalyzer } = getVisualizerContext()
-	const { onFrame, scene } = getWebglContext()
+	const { onFrame } = getWebglContext()
 	const title = range.charAt(0).toUpperCase() + range.slice(1)
 
 	const geometry = new BoxGeometry(1, 1, 1)

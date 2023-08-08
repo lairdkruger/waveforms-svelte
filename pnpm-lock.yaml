@@ -26,6 +26,9 @@ importers:
 
   apps/frontend:
     dependencies:
+      '@lume/three-meshline':
+        specifier: ^4.0.5
+        version: 4.0.5(three@0.155.0)
       '@supabase/auth-helpers-sveltekit':
         specifier: ^0.10.2
         version: 0.10.2(@supabase/supabase-js@2.31.0)(@sveltejs/kit@1.22.3)
@@ -484,6 +487,14 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.0
       '@jridgewell/sourcemap-codec': 1.4.14
+
+  /@lume/three-meshline@4.0.5(three@0.155.0):
+    resolution: {integrity: sha512-1Gyl5yf9rXzwTtvOAsJg0Vc7AIOIIpf45H9+ZZDUstl/0TH5bDOefDSFC4OXQFgc7BQebBkGGzi+ffzaBgaovw==}
+    peerDependencies:
+      three: '*'
+    dependencies:
+      three: 0.155.0
+    dev: false
 
   /@mapbox/node-pre-gyp@1.0.11:
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
