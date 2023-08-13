@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Visualizer } from 'supabase'
 	import VisualizerHeading from './VisualizerHeading.svelte'
+	import VisualizerVideo from './VisualizerVideo.svelte'
 
 	export let visualizersData: Visualizer[]
 
@@ -26,7 +27,7 @@
 				/>
 
 				{#if visualizer.mux_id}
-					<!-- <VisualizersVideo muxId={visualizer.mux_id} active={index === activeIndex} /> -->
+					<VisualizerVideo muxId={visualizer.mux_id} active={index === activeIndex} />
 				{/if}
 			</div>
 		{/each}
@@ -39,8 +40,6 @@
 	}
 
 	.list {
-		mix-blend-mode: var(--mixBlendMode);
-
 		padding-top: var(--row);
 		padding-right: var(--column);
 	}

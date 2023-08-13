@@ -1,6 +1,31 @@
+@font-face {
+	font-family: 'Anybody';
+	src: url('/fonts/Anybody[wdth,wght].woff2') format('woff2-variations');
+	src: url('/fonts/Anybody[wdth,wght].woff2') format('woff2');
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Anybody';
+	src: url('/fonts/Anybody-Italic[wdth,wght].woff2') format('woff2-variations');
+	src: url('/fonts/Anybody-Italic[wdth,wght].woff2') format('woff2');
+	font-style: italic;
+}
+
+:root {
+	--wghtRegular: 400;
+	--wghtBold: 550;
+
+	--wdthBody: 115;
+	--wdthHeading: 115;
+	--wdthHeadingLarge: 150;
+}
+
 html {
-	font-family: transducer, Arial, Helvetica, sans-serif;
-	font-weight: 400;
+	font-family: Anybody, Arial, Helvetica, sans-serif;
+	font-variation-settings:
+		'wdth' var(--wdthBody),
+		'wght' var(--wghtRegular);
 	font-size: 10px;
 	line-height: 1.25;
 }
@@ -11,10 +36,12 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: transducer, Arial, Helvetica, sans-serif;
-	font-weight: 500;
+	font-variation-settings:
+		'wdth' var(--wdthHeading),
+		'wght' var(--wghtBold);
 	font-size: 10px;
 	line-height: 1.25;
+	letter-spacing: 0.02em;
 
 	text-transform: uppercase;
 }
@@ -24,17 +51,23 @@ h2 {
 }
 
 p {
-	font-family: transducer, Arial, Helvetica, sans-serif;
-	font-weight: 400;
-	font-size: 10px;
-	line-height: 1.25;
+	font-variation-settings:
+		'wdth' var(--wdthBody),
+		'wght' var(--wghtRegular);
 	text-transform: none;
 }
 
 a,
 button {
-	font-weight: 500;
+	font-family: Anybody, Arial, Helvetica, sans-serif;
+	font-variation-settings:
+		'wdth' var(--wdthHeading),
+		'wght' var(--wghtBold);
+	font-size: 10px;
+	line-height: 1.25;
+	letter-spacing: 0.02em;
 	text-transform: uppercase;
+
 	transition: opacity var(--motionDefault);
 }
 
@@ -49,11 +82,14 @@ button:disabled {
 }
 
 .heading-large {
-	font-family: transducer-extended, Arial, Helvetica, sans-serif;
-	font-weight: 900;
+	font-family: Anybody, Arial, Helvetica, sans-serif;
+	font-variation-settings:
+		'wdth' 150,
+		'wght' 900;
+	letter-spacing: -0.05em;
 	font-size: 7.5vw;
 	padding: 0px;
 	text-transform: uppercase;
-	line-height: 1;
+	/* line-height: 1; */
 	margin-top: -0.17ch;
 }

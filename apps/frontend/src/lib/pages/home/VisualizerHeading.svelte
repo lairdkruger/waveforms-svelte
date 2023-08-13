@@ -9,13 +9,13 @@
 	let arrowWidth = 72
 </script>
 
-<a href="/visualizers/test">
+<a href="/visualizers/test" data-sveltekit-preload-data="off">
 	<div
 		class="wrapper"
 		style="
 		transform: translateX({active ? -arrowWidth : 0}px);
-		color: active ? '#ffffff' : '#000000';
-		mixBlendMode: active ? 'difference' : 'normal'
+		color: {active ? '#ffffff' : '#000000'};
+		mixBlendMode: {active ? 'difference' : 'normal'}
 	"
 	>
 		<div class="arrowWrapper" bind:clientWidth={arrowWidth}>
@@ -52,6 +52,8 @@
 		margin-bottom: 0;
 		color: var(--white);
 		transition: transform var(--motionDefault);
+
+		mix-blend-mode: var(--mixBlendMode);
 	}
 
 	.arrowWrapper {
@@ -78,7 +80,7 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		color: transparent;
+		color: var(--white);
 		-webkit-text-stroke-width: 1px;
 		-webkit-text-stroke-color: var(--white);
 	}
@@ -86,6 +88,7 @@
 	.info {
 		width: calc(var(--row) / 1.5);
 		margin-right: var(--margin);
+		color: var(--white);
 	}
 
 	.infoHeading {

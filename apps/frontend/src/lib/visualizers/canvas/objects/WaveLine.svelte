@@ -4,13 +4,14 @@
 	import { onDestroy } from 'svelte'
 	import { BoxGeometry, MeshBasicMaterial, type Group, Mesh, Color, Vector3 } from 'three'
 	import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshline'
-	import { map } from '$lib/visualizers/utils/Maths'
+	import { distributeAngles, map, radians } from '$lib/visualizers/utils/Maths'
 
 	// Type declarations
 	type Point = {
 		x: number
 		y: number
 		z: number
+		angle: number
 	}
 
 	export let parent: Group
@@ -21,6 +22,7 @@
 
 	const geometry = new MeshLineGeometry()
 	const materialColor = new Color(0x000000)
+	// @ts-ignore
 	const material = new MeshLineMaterial({
 		color: materialColor,
 		lineWidth: 0.1,
@@ -40,10 +42,13 @@
 		const length = 6
 
 		for (let i = 0; i < numPoints; i++) {
+			const angle = radians(distributeAngles(i, numPoints)) + Math.PI / 2
+
 			const particle: Point = {
 				x: map(i, 0, numPoints - 1, -length / 2, length / 2),
 				y: 0,
-				z: 0
+				z: 0,
+				angle: angle
 			}
 
 			points[i] = particle
