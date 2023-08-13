@@ -1,5 +1,7 @@
 <script lang="ts">
 	import PresetCreator from './PresetCreator.svelte'
+	import PresetDeleter from './PresetDeleter.svelte'
+	import PresetSaver from './PresetSaver.svelte'
 	import PresetSelector from './PresetSelector.svelte'
 </script>
 
@@ -9,8 +11,8 @@
 		<!-- <MidiPresetButton /> -->
 	</div>
 	<div class="saver">
-		<!-- <PresetSaver />
-		<PresetDeleter /> -->
+		<PresetSaver />
+		<PresetDeleter />
 	</div>
 	<PresetCreator />
 </div>

@@ -1,5 +1,5 @@
 import { fail } from '@sveltejs/kit'
-import { createNewPreset } from 'supabase'
+import { createNewPreset, deletePreset, savePreset } from 'supabase'
 import { z } from 'zod'
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
 import { createSupabaseLoadClient } from '@supabase/auth-helpers-sveltekit'
@@ -33,11 +33,20 @@ export const load = async ({ params, fetch, locals: { getSession } }) => {
 }
 
 // Actions
-// Preset Creation
 const presetCreationSchema = z.object({
 	name: z.string(),
 	visualizerSlug: z.string(),
 	controlsSchema: z.string()
+})
+
+const presetDeleterSchema = z.object({
+	presetId: z.string()
+})
+
+const presetSaverSchema = z.object({
+	presetId: z.string(),
+	controlsSchema: z.string(),
+	presetMidiBinding: z.string()
 })
 
 export const actions = {
@@ -89,6 +98,89 @@ export const actions = {
 
 		// Success
 		actionReturn = { ...actionReturn, message: 'Preset Created', success: true, data: data }
+		return actionReturn
+	},
+
+	// Preset Deleter
+	presetDeleter: async ({ request }) => {
+		let actionReturn: App.FormActionReturn = { id: 'presetDeleter' }
+
+		// Construct data
+		const formData = await request.formData()
+		const data = {
+			presetId: formData.get('presetId') as string
+		}
+
+		// Data validation
+		const safeParse = presetDeleterSchema.safeParse(data)
+
+		if (!safeParse.success) {
+			actionReturn = {
+				...actionReturn,
+				success: false,
+				data: data,
+				issues: safeParse.error.issues
+			}
+			return fail(400, actionReturn)
+		}
+
+		// Actions
+		// const { error } = await deletePreset({
+		// 	id: data.presetId
+		// })
+
+		// // Action errors
+		// if (error) {
+		// 	actionReturn = { ...actionReturn, success: false, data: data, message: error.message }
+		// 	return fail(500, { message: error.message, success: false, data: data })
+		// }
+
+		// Success
+		actionReturn = { ...actionReturn, message: 'Preset Deleted', success: true, data: data }
+		return actionReturn
+	},
+
+	// Preset Saver
+	// Preset Deleter
+	presetSaver: async ({ request }) => {
+		let actionReturn: App.FormActionReturn = { id: 'presetSaver' }
+
+		// Construct data
+		const formData = await request.formData()
+		const data = {
+			presetId: formData.get('presetId') as string,
+			controlsSchema: formData.get('controlsSchema') as string,
+			presetMidiBinding: formData.get('presetMidiBinding') as string
+		}
+
+		// Data validation
+		const safeParse = presetSaverSchema.safeParse(data)
+
+		if (!safeParse.success) {
+			actionReturn = {
+				...actionReturn,
+				success: false,
+				data: data,
+				issues: safeParse.error.issues
+			}
+			return fail(400, actionReturn)
+		}
+
+		// Actions
+		// const { error } = await savePreset({
+		// 	id: data.presetId,
+		// 	schema: data.controlsSchema,
+		// 	midiBinding: data.presetMidiBinding
+		// })
+
+		// // Action errors
+		// if (error) {
+		// 	actionReturn = { ...actionReturn, success: false, data: data, message: error.message }
+		// 	return fail(500, { message: error.message, success: false, data: data })
+		// }
+
+		// Success
+		actionReturn = { ...actionReturn, message: 'Preset Saved', success: true, data: data }
 		return actionReturn
 	}
 }
