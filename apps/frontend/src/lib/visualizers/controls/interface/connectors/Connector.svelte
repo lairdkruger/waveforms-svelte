@@ -8,7 +8,6 @@
 	const control = controls.getControl(controlId)
 	const config = control.config
 	$: signal = $config.signal
-	$: signalConfig = $config.signal?.config
 
 	const audioSignalWidths: Record<string, string> = {
 		getVolume: '0.440',
