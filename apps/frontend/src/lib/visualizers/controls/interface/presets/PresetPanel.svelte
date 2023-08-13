@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PresetCreator from './PresetCreator.svelte'
 	import PresetSelector from './PresetSelector.svelte'
 </script>
 
@@ -11,7 +12,7 @@
 		<!-- <PresetSaver />
 		<PresetDeleter /> -->
 	</div>
-	<!-- <PresetCreator /> -->
+	<PresetCreator />
 </div>
 
 <style>

@@ -7,8 +7,6 @@
 	onMount(async () => {
 		await import('@mux/mux-video')
 	})
-
-	console.log(muxId)
 </script>
 
 <div class="wrapper">

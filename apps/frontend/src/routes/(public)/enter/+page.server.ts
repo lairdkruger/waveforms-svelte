@@ -8,6 +8,8 @@ const enterSchema = z.object({
 
 export const actions = {
 	signin: async ({ request, locals: { supabase } }) => {
+		let actionReturn: App.FormActionReturn = { id: 'signin' }
+
 		// Construct data
 		const formData = await request.formData()
 		const data = {
@@ -18,8 +20,15 @@ export const actions = {
 		// Validate data
 		const safeParse = enterSchema.safeParse(data)
 
-		if (!safeParse.success)
-			return fail(400, { success: false, data: data, issues: safeParse.error.issues })
+		if (!safeParse.success) {
+			actionReturn = {
+				...actionReturn,
+				success: false,
+				data: data,
+				issues: safeParse.error.issues
+			}
+			return fail(400, actionReturn)
+		}
 
 		// Actions
 		const { error } = await supabase.auth.signInWithPassword({
@@ -27,16 +36,20 @@ export const actions = {
 			password: data.password
 		})
 
+		// Error
 		if (error) {
-			return fail(500, { message: error.message, success: false, data: data })
+			actionReturn = { ...actionReturn, message: error.message, success: false, data: data }
+			return fail(500, actionReturn)
 		}
 
-		return {
-			message: 'Success',
-			success: true
-		}
+		// Success
+		actionReturn = { ...actionReturn, message: 'Success', success: true }
+		return actionReturn
 	},
+
 	signup: async ({ request, url, locals: { supabase } }) => {
+		let actionReturn: App.FormActionReturn = { id: 'signup' }
+
 		// Construct data
 		const formData = await request.formData()
 		const data = {
@@ -47,8 +60,15 @@ export const actions = {
 		// Validate data
 		const safeParse = enterSchema.safeParse(data)
 
-		if (!safeParse.success)
-			return fail(400, { success: false, data: data, issues: safeParse.error.issues })
+		if (!safeParse.success) {
+			actionReturn = {
+				...actionReturn,
+				success: false,
+				data: data,
+				issues: safeParse.error.issues
+			}
+			return fail(400, actionReturn)
+		}
 
 		// Actions
 		const { error } = await supabase.auth.signUp({
@@ -59,13 +79,14 @@ export const actions = {
 			}
 		})
 
+		// Error
 		if (error) {
-			return fail(500, { message: error.message, success: false, data: data })
+			actionReturn = { ...actionReturn, message: error.message, success: false, data: data }
+			return fail(500, actionReturn)
 		}
 
-		return {
-			message: 'Success',
-			success: true
-		}
+		// Success
+		actionReturn = { ...actionReturn, message: 'Success', success: true }
+		return actionReturn
 	}
 }

@@ -6,8 +6,8 @@
 	import { browser } from '$app/environment'
 
 	const formData = $page.form
-	const disabled = formData?.success
-	const issues = extractZodIssues(formData)
+	$: disabled = formData?.success
+	$: issues = extractZodIssues(formData)
 
 	let submitted = false
 	$: buttonText = formData?.success ? 'Success!' : submitted ? 'Signing In...' : 'Sign In'

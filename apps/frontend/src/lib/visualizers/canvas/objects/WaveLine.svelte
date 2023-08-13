@@ -266,7 +266,6 @@
 			}
 		}
 
-		// console.log(points)
 		meshline.geometry.setPoints(pointPositions.flat())
 
 		meshline.material.uniforms.lineWidth.value = $lineThickness()

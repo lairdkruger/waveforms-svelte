@@ -10,6 +10,8 @@ const updateUserSchema = z
 
 export const actions = {
 	update: async ({ request, locals: { supabase } }) => {
+		let actionReturn: App.FormActionReturn = { id: 'update' }
+
 		// Construct data
 		const formData = await request.formData()
 		const data = {
@@ -29,19 +31,32 @@ export const actions = {
 		// Validate data
 		const safeParse = updateUserSchema.safeParse(data)
 
-		if (!safeParse.success)
-			return fail(400, { success: false, data: data, issues: safeParse.error.issues })
+		if (!safeParse.success) {
+			actionReturn = {
+				...actionReturn,
+				success: false,
+				data: data,
+				issues: safeParse.error.issues
+			}
+			return fail(400, actionReturn)
+		}
 
 		// Actions
 		const { error } = await supabase.auth.updateUser(data)
 
+		// Error
 		if (error) {
-			return fail(500, { message: error.message, success: false, data: data })
+			actionReturn = {
+				...actionReturn,
+				message: error.message,
+				success: false,
+				data: data
+			}
+			return fail(500, actionReturn)
 		}
 
-		return {
-			message: 'Account updated',
-			success: true
-		}
+		// Success
+		actionReturn = { ...actionReturn, message: 'Account updated', success: true }
+		return actionReturn
 	}
 }

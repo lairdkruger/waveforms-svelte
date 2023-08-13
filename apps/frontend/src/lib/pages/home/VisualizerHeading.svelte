@@ -9,7 +9,7 @@
 	let arrowWidth = 72
 </script>
 
-<a href="/visualizers/test" data-sveltekit-preload-data="off">
+<a href="/visualizers/{visualizer.slug}" data-sveltekit-preload-data="off">
 	<div
 		class="wrapper"
 		style="

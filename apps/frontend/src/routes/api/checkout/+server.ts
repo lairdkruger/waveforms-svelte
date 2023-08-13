@@ -1,8 +1,8 @@
 import { createOrRetrieveCustomer } from 'supabase/admin'
 import { stripe } from 'stripe/instance'
-import { redirect } from '@sveltejs/kit'
+import type { RequestHandler } from '@sveltejs/kit'
 
-export const POST = async ({ url, locals: { getSession } }) => {
+export const POST: RequestHandler = async ({ url, locals: { getSession } }) => {
 	try {
 		const session = await getSession()
 		const user = session?.user
