@@ -1,8 +1,10 @@
-import { supabaseClient } from '../client'
+// import { supabaseClient } from '../client'
+import { SupabaseClient } from '@supabase/supabase-js'
 import { Json } from '../types'
 import { getVisualizerBySlug } from './visualizers'
 
 interface CreateNewPresetProps {
+	supabaseClient: SupabaseClient
 	name: string
 	visualizerSlug: string
 	userId: string
@@ -11,6 +13,7 @@ interface CreateNewPresetProps {
 
 // Insert a new preset row linked with corrosponding IDs
 export const createNewPreset = async ({
+	supabaseClient,
 	name,
 	visualizerSlug,
 	userId,
@@ -34,13 +37,14 @@ export const createNewPreset = async ({
 }
 
 interface SavePresetProps {
+	supabaseClient: SupabaseClient
 	id: string
 	schema: Json
 	midiBinding: string | null
 }
 
 // Update a preset by ID
-export const savePreset = async ({ id, schema, midiBinding }: SavePresetProps) => {
+export const savePreset = async ({ supabaseClient, id, schema, midiBinding }: SavePresetProps) => {
 	const { error } = await supabaseClient
 		.from('presets')
 		.update({ schema: schema, midi_binding: midiBinding })
@@ -54,11 +58,12 @@ export const savePreset = async ({ id, schema, midiBinding }: SavePresetProps) =
 }
 
 interface DeletePresetProps {
+	supabaseClient: SupabaseClient
 	id: string
 }
 
 // Delete a preset by ID
-export const deletePreset = async ({ id }: DeletePresetProps) => {
+export const deletePreset = async ({ supabaseClient, id }: DeletePresetProps) => {
 	const { error } = await supabaseClient.from('presets').delete().eq('id', id)
 
 	if (error) {

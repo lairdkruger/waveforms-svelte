@@ -4,10 +4,9 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 
 	const { controls } = getVisualizerContext()
-	$: presetId = controls.presets.preset
-	$: controlsSchemaObject = controls.controls.controls
-	$: controlsSchema = JSON.stringify(controlsSchemaObject)
-	$: presetMidiBinding = controls.presets.presets[presetId].midiBinding
+	const presetId = controls.presets.preset
+	const presets = controls.presets.presets
+	const presetMidiBinding = $presets[$presetId].midiBinding
 
 	$: formData = $page.form?.id === 'presetSaver' ? $page.form : undefined
 	$: disabled = formData?.success
@@ -26,8 +25,12 @@
 			submitted = true
 
 			// Append additional form data
-			formData.append('presetId', presetId)
-			formData.append('controlsSchema', controlsSchema)
+			formData.append('presetId', $presetId)
+
+			const controlConfigs = controls.extractCurrentControlConfigs()
+			const controlConfigsString = JSON.stringify(controlConfigs)
+			formData.append('controlsSchema', controlConfigsString)
+
 			formData.append('presetMidiBinding', presetMidiBinding ?? '')
 
 			return async ({ update }) => {

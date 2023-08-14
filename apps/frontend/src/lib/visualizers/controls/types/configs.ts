@@ -1,7 +1,6 @@
-import type { Ease } from '$lib/visualizers/utils/CubicBezier'
 import type Signal from '../library/signals/Signal'
 import type { ColorStop } from './primitives'
-import type { SignalBehaviour } from './signals'
+import type { SerializedSignalConfig } from './signals'
 
 export interface BooleanControlConfig {
 	defaultValue: 0 | 1
@@ -30,3 +29,7 @@ export type ControlConfig =
 	| NumberControlConfig
 	| ColorControlConfig
 	| SelectControlConfig
+
+export interface SerializedControlConfig extends Omit<ControlConfig, 'signal'> {
+	signal: SerializedSignalConfig | undefined
+}

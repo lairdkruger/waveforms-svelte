@@ -4,7 +4,7 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 
 	const { controls } = getVisualizerContext()
-	$: presetId = controls.presets.preset
+	const presetId = controls.presets.preset
 
 	$: formData = $page.form?.id === 'presetDeleter' ? $page.form : undefined
 	$: disabled = formData?.success
@@ -23,7 +23,7 @@
 			submitted = true
 
 			// Append additional form data
-			formData.append('presetId', presetId)
+			formData.append('presetId', $presetId)
 
 			return async ({ update }) => {
 				await update()

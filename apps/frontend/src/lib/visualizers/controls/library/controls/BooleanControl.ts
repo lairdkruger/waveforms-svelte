@@ -1,6 +1,12 @@
 import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
 import ControlBase from './ControlBase'
-import type { BooleanControlConfig, NumberOutput, ControlId, ControlOptions } from '../../types'
+import type {
+	BooleanControlConfig,
+	NumberOutput,
+	ControlId,
+	ControlOptions,
+	SerializedControlConfig
+} from '../../types'
 
 export default class BooleanControl extends ControlBase {
 	config: Writable<BooleanControlConfig>
@@ -37,5 +43,11 @@ export default class BooleanControl extends ControlBase {
 		}
 
 		return () => outputFunction()
+	}
+
+	extractConfig(): SerializedControlConfig {
+		const signalConfig = get(this.config).signal?.extractConfig()
+		const config = { ...get(this.config), signal: signalConfig }
+		return config
 	}
 }

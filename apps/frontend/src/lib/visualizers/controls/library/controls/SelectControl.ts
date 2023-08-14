@@ -5,7 +5,8 @@ import type {
 	SelectOutput,
 	ControlId,
 	ControlOptions,
-	SelectControlSettings
+	SelectControlSettings,
+	SerializedControlConfig
 } from '../../types'
 
 export default class SelectControl extends ControlBase {
@@ -57,5 +58,11 @@ export default class SelectControl extends ControlBase {
 		}
 
 		return () => outputFunction()
+	}
+
+	extractConfig(): SerializedControlConfig {
+		const signalConfig = get(this.config).signal?.extractConfig()
+		const config = { ...get(this.config), signal: signalConfig }
+		return config
 	}
 }

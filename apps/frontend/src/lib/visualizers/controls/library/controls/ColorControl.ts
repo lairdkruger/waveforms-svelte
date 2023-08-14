@@ -5,7 +5,8 @@ import type {
 	ControlOptions,
 	ColorControlConfig,
 	ColorOutput,
-	ColorStop
+	ColorStop,
+	SerializedControlConfig
 } from '../../types'
 import { closest2, lerpColors, map } from '$lib/visualizers/utils/Maths'
 
@@ -36,10 +37,7 @@ export default class ColorControl extends ControlBase {
 			gradient: [
 				{ id: '0', coord: 0, color: [0, 0, 0] },
 				{ id: '1', coord: 1, color: [1, 1, 1] }
-			],
-			ease: 'in',
-			behaviour: 'straight',
-			booster: undefined
+			]
 		}
 
 		return { ...defaultConfig, ...config }
@@ -74,5 +72,11 @@ export default class ColorControl extends ControlBase {
 
 		// Call mix function once
 		return () => outputFunction()
+	}
+
+	extractConfig(): SerializedControlConfig {
+		const signalConfig = get(this.config).signal?.extractConfig()
+		const config = { ...get(this.config), signal: signalConfig }
+		return config
 	}
 }

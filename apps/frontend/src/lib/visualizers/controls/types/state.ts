@@ -9,11 +9,11 @@ import type {
 	SelectControlConfig
 } from './configs'
 import type { Control, ControlId, NumberControlSettings } from './controllers'
-import type { ColorOutput, NumberOutput, SelectOutput, SignalConfig } from './functions'
+import type { ColorOutput, NumberOutput, SelectOutput } from './functions'
 import type { ControlOptions, Folder, FolderOptions, Group, GroupOptions } from './structure'
 import type { PresetId } from './presets'
 import type { Color, ColorStop } from './primitives'
-import type { SignalBehaviour } from './signals'
+import type { SignalBehaviour, SignalConfig } from './signals'
 import type { Preset as PresetDb } from 'supabase'
 import type Preset from '../library/presets/Preset'
 import type Signal from '../library/signals/Signal'
@@ -129,8 +129,8 @@ export interface Controls {
 }
 
 export interface Presets {
-	preset: PresetId
-	presets: Record<PresetId, Preset>
+	preset: Writable<PresetId>
+	presets: Writable<Record<PresetId, Preset>>
 }
 
 export interface ControlsState

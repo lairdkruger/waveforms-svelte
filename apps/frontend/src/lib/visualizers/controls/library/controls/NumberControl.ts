@@ -5,13 +5,14 @@ import type {
 	ControlOptions,
 	NumberControlConfig,
 	NumberControlSettings,
-	NumberOutput
+	NumberOutput,
+	SerializedControlConfig
 } from '../../types'
 import { map } from '$lib/visualizers/utils/Maths'
 
 export default class NumberControl extends ControlBase {
-	config: Writable<NumberControlConfig>
 	settings: NumberControlSettings
+	config: Writable<NumberControlConfig>
 	output: Readable<NumberOutput>
 
 	constructor(
@@ -101,5 +102,11 @@ export default class NumberControl extends ControlBase {
 
 			return config
 		})
+	}
+
+	extractConfig(): SerializedControlConfig {
+		const signalConfig = get(this.config).signal?.extractConfig()
+		const config = { ...get(this.config), signal: signalConfig }
+		return config
 	}
 }

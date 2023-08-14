@@ -11,8 +11,6 @@
 	const visualizerSlug = $page.params.slug
 
 	const { controls } = getVisualizerContext()
-	$: controlsSchemaObject = controls.controls.controls
-	$: controlsSchema = JSON.stringify(controlsSchemaObject)
 
 	const showSignUpButton = !userId
 	const showCheckoutButton = userId && !subscribed
@@ -36,7 +34,11 @@
 
 			// Append additional form data
 			formData.append('visualizerSlug', visualizerSlug)
-			formData.append('controlsSchema', controlsSchema)
+
+			// Format controls schema into DB friendly format
+			const controlConfigs = controls.extractCurrentControlConfigs()
+			const controlConfigsString = JSON.stringify(controlConfigs)
+			formData.append('controlsSchema', controlConfigsString)
 
 			return async ({ update }) => {
 				await update()

@@ -1,5 +1,12 @@
-import { derived, writable, type Readable, type Writable } from 'svelte/store'
-import type { NumberOutput, SignalConfig, SignalContext, SignalId, SignalOutput } from '../../types'
+import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
+import type {
+	NumberOutput,
+	SerializedSignalConfig,
+	SignalConfig,
+	SignalContext,
+	SignalId,
+	SignalOutput
+} from '../../types'
 import { map, mapLoop } from '$lib/visualizers/utils/Maths'
 import { clamp } from 'three/src/math/MathUtils'
 import bezier, { getBezierValues } from '$lib/visualizers/utils/CubicBezier'
@@ -82,5 +89,10 @@ export default class Signal {
 		}
 
 		return () => output
+	}
+
+	extractConfig(): SerializedSignalConfig {
+		const config = { ...get(this.config), id: this.id, context: this.context }
+		return { ...config, booster: config.booster?.extractConfig() }
 	}
 }

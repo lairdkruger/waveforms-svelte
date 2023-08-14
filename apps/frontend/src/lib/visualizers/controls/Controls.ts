@@ -22,7 +22,7 @@ import type {
 	ControlConfig
 } from './types'
 import type { Preset as PresetDb } from 'supabase'
-import type { PresetConfigs, PresetId, PresetOptions } from './types/presets'
+import type { CurrentControlConfigs, PresetConfigs, PresetId, PresetOptions } from './types/presets'
 import { deepClone } from '$lib/visualizers/utils/Objects'
 import { deepmerge } from 'deepmerge-ts'
 import { writable, type Readable, type Writable, get } from 'svelte/store'
@@ -55,10 +55,10 @@ export default class Controls {
 	}
 
 	presets: Presets = {
-		preset: 'default',
-		presets: {
+		preset: writable('default'),
+		presets: writable({
 			default: new Preset('default', { label: 'Default' }, {}, null)
-		}
+		})
 	}
 
 	constructor(
@@ -76,17 +76,17 @@ export default class Controls {
 	///////////////////////////////////////////////
 	// Internal Actions
 	///////////////////////////////////////////////
-	setClientStateReady(value: boolean) {
-		// This function is always called last so we can assume that the store is ready for user data
-		// Load userPresets into controls state if exists
-		if (this.userPresets) {
-			for (const userPreset of this.userPresets) {
-				this.loadUserPreset(userPreset)
-			}
-		}
+	// setClientStateReady(value: boolean) {
+	// 	// This function is always called last so we can assume that the store is ready for user data
+	// 	// Load userPresets into controls state if exists
+	// 	if (this.userPresets) {
+	// 		for (const userPreset of this.userPresets) {
+	// 			this.loadUserPreset(userPreset)
+	// 		}
+	// 	}
 
-		this._clientStateReady = value
-	}
+	// 	this._clientStateReady = value
+	// }
 
 	///////////////////////////////////////////////
 	// Utility Functions
@@ -94,6 +94,19 @@ export default class Controls {
 	resetInteractions() {
 		this.draggedSignal.set(null)
 		this.draggedSignalTarget.set(null)
+	}
+
+	// Extracts current configs from controls store in a Json stringify friendly format
+	extractCurrentControlConfigs(): CurrentControlConfigs {
+		let configs: CurrentControlConfigs = {}
+
+		for (const [controlId, control] of Object.entries(this.controls.controls)) {
+			// Serialize control config which should also serialize nested signals and boosters
+			const controlConfig = control.extractConfig()
+			configs[controlId] = controlConfig
+		}
+
+		return configs
 	}
 
 	// Fetch signal function object from specified context
@@ -213,8 +226,14 @@ export default class Controls {
 	pushNewControl(control: Control) {
 		// Push control to state
 		this.controls.controls[control.id] = control
-		// @ts-expect-error
-		this.presets.presets.default.configs[control.id] = get(control.config)
+
+		// Also push control config to default preset
+		this.presets.presets.update((presets) => {
+			let updatedPresets = { ...presets }
+			// @ts-expect-error
+			updatedPresets.default.configs[control.id] = get(control.config)
+			return updatedPresets
+		})
 	}
 
 	createBooleanControl(
@@ -331,21 +350,29 @@ export default class Controls {
 	// Requires an existing default state so must be called after all createControl functions in visualizer
 	createPreset(presetId: PresetId, options: PresetOptions, configs: PresetConfigs) {
 		// Escape if preset already exists
-		if (this.presets.presets[presetId]) return
+		const presets = get(this.presets.presets)
+		if (presets[presetId]) return
 
 		// Create a new preset by recreating existing controls based off merging the default state with the preset configs provided
 		let preset = new Preset(presetId, options, configs)
 
 		// Update state with new preset
-		this.presets.presets[presetId] = preset
+		this.presets.presets.update((presets) => {
+			let updatedPresets = { ...presets }
+			updatedPresets[presetId] = preset
+			return updatedPresets
+		})
 	}
 
 	// Handle changing of presets
 	changePreset(presetId: PresetId) {
+		const presets = get(this.presets.presets)
+		const preset = presets[presetId]
+
 		// Loop through controls
 		for (const [controlId, control] of Object.entries(this.controls.controls)) {
 			// Fetch corresponding preset config
-			const presetConfig = this.presets.presets[presetId].configs[controlId]
+			const presetConfig = preset?.configs[controlId]
 
 			// Merge preset config with control config
 			// @ts-expect-error
@@ -353,51 +380,44 @@ export default class Controls {
 				return { ...config, ...presetConfig }
 			})
 		}
+
+		this.presets.preset.set(presetId)
 	}
 
-	loadUserPreset(preset: PresetDb) {
+	loadUserPreset(preset: PresetDb, controlConfigs: Record<ControlId, ControlConfig>) {
 		// Convert json to object
 		// Clone default preset as a starter
 		// Merge user defined settings with default preset (this should handle errors if anything is missing maybe?)
 		// Create new preset object in state and set merged control as its object
 
-		// Escape if preset already exists
-		if (this.presets.presets[preset.id]) return
-
-		// Escape if schema type is not string
-		if (typeof preset.schema !== 'string') return
-
-		const userControls = JSON.parse(preset.schema)
+		const presets = get(this.presets.presets)
 
 		// Deep clone the default state to use as template control object
-		let presetConfigs = deepClone(this.presets.presets.default.configs) as Record<
-			string,
-			ControlConfig
-		>
+		let presetConfigs = deepClone(presets.default.configs) as Record<string, ControlConfig>
 
 		for (const [controlId, config] of Object.entries(presetConfigs)) {
 			let returnedControl: ControlConfig | undefined = undefined
 
 			// If control has new settings specified in user schema
-			if (Object.keys(userControls).includes(controlId)) {
+			if (Object.keys(controlConfigs).includes(controlId)) {
 				// Gets corresponding control from default template
 				const configTemplate = deepClone(config) as ControlConfig
 
-				// Remove nested properties that don't work with merge (eg: nested arrays or objects)
-				for (const value of Object.values(configTemplate)) {
-					if (value.type === 'number') {
-						// @ts-expect-error because we're removing a non-optional property, but we're guaranteed to get it back from the merge
-						delete configTemplate.range
-					}
+				if ('gradient' in configTemplate) {
+					// @ts-expect-error because we're removing a non-optional property, but we're guaranteed to get it back from the merge
+					delete configTemplate.gradient
+				}
 
-					if (value.type === 'color') {
-						// @ts-expect-error because we're removing a non-optional property, but we're guaranteed to get it back from the merge
-						delete configTemplate.gradient
-					}
+				if ('range' in configTemplate) {
+					// @ts-expect-error because we're removing a non-optional property, but we're guaranteed to get it back from the merge
+					delete configTemplate.range
 				}
 
 				// Merge with user settings
-				const mergedControl = deepmerge(configTemplate, userControls[controlId])
+				const mergedControl = deepmerge(
+					configTemplate,
+					controlConfigs[controlId]
+				) as ControlConfig
 
 				returnedControl = mergedControl
 			}
@@ -408,11 +428,15 @@ export default class Controls {
 			}
 		}
 
-		this.presets.presets[preset.id] = new Preset(
-			preset.id,
-			{ label: preset.name },
-			presetConfigs,
-			null
-		)
+		this.presets.presets.update((presets) => {
+			let updatedPresets = { ...presets }
+			updatedPresets[preset.id] = new Preset(
+				preset.id,
+				{ label: preset.name },
+				presetConfigs,
+				null
+			)
+			return updatedPresets
+		})
 	}
 }

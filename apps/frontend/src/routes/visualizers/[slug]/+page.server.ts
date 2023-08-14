@@ -50,7 +50,7 @@ const presetSaverSchema = z.object({
 })
 
 export const actions = {
-	presetCreator: async ({ request, locals: { getSession } }) => {
+	presetCreator: async ({ request, locals: { supabase, getSession } }) => {
 		let actionReturn: App.FormActionReturn = { id: 'presetCreator' }
 
 		const session = await getSession()
@@ -83,18 +83,20 @@ export const actions = {
 		}
 
 		// Actions
-		// const { error } = await createNewPreset({
-		// 	name: data.name,
-		// 	visualizerSlug: data.visualizerSlug,
-		// 	userId: userId,
-		// 	schema: data.controlsSchema
-		// })
+		const { error } = await createNewPreset({
+			supabaseClient: supabase,
+			name: data.name,
+			visualizerSlug: data.visualizerSlug,
+			userId: userId,
+			schema: data.controlsSchema
+		})
 
 		// Action errors
-		// if (error) {
-		// 	actionReturn = { ...actionReturn, success: false, data: data, message: error.message }
-		// 	return fail(500, { message: error.message, success: false, data: data })
-		// }
+		if (error) {
+			console.error(error)
+			actionReturn = { ...actionReturn, success: false, data: data, message: error.message }
+			return fail(500, { message: error.message, success: false, data: data })
+		}
 
 		// Success
 		actionReturn = { ...actionReturn, message: 'Preset Created', success: true, data: data }
@@ -131,6 +133,7 @@ export const actions = {
 
 		// // Action errors
 		// if (error) {
+		// console.error(error)
 		// 	actionReturn = { ...actionReturn, success: false, data: data, message: error.message }
 		// 	return fail(500, { message: error.message, success: false, data: data })
 		// }
@@ -175,6 +178,7 @@ export const actions = {
 
 		// // Action errors
 		// if (error) {
+		// console.error(error)
 		// 	actionReturn = { ...actionReturn, success: false, data: data, message: error.message }
 		// 	return fail(500, { message: error.message, success: false, data: data })
 		// }

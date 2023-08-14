@@ -5,6 +5,7 @@
 	import { BoxGeometry, MeshBasicMaterial, type Group, Mesh, Color, Vector3 } from 'three'
 	import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshline'
 	import { distributeAngles, map, radians } from '$lib/visualizers/utils/Maths'
+	import Signal from '$lib/visualizers/controls/library/signals/Signal'
 
 	// Type declarations
 	type Point = {
@@ -67,7 +68,7 @@
 		'lineType',
 		{
 			label: 'Type',
-			folder: folder
+			group: group
 		},
 		{ values: ['Spectrum', 'Waveform', 'Wavetrum'] },
 		{ defaultValue: 'Spectrum' }
@@ -77,7 +78,7 @@
 		'lineDirection',
 		{
 			label: 'Direction',
-			folder: folder
+			group: group
 		},
 		{ values: ['Parallel', 'Perpendicular'] },
 		{ defaultValue: 'Parallel' }
@@ -92,7 +93,7 @@
 		'lineSymmetry',
 		{
 			label: 'Symmetry',
-			folder: folder
+			group: group
 		},
 		{ defaultValue: 2, range: [1, 8] },
 		{
@@ -109,7 +110,7 @@
 		'lineResolution',
 		{
 			label: 'Resolution',
-			folder: folder
+			group: group
 		},
 		{ defaultValue: 1, range: [1, 8] },
 		{
@@ -123,9 +124,22 @@
 		'lineThickness',
 		{
 			label: 'Thickness',
-			folder: folder
+			group: group
 		},
-		{ defaultValue: 1, range: [0, 10] },
+		{
+			defaultValue: 1,
+			range: [0, 10],
+			signal: new Signal(
+				'audio',
+				'getVolume',
+				() => audioAnalyzer.getVolume(),
+				[() => 0, () => audioAnalyzer.getPeakVolume()],
+				{
+					ease: 'out',
+					booster: audioAnalyzer.signals['getBassPeaked']
+				}
+			)
+		},
 		{ transformer: (value) => value / 100 }
 	)
 
@@ -133,7 +147,7 @@
 		'lineIntensity',
 		{
 			label: 'Intensity',
-			folder: folder
+			group: group
 		},
 		{ defaultValue: 5, range: [0, 10] }
 	)
@@ -142,7 +156,7 @@
 		'lineColor',
 		{
 			label: 'Color',
-			folder: folder
+			group: group
 		},
 		{
 			defaultValue: 0,
