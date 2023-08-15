@@ -7,6 +7,7 @@
 	import CameraMovement from '../camera/CameraMovement.svelte'
 	import EffectParams from '../effects/EffectParams.svelte'
 	import WaveLine from '../objects/WaveLine.svelte'
+	import Background from '../objects/Background.svelte'
 
 	const { audioAnalyzer } = getVisualizerContext()
 
@@ -46,3 +47,5 @@
 <TestBox parent={boxGroup} range="mids" />
 <TestBox parent={boxGroup} range="highs" />
 <TestBox parent={boxGroup} range="" />
+
+<Background />
