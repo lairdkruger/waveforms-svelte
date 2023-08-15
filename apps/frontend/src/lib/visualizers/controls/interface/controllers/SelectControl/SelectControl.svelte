@@ -11,6 +11,7 @@
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId) as SelectControl
 	const config = control.config as Writable<SelectControlConfig>
+	$: hasSignalInput = $config.signal !== undefined
 
 	const handleChange = (event: Event) => {
 		const target = event.target as HTMLSelectElement
@@ -35,7 +36,12 @@
 				<DropdownIcon />
 			</div>
 
-			<select class="selectInput" value={$config.defaultValue} on:change={handleChange}>
+			<select
+				class="selectInput"
+				value={$config.defaultValue}
+				on:change={handleChange}
+				disabled={hasSignalInput}
+			>
 				{#each control.settings.values as value}
 					<option {value}>
 						{value}

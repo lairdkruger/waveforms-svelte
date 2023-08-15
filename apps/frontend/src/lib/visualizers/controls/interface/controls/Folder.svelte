@@ -69,6 +69,10 @@
 		width: 100%;
 	}
 
+	.folderExpandIcon {
+		display: flex;
+	}
+
 	.lineHorizontal {
 		height: 1px;
 		width: 100%;

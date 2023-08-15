@@ -21,6 +21,7 @@
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId) as ColorControl
 	const config = control.config as Writable<ColorControlConfig>
+	$: hasActiveSignal = $config.signal !== undefined
 
 	$: gradient = gradientToCSS($config.gradient)
 
@@ -114,8 +115,9 @@
 				bind:this={gestureTarget}
 				class="handle"
 				style="
-						transform: translate({$position}px, 0px);
-					"
+					transform: translate({$position}px, 0px);
+					visibility: {hasActiveSignal ? 'hidden' : 'visible'}
+				"
 			>
 				<ColorHandleIcon />
 			</div>

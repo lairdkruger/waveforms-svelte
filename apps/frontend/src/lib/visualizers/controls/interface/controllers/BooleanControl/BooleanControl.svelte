@@ -9,6 +9,8 @@
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId)
 	const config = control.config as Writable<BooleanControlConfig>
+
+	$: hasActiveSignal = $config.signal !== undefined
 </script>
 
 <div class="g-control">
@@ -21,6 +23,9 @@
 	<div class="controller">
 		<button
 			class="checkbox"
+			style="
+					visibility: {hasActiveSignal ? 'hidden' : 'visible'}
+				"
 			on:click={() => {
 				const value = $config.defaultValue === 1 ? 0 : 1
 				$config.defaultValue = value

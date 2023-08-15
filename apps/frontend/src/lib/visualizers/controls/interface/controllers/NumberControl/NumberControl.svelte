@@ -15,8 +15,7 @@
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId) as NumberControl
 	const config = control.config as Writable<NumberControlConfig>
-
-	const preset = controls.presets.preset
+	$: hasActiveSignal = $config.signal !== undefined
 
 	let initialValue = $config.defaultValue
 
@@ -77,11 +76,18 @@
 		/>
 		<div class="slider">
 			<div class="track" />
-			<div class="handleWrapper">
+			<div
+				class="handleWrapper"
+				style="
+					visibility: {hasActiveSignal ? 'hidden' : 'visible'}
+				"
+			>
 				<div
 					class="handle"
 					bind:this={gestureTarget}
-					style="transform: translate({$position}px, 0px)"
+					style="
+						transform: translate({$position}px, 0px)
+					"
 				>
 					<div class="handleBar" />
 					<ValidNumberInput
