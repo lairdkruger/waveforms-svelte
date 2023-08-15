@@ -10,7 +10,7 @@
 		<PresetSelector />
 		<!-- <MidiPresetButton /> -->
 	</div>
-	<div class="saver">
+	<div class="align-end">
 		<PresetSaver />
 		<PresetDeleter />
 	</div>
@@ -28,7 +28,8 @@
 		column-gap: var(--cpSpacing4);
 		justify-content: space-between;
 	}
-	.saver {
+
+	.align-end {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-end;

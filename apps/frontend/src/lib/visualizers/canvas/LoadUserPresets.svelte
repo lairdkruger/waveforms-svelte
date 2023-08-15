@@ -10,7 +10,10 @@
 	const { controls, audioAnalyzer } = getVisualizerContext()
 	const presets = controls.presets.presets
 
+	$: console.log(userPresets)
+
 	onMount(() => {
+		if (!userPresets) return
 		for (const preset of userPresets) {
 			// Escape if preset already exists
 			if ($presets[preset.id]) return

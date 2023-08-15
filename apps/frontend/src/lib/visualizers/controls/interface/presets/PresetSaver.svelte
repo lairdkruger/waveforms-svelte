@@ -1,5 +1,6 @@
 <script>
 	import { enhance } from '$app/forms'
+	import { invalidateAll } from '$app/navigation'
 	import { page } from '$app/stores'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 
@@ -35,6 +36,7 @@
 
 			return async ({ update }) => {
 				await update()
+				await invalidateAll()
 				submitted = false
 			}
 		}}

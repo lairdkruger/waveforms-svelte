@@ -104,7 +104,7 @@ export const actions = {
 	},
 
 	// Preset Deleter
-	presetDeleter: async ({ request }) => {
+	presetDeleter: async ({ request, locals: { supabase } }) => {
 		let actionReturn: App.FormActionReturn = { id: 'presetDeleter' }
 
 		// Construct data
@@ -127,16 +127,17 @@ export const actions = {
 		}
 
 		// Actions
-		// const { error } = await deletePreset({
-		// 	id: data.presetId
-		// })
+		const { error } = await deletePreset({
+			supabaseClient: supabase,
+			id: data.presetId
+		})
 
-		// // Action errors
-		// if (error) {
-		// console.error(error)
-		// 	actionReturn = { ...actionReturn, success: false, data: data, message: error.message }
-		// 	return fail(500, { message: error.message, success: false, data: data })
-		// }
+		// Action errors
+		if (error) {
+			console.error(error)
+			actionReturn = { ...actionReturn, success: false, data: data, message: error.message }
+			return fail(500, { message: error.message, success: false, data: data })
+		}
 
 		// Success
 		actionReturn = { ...actionReturn, message: 'Preset Deleted', success: true, data: data }
@@ -145,7 +146,7 @@ export const actions = {
 
 	// Preset Saver
 	// Preset Deleter
-	presetSaver: async ({ request }) => {
+	presetSaver: async ({ request, locals: { supabase } }) => {
 		let actionReturn: App.FormActionReturn = { id: 'presetSaver' }
 
 		// Construct data
@@ -170,18 +171,19 @@ export const actions = {
 		}
 
 		// Actions
-		// const { error } = await savePreset({
-		// 	id: data.presetId,
-		// 	schema: data.controlsSchema,
-		// 	midiBinding: data.presetMidiBinding
-		// })
+		const { error } = await savePreset({
+			supabaseClient: supabase,
+			id: data.presetId,
+			schema: data.controlsSchema,
+			midiBinding: data.presetMidiBinding
+		})
 
-		// // Action errors
-		// if (error) {
-		// console.error(error)
-		// 	actionReturn = { ...actionReturn, success: false, data: data, message: error.message }
-		// 	return fail(500, { message: error.message, success: false, data: data })
-		// }
+		// Action errors
+		if (error) {
+			console.error(error)
+			actionReturn = { ...actionReturn, success: false, data: data, message: error.message }
+			return fail(500, { message: error.message, success: false, data: data })
+		}
 
 		// Success
 		actionReturn = { ...actionReturn, message: 'Preset Saved', success: true, data: data }

@@ -1,5 +1,6 @@
 <script>
 	import { enhance } from '$app/forms'
+	import { invalidateAll } from '$app/navigation'
 	import { page } from '$app/stores'
 	import TextInput from '$lib/forms/inputs/TextInput.svelte'
 	import extractZodIssues from '$lib/forms/utils/extractZodIssues'
@@ -42,8 +43,8 @@
 
 			return async ({ update }) => {
 				await update()
-
 				submitted = false
+				invalidateAll()
 			}
 		}}
 	>
@@ -102,7 +103,6 @@
 	.submitButton {
 		position: absolute;
 		right: 0;
-		margin-top: 4px;
 	}
 
 	.ctas {
