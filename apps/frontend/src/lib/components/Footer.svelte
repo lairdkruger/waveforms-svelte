@@ -3,7 +3,7 @@
 </script>
 
 <footer>
-	<span class="copyright">{`Waveforms © ${currentYear} : VER.BETA.1.0`}</span>
+	<span class="copyright">{`Waveforms © ${currentYear} : VER:BETA.1.1`}</span>
 </footer>
 
 <style>

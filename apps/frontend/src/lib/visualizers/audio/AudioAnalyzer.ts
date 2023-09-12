@@ -62,6 +62,8 @@ export default class AudioAnalyzer {
 	///////////////////////////////////////////////
 	// Utility Functions
 	///////////////////////////////////////////////
+	async handleAudioInit() {}
+
 	async handleAudioInputChange(audioInput: AudioInput) {
 		// Remove existing sources
 		if (this.audioSource) this.audioSource.disconnect()
@@ -216,7 +218,7 @@ export default class AudioAnalyzer {
 			map(index, min, max, 0, this.spectrum.length / spectrumShortener - 1)
 		)
 
-		let value = this.spectrum[valueBand]
+		const value = this.spectrum[valueBand]
 		return value
 	}
 
@@ -227,7 +229,7 @@ export default class AudioAnalyzer {
 			map(index, min, max, 0, this.waveform.length / waveformShortener - 1)
 		)
 
-		let value = this.waveform[valueBand]
+		const value = this.waveform[valueBand]
 		return value
 	}
 
