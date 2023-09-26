@@ -9,6 +9,7 @@
 	import { spring } from 'svelte/motion'
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import InputNode from '../../connectors/InputNode.svelte'
+	import MidiSignalButton from '../../midi/MidiSignalButton.svelte'
 
 	export let controlId: ControlId
 
@@ -62,6 +63,10 @@
 </script>
 
 <div class="g-control">
+	<div class="g-midi">
+		<MidiSignalButton {controlId} />
+	</div>
+
 	<InputNode {controlId} />
 
 	<div class="g-label">
