@@ -38,7 +38,7 @@
 
 			if (midi.signals[midiSignalId]) controlConfig.signal = midi.signals[midiSignalId]
 
-			return config
+			return controlConfig
 		})
 	}}
 >
