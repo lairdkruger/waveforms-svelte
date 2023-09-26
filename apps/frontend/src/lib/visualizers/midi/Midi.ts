@@ -1,5 +1,5 @@
 import { camelcase } from '$lib/visualizers/utils/Strings'
-import Signal from '../signals/Signal'
+import Signal from '../controls/library/signals/Signal'
 
 export type MidiDeviceId = string // Format midiDeviceName
 export type MidiControlId = string // Format [midiControlNumber]-[SignalType]_[Midi-Device-Name]
@@ -13,6 +13,7 @@ export default class Midi {
 	activeInput: MidiControlId | null = null
 
 	signalFunctions: { [key: string]: any } = {}
+	signals: { [key: string]: Signal } = {}
 
 	constructor() {
 		this.requestMidiAccess()
@@ -72,14 +73,18 @@ export default class Midi {
 	}
 
 	createSignal(signalFunctionId: string, midiControlId: MidiControlId) {
-		const signalFunction = new Signal('midi', signalFunctionId, () => this[midiControlId], [
-			() => 0,
-			() => 1
-		])
+		const signalFunction = () => this[midiControlId]
+		this.signalFunctions[signalFunctionId] = signalFunction
 
-		this.signalFunctions[signalFunction.id] = signalFunction
+		const signal = new Signal(
+			'midi',
+			signalFunctionId,
+			() => this.signalFunctions[signalFunctionId](),
+			[() => 0, () => 1]
+		)
 
-		return signalFunction
+		this.signals[signalFunctionId] = signal
+		return this.signals[signalFunctionId]
 	}
 
 	// Add a midi input to the store
