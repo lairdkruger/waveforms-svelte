@@ -6,15 +6,14 @@
 	const { controls, midi } = getVisualizerContext()
 	const control = controls.getControl(controlId)
 	const config = control.config
-	$: signalConfig = $config.signal?.config
 
-	$: midiActive = $signalConfig?.booster?.context === 'midi'
+	$: midiActive = $config.signal?.context === 'midi'
 	$: midiLabel = () => {
 		if (midi.listening) {
 			return 'Key?'
 		} else if (midiActive) {
 			// First four characters of midi function id, without the get_
-			return $signalConfig?.booster?.id.slice(3, 7)
+			return $config.signal?.id.slice(3, 7)
 		} else {
 			return 'MIDI'
 		}
@@ -23,7 +22,7 @@
 
 <button
 	class="wrapper"
-	class:active={$signalConfig?.booster?.context === 'midi'}
+	class:active={$config.signal?.context === 'midi'}
 	on:click={async () => {
 		// Toggle listening off if already listening
 		if (midi.listening) {
@@ -34,10 +33,10 @@
 		const midiSignalId = await midi.listenForMidiInput()
 		if (!midiSignalId) return null
 
-		signalConfig?.update((config) => {
+		config.update((controlConfig) => {
 			console.log('MIDI: ', midiSignalId, midi)
 
-			config.booster = midi.signals[midiSignalId]
+			controlConfig.signal = midi.signals[midiSignalId]
 
 			return config
 		})
