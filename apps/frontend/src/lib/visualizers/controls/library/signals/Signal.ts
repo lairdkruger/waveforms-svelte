@@ -60,7 +60,8 @@ export default class Signal {
 		)
 
 		// When signal is being boosted: it always returns 1
-		const isBoosted = config.booster && normalizedOutput === 1
+		const booster = config.booster
+		const isBoosted = booster ? get(booster.output)() === 1 || normalizedOutput === 1 : false
 		if (isBoosted) return () => 1
 
 		// Bezier curves
