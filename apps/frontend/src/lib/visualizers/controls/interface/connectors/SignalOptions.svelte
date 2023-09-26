@@ -193,14 +193,17 @@
 						class="button textLabel"
 						class:enabled={$signalConfig?.booster?.context === 'midi'}
 						on:click={async () => {
+							// Toggle listening off if already listening
+							if (midi.listening) {
+								midi.cancelListenForMidiInput()
+								return
+							}
+
 							const midiSignalId = await midi.listenForMidiInput()
-							if (!midiSignalId) return null
+							if (!midiSignalId || !signalConfig) return null
 
-							signalConfig?.update((config) => {
-								console.log('MIDI: ', midiSignalId, midi)
-
-								config.booster = midi.signals[midiSignalId]
-
+							signalConfig.update((config) => {
+								if (midi.signals[midiSignalId]) config.booster = midi.signals[midiSignalId]
 								return config
 							})
 						}}
