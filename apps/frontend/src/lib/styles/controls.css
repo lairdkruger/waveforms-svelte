@@ -42,7 +42,6 @@
 .cpLabel {
 	font-weight: 400;
 	font-size: var(--cpLabelSize);
-	line-height: 1;
 	text-transform: uppercase;
 	margin: 0;
 	padding: 0;

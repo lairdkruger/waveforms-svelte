@@ -2,7 +2,7 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
 	import { onDestroy } from 'svelte'
-	import { BoxGeometry, MeshBasicMaterial, type Group, Mesh, Color, Vector3 } from 'three'
+	import { type Group, Color } from 'three'
 	import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshline'
 	import { distributeAngles, map, radians } from '$lib/visualizers/utils/Maths'
 	import Signal from '$lib/visualizers/controls/library/signals/Signal'
@@ -19,7 +19,7 @@
 	export let label: string
 
 	const { controls, audioAnalyzer } = getVisualizerContext()
-	const { onFrame, scene } = getWebglContext()
+	const { onFrame } = getWebglContext()
 
 	const geometry = new MeshLineGeometry()
 	const materialColor = new Color(0x000000)

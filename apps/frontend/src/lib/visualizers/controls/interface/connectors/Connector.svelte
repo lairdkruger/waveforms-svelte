@@ -10,14 +10,14 @@
 	$: signal = $config.signal
 
 	const audioSignalWidths: Record<string, string> = {
-		getVolume: '0.440',
-		getVolumePeaked: '0.412',
-		getBassVolume: '0.343',
-		getBassPeaked: '0.315',
-		getMidsVolume: '0.254',
-		getMidsPeaked: '0.226',
-		getHighsVolume: '0.164',
-		getHighsPeaked: '0.136'
+		getVolume: '0.441',
+		getVolumePeaked: '0.413',
+		getBassVolume: '0.345',
+		getBassPeaked: '0.317',
+		getMidsVolume: '0.255',
+		getMidsPeaked: '0.227',
+		getHighsVolume: '0.165',
+		getHighsPeaked: '0.137'
 	}
 </script>
 

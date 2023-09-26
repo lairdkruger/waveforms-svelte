@@ -152,9 +152,6 @@
 					>
 						<span class="cpLabel">High</span>
 					</button>
-				</div>
-
-				<div class="buttons">
 					<button
 						class="button textLabel"
 						class:enabled={$signalConfig?.booster?.id === 'getVolumePeaked'}
@@ -178,6 +175,7 @@
 						<span class="cpLabel">None</span>
 					</button>
 				</div>
+
 				<!-- <div class="buttons">
 					<button
 						class="button textLabel"
@@ -257,7 +255,7 @@
 	.group {
 		display: flex;
 		flex-direction: column;
-		row-gap: 4px;
+		row-gap: 2px;
 		align-items: flex-start;
 	}
 
@@ -270,6 +268,7 @@
 		flex-wrap: wrap;
 		justify-content: flex-start;
 		column-gap: 4px;
+		row-gap: 4px;
 	}
 
 	.button {
