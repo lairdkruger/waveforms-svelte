@@ -199,7 +199,7 @@
 							signalConfig?.update((config) => {
 								console.log('MIDI: ', midiSignalId, midi)
 
-								config.booster = midi.signalFunctions[midiSignalId]
+								config.booster = midi.signals[midiSignalId]
 
 								return config
 							})
