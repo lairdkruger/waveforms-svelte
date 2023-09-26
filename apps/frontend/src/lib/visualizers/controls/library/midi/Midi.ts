@@ -1,4 +1,4 @@
-import { camelcase } from '../utils/Strings'
+import { camelcase } from '$lib/visualizers/utils/Strings'
 
 export type MidiDeviceId = string // Format midiDeviceName
 export type MidiControlId = string // Format [midiControlNumber]-[SignalType]_[Midi-Device-Name]

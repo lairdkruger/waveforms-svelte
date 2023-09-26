@@ -1,4 +1,4 @@
-import type { MidiControlId } from '$lib/visualizers/midi/Midi'
+import type { MidiControlId } from '$lib/visualizers/controls/library/midi/Midi'
 import type { Ease } from '$lib/visualizers/utils/CubicBezier'
 import type { Writable } from 'svelte/store'
 import type {

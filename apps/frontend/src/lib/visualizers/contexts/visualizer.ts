@@ -1,6 +1,6 @@
 import { getContext, setContext } from 'svelte'
 import AudioAnalyzer from '../audio/AudioAnalyzer'
-import Midi from '../midi/Midi'
+import Midi from '../controls/library/midi/Midi'
 import Controls from '../controls/Controls'
 
 interface VisualizerContext {

@@ -10,10 +10,22 @@
 
 	export let controlId: string
 
-	const { controls, audioAnalyzer } = getVisualizerContext()
+	const { controls, audioAnalyzer, midi } = getVisualizerContext()
 	const control = controls.getControl(controlId)
 	const config = control.config
 	$: signalConfig = $config.signal?.config
+
+	$: midiActive = $signalConfig?.booster?.context === 'midi'
+	$: midiLabel = () => {
+		if (midi.listening) {
+			return 'Key?'
+		} else if (midiActive) {
+			// First four characters of midi function id, without the get_
+			return $signalConfig?.booster?.id.slice(3, 7)
+		} else {
+			return 'MIDI'
+		}
+	}
 
 	let expanded = false
 	const opacity = spring(0)
@@ -176,26 +188,26 @@
 					</button>
 				</div>
 
-				<!-- <div class="buttons">
+				<div class="buttons">
 					<button
 						class="button textLabel"
-						class:enabled={$signalConfig.booster?.function.context === 'midi'}
+						class:enabled={$signalConfig?.booster?.context === 'midi'}
 						on:click={async () => {
-							const midiSignalId = await listenForMidiInput()
-						if (!midiSignalId) return null
+							const midiSignalId = await midi.listenForMidiInput()
+							if (!midiSignalId) return null
 
-						const newMidiSignalConfig: SignalConfig = {
-							context: 'midi',
-							id: midiSignalId,
-						}
+							signalConfig?.update((config) => {
+								if (!config.booster) return config
+								config.booster.context = 'midi'
+								config.booster.id = midiSignalId
 
-						modifyBooster(newMidiSignalConfig)
+								return config
+							})
 						}}
 					>
-				
 						<span class="">{midiLabel()}</span>
 					</button>
-				</div> -->
+				</div>
 			</div>
 		</div>
 	</div>

@@ -1,5 +1,5 @@
 import type AudioAnalyzer from '$lib/visualizers/audio/AudioAnalyzer'
-import type Midi from '$lib/visualizers/midi/Midi'
+import type Midi from '$lib/visualizers/controls/library/midi/Midi'
 import type {
 	Control,
 	ControlId,
