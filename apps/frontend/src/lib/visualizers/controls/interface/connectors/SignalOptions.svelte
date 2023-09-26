@@ -197,9 +197,9 @@
 							if (!midiSignalId) return null
 
 							signalConfig?.update((config) => {
-								if (!config.booster) return config
-								config.booster.context = 'midi'
-								config.booster.id = midiSignalId
+								console.log('MIDI: ', midiSignalId, midi)
+
+								config.booster = midi.signalFunctions[midiSignalId]
 
 								return config
 							})

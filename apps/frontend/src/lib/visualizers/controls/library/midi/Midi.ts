@@ -1,4 +1,5 @@
 import { camelcase } from '$lib/visualizers/utils/Strings'
+import Signal from '../signals/Signal'
 
 export type MidiDeviceId = string // Format midiDeviceName
 export type MidiControlId = string // Format [midiControlNumber]-[SignalType]_[Midi-Device-Name]
@@ -71,12 +72,10 @@ export default class Midi {
 	}
 
 	createSignal(signalFunctionId: string, midiControlId: MidiControlId) {
-		const signalFunction = {
-			context: 'midi',
-			type: 'number',
-			id: signalFunctionId,
-			output: () => this[midiControlId]
-		}
+		const signalFunction = new Signal('midi', signalFunctionId, () => this[midiControlId], [
+			() => 0,
+			() => 1
+		])
 
 		this.signalFunctions[signalFunction.id] = signalFunction
 
