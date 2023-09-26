@@ -5,6 +5,7 @@
 	import type { Writable } from 'svelte/store'
 	import InputNode from '../../connectors/InputNode.svelte'
 	import type SelectControl from '../../../library/controls/SelectControl'
+	import MidiSignalButton from '../../midi/MidiSignalButton.svelte'
 
 	export let controlId: ControlId
 
@@ -23,6 +24,10 @@
 </script>
 
 <div class="g-control">
+	<div class="g-midi">
+		<MidiSignalButton {controlId} />
+	</div>
+
 	<InputNode {controlId} boolean={true} />
 
 	<div class="g-label">
