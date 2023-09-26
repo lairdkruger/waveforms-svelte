@@ -137,6 +137,8 @@ export default class Midi {
 
 		// Update existing midi control value
 		if (midiControlId in this) {
+			console.log('Updating existing midi control value: ', midiControlId, value)
+
 			this[midiControlId] = value
 		}
 
