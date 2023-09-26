@@ -36,7 +36,7 @@
 		config.update((controlConfig) => {
 			console.log('MIDI: ', midiSignalId, midi)
 
-			controlConfig.signal = midi.signals[midiSignalId]
+			if (midi.signals[midiSignalId]) controlConfig.signal = midi.signals[midiSignalId]
 
 			return config
 		})

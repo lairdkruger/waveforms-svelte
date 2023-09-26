@@ -12,7 +12,6 @@ export default class Midi {
 	recentInput: MidiControlId | null = null
 	activeInput: MidiControlId | null = null
 
-	signalFunctions: { [key: string]: any } = {}
 	signals: { [key: string]: Signal } = {}
 
 	constructor() {
@@ -73,15 +72,12 @@ export default class Midi {
 	}
 
 	createSignal(signalFunctionId: string, midiControlId: MidiControlId) {
-		const signalFunction = () => this[midiControlId]
-		this.signalFunctions[signalFunctionId] = signalFunction
+		this[signalFunctionId] = () => this[midiControlId]
 
-		const signal = new Signal(
-			'midi',
-			signalFunctionId,
-			() => this.signalFunctions[signalFunctionId](),
-			[() => 0, () => 1]
-		)
+		const signal = new Signal('midi', signalFunctionId, () => this[signalFunctionId](), [
+			() => 0,
+			() => 1
+		])
 
 		this.signals[signalFunctionId] = signal
 		return this.signals[signalFunctionId]
@@ -128,6 +124,8 @@ export default class Midi {
 	}
 
 	handleMidiMessage(message: any) {
+		console.log(this)
+
 		const midiControlId = this.constructMidiControlId(message)
 
 		// Handle new midi control setup
@@ -205,11 +203,10 @@ export default class Midi {
 	// Manually create a midi signal function (eg: loading presets)
 	createMidiSignal(signalFunctionId: string) {
 		const midiControlId = this.createMidiControlId(signalFunctionId)
-		// Append a new midi control signal to the state
-		this[midiControlId] = 0
+		this.addMidiInput(midiControlId)
 
 		// Create a new signalFunction from existing id and append it to the state
-		const signalFunction = this.createSignal(signalFunctionId, midiControlId)
-		return signalFunction
+		const signal = this.createSignal(signalFunctionId, midiControlId)
+		return signal
 	}
 }
