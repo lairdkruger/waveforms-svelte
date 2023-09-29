@@ -2,6 +2,7 @@
 	import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three'
 	import { getWebglContext } from '../contexts/webgl'
 	import { getContext, onDestroy } from 'svelte'
+	import { getVisualizerContext } from '../contexts/visualizer'
 
 	const { scene, onFrame } = getWebglContext()
 
@@ -10,15 +11,15 @@
 	let boxMesh = new Mesh(boxGeometry, boxMaterial)
 	boxMesh.position.set(0, 0, -5)
 
-	const { audioAnalyzer } = getContext('prototypeVisualizer')
+	const { audioAnalyzer } = getVisualizerContext('prototypeVisualizer')
 
 	onFrame(() => {
 		boxMesh.rotation.x += 0.01
 		boxMesh.rotation.y += 0.01
 		boxMesh.scale.set(
-			audioAnalyzer.getVolume() / 10,
-			audioAnalyzer.getVolume() / 10,
-			audioAnalyzer.getVolume() / 10
+			audioAnalyzer.signalFunctions['getVolume']() / 10,
+			audioAnalyzer.signalFunctions['getVolume']() / 10,
+			audioAnalyzer.signalFunctions['getVolume']() / 10
 		)
 	})
 

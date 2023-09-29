@@ -132,8 +132,8 @@
 			signal: new Signal(
 				'audio',
 				'getVolume',
-				() => audioAnalyzer.getVolume(),
-				[() => 0, () => audioAnalyzer.getPeakVolume()],
+				() => audioAnalyzer.signalFunctions['getVolume'](),
+				[() => 0, () => audioAnalyzer.signalFunctions['getPeakVolume']()], // TODO
 				{
 					ease: 'out',
 					booster: audioAnalyzer.signals['getBassPeaked']

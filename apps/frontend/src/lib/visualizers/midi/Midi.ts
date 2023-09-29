@@ -76,12 +76,10 @@ export default class Midi {
 	createSignal(signalFunctionId: string, midiControlId: MidiControlId) {
 		this.signalFunctions[signalFunctionId] = () => this.primitives[midiControlId]
 
-		const signal = new Signal(
-			'midi',
-			signalFunctionId,
-			() => this.signalFunctions[signalFunctionId](), // TODO: look at this line
-			[() => 0, () => 1]
-		)
+		const signal = new Signal('midi', signalFunctionId, this.signalFunctions[signalFunctionId], [
+			() => 0,
+			() => 1
+		])
 
 		this.signals[signalFunctionId] = signal
 		return this.signals[signalFunctionId]

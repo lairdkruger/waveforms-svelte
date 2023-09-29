@@ -4,8 +4,8 @@ import { map } from '../utils/Maths'
 export type AudioInput = 'microphone' | 'browser'
 
 export default class AudioAnalyzer {
-	audioContext
-	audioAnalyzer
+	audioContext: AudioContext
+	audioAnalyzer: AnalyserNode
 	audioMediaStream: MediaStream | null = null
 	audioSource: MediaStreamAudioSourceNode | null = null
 
@@ -31,21 +31,25 @@ export default class AudioAnalyzer {
 	highsFrequencyRange = [Math.floor((this.fft / 2) * 0.7), Math.ceil((this.fft / 2) * 0.8)]
 
 	// Signals
-	volume = 0
-	peakVolume = 0
-	volumePeaked: 0 | 1 = 0
+	primitives = {
+		volume: 0,
+		peakVolume: 0,
+		volumePeaked: 0,
 
-	bassVolume = 0
-	peakBassVolume = 0
-	bassPeaked: 0 | 1 = 0
+		bassVolume: 0,
+		peakBassVolume: 0,
+		bassPeaked: 0,
 
-	midsVolume = 0
-	peakMidsVolume = 0
-	midsPeaked: 0 | 1 = 0
+		midsVolume: 0,
+		peakMidsVolume: 0,
+		midsPeaked: 0,
 
-	highsVolume = 0
-	peakHighsVolume = 0
-	highsPeaked: 0 | 1 = 0
+		highsVolume: 0,
+		peakHighsVolume: 0,
+		highsPeaked: 0
+	}
+	signalFunctions: { [key: string]: () => number } = {} // [signalFunctionId]: getPrimitive
+	signals: { [key: string]: Signal } = {}
 
 	///////////////////////////////////////////////
 	// Constructor
@@ -55,6 +59,73 @@ export default class AudioAnalyzer {
 		this.audioAnalyzer = this.audioContext.createAnalyser()
 		this.audioAnalyzer.fftSize = this.fft
 		this.audioAnalyzer.smoothingTimeConstant = this.smoothing
+
+		this.signalFunctions = {
+			getVolume: () => this.primitives['volume'],
+			getPeakVolume: () => this.primitives['peakVolume'],
+			getVolumePeaked: () => this.primitives['volumePeaked'],
+
+			getBassVolume: () => this.primitives['bassVolume'],
+			getPeakBassVolume: () => this.primitives['peakBassVolume'],
+			getBassPeaked: () => this.primitives['bassPeaked'],
+
+			getMidsVolume: () => this.primitives['midsVolume'],
+			getPeakMidsVolume: () => this.primitives['peakMidsVolume'],
+			getMidsPeaked: () => this.primitives['midsPeaked'],
+
+			getHighsVolume: () => this.primitives['highsVolume'],
+			getPeakHighsVolume: () => this.primitives['peakHighsVolume'],
+			getHighsPeaked: () => this.primitives['highsPeaked']
+		}
+
+		this.signals = {
+			getVolume: new Signal('audio', 'getVolume', () => this.signalFunctions['getVolume'](), [
+				() => 0,
+				() => this.signalFunctions['getPeakVolume']()
+			]),
+			getVolumePeaked: new Signal(
+				'audio',
+				'getVolumePeaked',
+				() => this.signalFunctions['getVolumePeaked'](), // TODO look at this line
+				[() => 0, () => 1]
+			),
+			getBassVolume: new Signal(
+				'audio',
+				'getBassVolume',
+				() => this.signalFunctions['getBassVolume'](),
+				[() => 0, () => this.signalFunctions['getPeakBassVolume']()]
+			),
+			getBassPeaked: new Signal(
+				'audio',
+				'getBassPeaked',
+				() => this.signalFunctions['getBassPeaked'](),
+				[() => 0, () => 1]
+			),
+			getMidsVolume: new Signal(
+				'audio',
+				'getMidsVolume',
+				() => this.signalFunctions['getMidsVolume'](),
+				[() => 0, () => this.signalFunctions['getPeakMidsVolume']()]
+			),
+			getMidsPeaked: new Signal(
+				'audio',
+				'getMidsPeaked',
+				() => this.signalFunctions['getMidsPeaked'](),
+				[() => 0, () => 1]
+			),
+			getHighsVolume: new Signal(
+				'audio',
+				'getHighsVolume',
+				() => this.signalFunctions['getHighsVolume'](),
+				[() => 0, () => this.signalFunctions['getPeakHighsVolume']()]
+			),
+			getHighsPeaked: new Signal(
+				'audio',
+				'getHighsPeaked',
+				() => this.signalFunctions['getHighsPeaked'](),
+				[() => 0, () => 1]
+			)
+		}
 
 		this.changeAudioInput(this.audioInput)
 	}
@@ -168,32 +239,61 @@ export default class AudioAnalyzer {
 		}
 
 		// Calculate RMS for each range
-		this.volume = Math.sqrt(rms / rmsCount)
-		this.bassVolume = Math.sqrt(rmsBass / rmsBassCount)
-		this.midsVolume = Math.sqrt(rmsMids / rmsMidsCount)
-		this.highsVolume = Math.sqrt(rmsHighs / rmsHighsCount)
+		this.primitives['volume'] = Math.sqrt(rms / rmsCount)
+		this.primitives['bassVolume'] = Math.sqrt(rmsBass / rmsBassCount)
+		this.primitives['midsVolume'] = Math.sqrt(rmsMids / rmsMidsCount)
+		this.primitives['highsVolume'] = Math.sqrt(rmsHighs / rmsHighsCount)
 
 		// Calculate if ranges have peaked
-		this.volumePeaked = this.volume > this.peakVolume - this.volumePeakedThreshold ? 1 : 0
-		this.bassPeaked = this.bassVolume > this.peakBassVolume - this.bassPeakedThreshold ? 1 : 0
-		this.midsPeaked = this.midsVolume > this.peakMidsVolume - this.midsPeakedThreshold ? 1 : 0
-		this.highsPeaked = this.highsVolume > this.peakHighsVolume - this.highsPeakedThreshold ? 1 : 0
+		this.primitives['volumePeaked'] =
+			this.primitives['volume'] > this.primitives['peakVolume'] - this.volumePeakedThreshold
+				? 1
+				: 0
+		this.primitives['bassPeaked'] =
+			this.primitives['bassVolume'] >
+			this.primitives['peakBassVolume'] - this.bassPeakedThreshold
+				? 1
+				: 0
+		this.primitives['midsPeaked'] =
+			this.primitives['midsVolume'] >
+			this.primitives['peakMidsVolume'] - this.midsPeakedThreshold
+				? 1
+				: 0
+		this.primitives['highsPeaked'] =
+			this.primitives['highsVolume'] >
+			this.primitives['peakHighsVolume'] - this.highsPeakedThreshold
+				? 1
+				: 0
 
 		// Track peak volumes
-		this.peakVolume = this.volume > this.peakVolume ? this.volume : this.peakVolume
-		this.peakBassVolume =
-			this.bassVolume > this.peakBassVolume ? this.bassVolume : this.peakBassVolume
-		this.peakMidsVolume =
-			this.midsVolume > this.peakMidsVolume ? this.midsVolume : this.peakMidsVolume
-		this.peakHighsVolume =
-			this.highsVolume > this.peakHighsVolume ? this.highsVolume : this.peakHighsVolume
+		this.primitives['peakVolume'] =
+			this.primitives['volume'] > this.primitives['peakVolume']
+				? this.primitives['volume']
+				: this.primitives['peakVolume']
+		this.primitives['peakBassVolume'] =
+			this.primitives['bassVolume'] > this.primitives['peakBassVolume']
+				? this.primitives['bassVolume']
+				: this.primitives['peakBassVolume']
+		this.primitives['peakMidsVolume'] =
+			this.primitives['midsVolume'] > this.primitives['peakMidsVolume']
+				? this.primitives['midsVolume']
+				: this.primitives['peakMidsVolume']
+		this.primitives['peakHighsVolume'] =
+			this.primitives['highsVolume'] > this.primitives['peakHighsVolume']
+				? this.primitives['highsVolume']
+				: this.primitives['peakHighsVolume']
 
 		// Constantly decrease peak volumes to keep things fresh
 		// Mapping a slower fall in quieter moments (customised to characteristics of each range eg: snares rms typically quiter)
-		this.peakVolume = this.peakVolume - map(this.volume, 0, 150, 0.005, 0.04)
-		this.peakBassVolume = this.peakBassVolume - map(this.bassVolume, 0, 150, 0.005, 0.04)
-		this.peakMidsVolume = this.peakMidsVolume - map(this.midsVolume, 0, 150, 0.005, 0.04)
-		this.peakHighsVolume = this.peakHighsVolume - map(this.highsVolume, 0, 150, 0.005, 0.04)
+		this.primitives['peakVolume'] =
+			this.primitives['peakVolume'] - map(this.primitives['volume'], 0, 150, 0.005, 0.04)
+		this.primitives['peakBassVolume'] =
+			this.primitives['peakBassVolume'] - map(this.primitives['bassVolume'], 0, 150, 0.005, 0.04)
+		this.primitives['peakMidsVolume'] =
+			this.primitives['peakMidsVolume'] - map(this.primitives['midsVolume'], 0, 150, 0.005, 0.04)
+		this.primitives['peakHighsVolume'] =
+			this.primitives['peakHighsVolume'] -
+			map(this.primitives['highsVolume'], 0, 150, 0.005, 0.04)
 	}
 
 	analyzeSpectrum(volumeAccuracy: number) {
@@ -231,93 +331,6 @@ export default class AudioAnalyzer {
 
 		const value = this.waveform[valueBand]
 		return value
-	}
-
-	///////////////////////////////////////////////
-	// Getters
-	///////////////////////////////////////////////
-	getVolume() {
-		return this.volume
-	}
-
-	getPeakVolume() {
-		return this.peakVolume
-	}
-
-	getVolumePeaked() {
-		return this.volumePeaked
-	}
-
-	getBassVolume() {
-		return this.bassVolume
-	}
-
-	getPeakBassVolume() {
-		return this.peakBassVolume
-	}
-
-	getBassPeaked() {
-		return this.bassPeaked
-	}
-
-	getMidsVolume() {
-		return this.midsVolume
-	}
-
-	getPeakMidsVolume() {
-		return this.peakMidsVolume
-	}
-
-	getMidsPeaked() {
-		return this.midsPeaked
-	}
-
-	getHighsVolume() {
-		return this.highsVolume
-	}
-
-	getPeakHighsVolume() {
-		return this.peakHighsVolume
-	}
-
-	getHighsPeaked() {
-		return this.highsPeaked
-	}
-
-	signals: Record<string, Signal> = {
-		getVolume: new Signal('audio', 'getVolume', () => this.getVolume(), [
-			() => 0,
-			() => this.getPeakVolume()
-		]),
-		getVolumePeaked: new Signal('audio', 'getVolumePeaked', () => this.getVolumePeaked(), [
-			() => 0,
-			() => 1
-		]),
-		getBassVolume: new Signal('audio', 'getBassVolume', () => this.getBassVolume(), [
-			() => 0,
-			() => this.getPeakBassVolume()
-		]),
-		getBassPeaked: new Signal('audio', 'getBassPeaked', () => this.getBassPeaked(), [
-			() => 0,
-			() => 1
-		]),
-		getMidsVolume: new Signal('audio', 'getMidsVolume', () => this.getMidsVolume(), [
-			() => 0,
-			() => this.getPeakMidsVolume()
-		]),
-		getMidsPeaked: new Signal('audio', 'getMidsPeaked', () => this.getMidsPeaked(), [
-			() => 0,
-			() => 1
-		]),
-		getHighsVolume: new Signal('audio', 'getHighsVolume', () => this.getHighsVolume(), [
-			() => 0,
-
-			() => this.getPeakHighsVolume()
-		]),
-		getHighsPeaked: new Signal('audio', 'getHighsPeaked', () => this.getHighsPeaked(), [
-			() => 0,
-			() => 1
-		])
 	}
 
 	getSignals() {
