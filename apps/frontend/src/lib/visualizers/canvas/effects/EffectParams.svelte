@@ -20,7 +20,7 @@
 				'audio',
 				'getVolume',
 				audioAnalyzer.signalFunctions['getVolume'],
-				[() => 0, () => audioAnalyzer.signalFunctions['getPeakVolume']()], // TODO
+				[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
 				{
 					ease: 'in',
 					booster: new Signal(

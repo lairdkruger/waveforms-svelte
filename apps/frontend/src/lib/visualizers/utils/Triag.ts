@@ -44,7 +44,6 @@ export default class Triag extends Mesh {
 		if (browser) window.addEventListener('resize', () => this.onResize(renderer))
 	}
 
-	// TODO: Resizer
 	onResize(renderer: WebGLRenderer) {
 		const size = new Vector2()
 		renderer.getSize(size)

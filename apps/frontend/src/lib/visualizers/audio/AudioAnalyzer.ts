@@ -79,50 +79,50 @@ export default class AudioAnalyzer {
 		}
 
 		this.signals = {
-			getVolume: new Signal('audio', 'getVolume', () => this.signalFunctions['getVolume'](), [
+			getVolume: new Signal('audio', 'getVolume', this.signalFunctions['getVolume'], [
 				() => 0,
-				() => this.signalFunctions['getPeakVolume']()
+				this.signalFunctions['getPeakVolume']
 			]),
 			getVolumePeaked: new Signal(
 				'audio',
 				'getVolumePeaked',
-				() => this.signalFunctions['getVolumePeaked'](), // TODO look at this line
+				this.signalFunctions['getVolumePeaked'],
 				[() => 0, () => 1]
 			),
 			getBassVolume: new Signal(
 				'audio',
 				'getBassVolume',
-				() => this.signalFunctions['getBassVolume'](),
-				[() => 0, () => this.signalFunctions['getPeakBassVolume']()]
+				this.signalFunctions['getBassVolume'],
+				[() => 0, this.signalFunctions['getPeakBassVolume']]
 			),
 			getBassPeaked: new Signal(
 				'audio',
 				'getBassPeaked',
-				() => this.signalFunctions['getBassPeaked'](),
+				this.signalFunctions['getBassPeaked'],
 				[() => 0, () => 1]
 			),
 			getMidsVolume: new Signal(
 				'audio',
 				'getMidsVolume',
-				() => this.signalFunctions['getMidsVolume'](),
-				[() => 0, () => this.signalFunctions['getPeakMidsVolume']()]
+				this.signalFunctions['getMidsVolume'],
+				[() => 0, this.signalFunctions['getPeakMidsVolume']]
 			),
 			getMidsPeaked: new Signal(
 				'audio',
 				'getMidsPeaked',
-				() => this.signalFunctions['getMidsPeaked'](),
+				this.signalFunctions['getMidsPeaked'],
 				[() => 0, () => 1]
 			),
 			getHighsVolume: new Signal(
 				'audio',
 				'getHighsVolume',
-				() => this.signalFunctions['getHighsVolume'](),
-				[() => 0, () => this.signalFunctions['getPeakHighsVolume']()]
+				this.signalFunctions['getHighsVolume'],
+				[() => 0, this.signalFunctions['getPeakHighsVolume']]
 			),
 			getHighsPeaked: new Signal(
 				'audio',
 				'getHighsPeaked',
-				() => this.signalFunctions['getHighsPeaked'](),
+				this.signalFunctions['getHighsPeaked'],
 				[() => 0, () => 1]
 			)
 		}
