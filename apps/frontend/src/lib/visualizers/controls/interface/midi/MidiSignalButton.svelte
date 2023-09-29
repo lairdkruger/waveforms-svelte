@@ -18,6 +18,9 @@
 			return 'MIDI'
 		}
 	}
+
+	// Midi events should be cancelled if signal is removed
+	$: if (!$controlConfig.signal) midi.cancelListenForMidiInput()
 </script>
 
 <button
