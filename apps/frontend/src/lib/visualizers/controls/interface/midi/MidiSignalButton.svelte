@@ -48,6 +48,7 @@
 
 <style>
 	.wrapper {
+		margin-top: 1px;
 		padding: 1px 2px 0px 2px;
 
 		border: 1px solid var(--black);

@@ -15,7 +15,7 @@
 		{ label: 'Persistance', group: group },
 		{
 			defaultValue: 0,
-			range: [0.8, 1],
+			range: [0.8, 0.98],
 			signal: new Signal(
 				'audio',
 				'getVolume',

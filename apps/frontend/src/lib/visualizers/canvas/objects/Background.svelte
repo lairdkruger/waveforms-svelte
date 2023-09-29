@@ -4,11 +4,13 @@
 	import { onDestroy } from 'svelte'
 	import { BoxGeometry, MeshBasicMaterial, Mesh, Color, BackSide } from 'three'
 
+	export let initialColor = new Color(0x000000)
+
 	const { controls } = getVisualizerContext()
 	const { onFrame, scene } = getWebglContext()
 
 	const geometry = new BoxGeometry(1, 1, 1)
-	const materialColor = new Color(0x000000)
+	const materialColor = new Color(initialColor)
 	const material = new MeshBasicMaterial({ color: materialColor, side: BackSide })
 	const mesh = new Mesh(geometry, material)
 
@@ -27,9 +29,18 @@
 		{
 			gradient: [
 				{ id: '0', coord: 0, color: [0, 0, 0] },
+				{
+					id: '0.5',
+					coord: 0.5,
+					color: [
+						initialColor.toArray()[0],
+						initialColor.toArray()[1],
+						initialColor.toArray()[2]
+					]
+				},
 				{ id: '1', coord: 1, color: [1, 1, 1] }
 			],
-			defaultValue: 0.0
+			defaultValue: 0.5
 		}
 	)
 

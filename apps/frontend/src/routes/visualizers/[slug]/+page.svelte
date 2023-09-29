@@ -1,5 +1,6 @@
 <script>
 	import Canvas from '$lib/visualizers/canvas/Canvas.svelte'
+	import Betaform from '$lib/visualizers/canvas/visualizers/Betaform.svelte'
 	import Primitive from '$lib/visualizers/canvas/visualizers/Primitive.svelte'
 
 	export let data
@@ -10,5 +11,7 @@
 <Canvas>
 	{#if visualizerSlug === 'primitive'}
 		<Primitive />
+	{:else if visualizerSlug === 'betaform'}
+		<Betaform />
 	{/if}
 </Canvas>

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
-	import { getVisualizerContext } from '../contexts/visualizer'
-	import type { CurrentControlConfigs } from '../controls/types/presets'
-	import Signal from '../controls/library/signals/Signal'
-	import type { ControlConfig, ControlId, SignalConfig } from '../controls/types'
+	import { getVisualizerContext } from '../../contexts/visualizer'
+	import type { CurrentControlConfigs } from '../../controls/types/presets'
+	import Signal from '../../controls/library/signals/Signal'
+	import type { ControlConfig, ControlId, SignalConfig } from '../../controls/types'
 
 	const userPresets = $page.data.userPresets
 	const { controls, audioAnalyzer, midi } = getVisualizerContext()

@@ -17,12 +17,13 @@
 
 	export let parent: Group
 	export let label: string
+	export let initialColor = new Color(0xffffff)
 
 	const { controls, audioAnalyzer } = getVisualizerContext()
 	const { onFrame } = getWebglContext()
 
 	const geometry = new MeshLineGeometry()
-	const materialColor = new Color(0x000000)
+	const materialColor = new Color(initialColor)
 	// @ts-ignore
 	const material = new MeshLineMaterial({
 		color: materialColor,
@@ -159,9 +160,18 @@
 			group: group
 		},
 		{
-			defaultValue: 0,
+			defaultValue: 0.5,
 			gradient: [
 				{ id: '0', coord: 0, color: [0, 0, 0] },
+				{
+					id: '0.5',
+					coord: 0.5,
+					color: [
+						initialColor.toArray()[0],
+						initialColor.toArray()[1],
+						initialColor.toArray()[2]
+					]
+				},
 				{ id: '1', coord: 1, color: [1, 1, 1] }
 			]
 		}
