@@ -47,7 +47,7 @@
 
 <style>
 	.wrapper {
-		padding: 0px 2px 1px 2px;
+		padding: 1px 2px 0px 2px;
 
 		border: 1px solid var(--black);
 		border-radius: 2px;

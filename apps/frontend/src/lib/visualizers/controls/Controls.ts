@@ -1,5 +1,4 @@
 import type AudioAnalyzer from '$lib/visualizers/audio/AudioAnalyzer'
-import type Midi from '$lib/visualizers/controls/library/midi/Midi'
 import type {
 	Control,
 	ControlId,
@@ -32,6 +31,7 @@ import NumberControl from './library/controls/NumberControl'
 import SelectControl from './library/controls/SelectControl'
 import ColorControl from './library/controls/ColorControl'
 import Preset from './library/presets/Preset'
+import type Midi from '../midi/Midi'
 
 export default class Controls {
 	// Internals

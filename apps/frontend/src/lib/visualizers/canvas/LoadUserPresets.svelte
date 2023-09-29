@@ -7,7 +7,7 @@
 	import type { ControlConfig, ControlId, SignalConfig } from '../controls/types'
 
 	const userPresets = $page.data.userPresets
-	const { controls, audioAnalyzer } = getVisualizerContext()
+	const { controls, audioAnalyzer, midi } = getVisualizerContext()
 	const presets = controls.presets.presets
 
 	$: console.log(userPresets)
@@ -49,6 +49,24 @@
 								baseSignal.range,
 								boosterConfig
 							)
+						} else if (config.signal.booster.context === 'midi') {
+							const boosterConfig: SignalConfig = {
+								behaviour: config.signal.booster.behaviour,
+								ease: config.signal.ease,
+								booster: undefined
+							}
+
+							// Midi signals dont pre-exist, so we need to create them
+							midi.createMidiSignal(config.signal.booster.id)
+
+							const baseSignal = midi.signals[config.signal.booster.id]
+							booster = new Signal(
+								baseSignal.context,
+								baseSignal.id,
+								baseSignal.defaultFunction,
+								baseSignal.range,
+								boosterConfig
+							)
 						}
 					}
 
@@ -60,6 +78,24 @@
 						}
 
 						const baseSignal = audioAnalyzer.signals[config.signal.id]
+						controlConfigs[controlId].signal = new Signal(
+							baseSignal.context,
+							baseSignal.id,
+							baseSignal.defaultFunction,
+							baseSignal.range,
+							signalConfig
+						)
+					} else if (config.signal.context === 'midi') {
+						const signalConfig: SignalConfig = {
+							behaviour: config.signal.behaviour,
+							ease: config.signal.ease,
+							booster: booster
+						}
+
+						// Midi signals dont pre-exist, so we need to create them
+						midi.createMidiSignal(config.signal.id)
+
+						const baseSignal = midi.signals[config.signal.id]
 						controlConfigs[controlId].signal = new Signal(
 							baseSignal.context,
 							baseSignal.id,
