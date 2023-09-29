@@ -7,7 +7,7 @@ import {
 	BufferAttribute,
 	WebGLRenderer
 } from 'three'
-import { triagFragmentShader, triagVertexShader } from '../materials/triagMaterial'
+import { triagFragmentShader, triagVertexShader } from '../../materials/triagMaterial'
 import { browser } from '$app/environment'
 
 // Fullscreen triangle that renders a texure

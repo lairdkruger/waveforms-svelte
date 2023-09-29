@@ -1,7 +1,10 @@
 import { OrthographicCamera, Scene, Vector2, Texture, WebGLRenderer, ShaderMaterial } from 'three'
 import PingPongRenderTarget from './PingPongRenderTarget'
 import Triag from './Triag'
-import { effectsFragmentShader, type EffectsMaterialUniforms } from '../materials/effectsMaterial'
+import {
+	effectsFragmentShader,
+	type EffectsMaterialUniforms
+} from '../../materials/effectsMaterial'
 
 export default class Effect {
 	scene: Scene

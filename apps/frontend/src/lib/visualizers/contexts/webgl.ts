@@ -1,9 +1,9 @@
 import { getContext, setContext } from 'svelte'
 import { get, writable, type Writable } from 'svelte/store'
 import { WebGLRenderer, PerspectiveCamera, Scene, Vector2 } from 'three'
-import Effect from '../utils/Effect'
-import RenderTarget from '../utils/RenderTarget'
-import Screen from '../utils/Screen'
+import Effect from '../canvas/primitives/Effect'
+import RenderTarget from '../canvas/primitives/RenderTarget'
+import Screen from '../canvas/primitives/Screen'
 
 interface WebglContext {
 	scene: Writable<Scene | null>

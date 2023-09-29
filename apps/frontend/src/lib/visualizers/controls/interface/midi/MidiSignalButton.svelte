@@ -36,6 +36,7 @@
 		const midiSignalId = await midi.listenForMidiInput()
 		if (!midiSignalId) return null
 
+		// @ts-ignore
 		controlConfig.update((config) => {
 			if (midi.signals[midiSignalId]) config.signal = midi.signals[midiSignalId]
 			return config
