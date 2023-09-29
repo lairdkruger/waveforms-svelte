@@ -74,21 +74,6 @@ export default class Controls {
 	}
 
 	///////////////////////////////////////////////
-	// Internal Actions
-	///////////////////////////////////////////////
-	// setClientStateReady(value: boolean) {
-	// 	// This function is always called last so we can assume that the store is ready for user data
-	// 	// Load userPresets into controls state if exists
-	// 	if (this.userPresets) {
-	// 		for (const userPreset of this.userPresets) {
-	// 			this.loadUserPreset(userPreset)
-	// 		}
-	// 	}
-
-	// 	this._clientStateReady = value
-	// }
-
-	///////////////////////////////////////////////
 	// Utility Functions
 	///////////////////////////////////////////////
 	resetInteractions() {
@@ -108,48 +93,6 @@ export default class Controls {
 
 		return configs
 	}
-
-	// Fetch signal function object from specified context
-	// Basically double checks if the proposed signal function actually exists in the audio or midi signal functions
-	// Returned Signals must have working output functions (these should already be set by the corresponding store)
-	// getSignalFunction(signal: Signal) {
-	// 	if (signal.context === 'audio') {
-	// 		const audioSignal = this.audioAnalyzer.signals[signal.id]
-	// 		if (audioSignal) return audioSignal
-	// 	}
-
-	// 	if (signal.context === 'midi') {
-	// 		const midiSignal = this.midi[signal.id]
-
-	// 		if (!midiSignal) {
-	// 			// If midi function doesn't exist, we need to create one
-	// 			const midiSignal = this.midi.createMidiSignal(signalFunctionConfig.id)
-	// 			return midiSignal
-	// 		}
-
-	// 		return midiSignal
-	// 	}
-
-	// 	// Fallback to null, usually means audio or midi contexts weren't ready
-	// 	return null
-	// }
-
-	// createSignalId(controlId: ControlId, signalId = 'main') {
-	// 	return `${controlId}_signal_${signalId}`
-	// }
-
-	// createBoosterSignal(controlId: ControlId, signalFunctionConfig: SignalConfig) {
-	// 	const signalFunction = this.getSignal(signalFunctionConfig)
-	// 	if (!signalFunction) return null
-
-	// 	const signal = {
-	// 		id: this.createSignalId(controlId, 'booster'),
-	// 		type: 'boolean',
-	// 		function: signalFunction
-	// 	}
-
-	// 	return signal
-	// }
 
 	///////////////////////////////////////////////
 	// Constructor Functions

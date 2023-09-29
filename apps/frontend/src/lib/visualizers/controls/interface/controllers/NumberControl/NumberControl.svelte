@@ -29,7 +29,6 @@
 
 	// Tie defaultValue to position (instant preset changes)
 	$: {
-		console.log($config)
 		let valueMapped = map($config.defaultValue, $config.range[0], $config.range[1], 0, trackWidth)
 		position.set(valueMapped, { hard: true })
 	}

@@ -12,6 +12,8 @@ export default class Midi {
 	recentInput: MidiControlId | null = null
 	activeInput: MidiControlId | null = null
 
+	primitives: { [key: string]: number } = {} // [midiControlId]: currentValue
+	signalFunctions: { [key: string]: () => number } = {} // [signalFunctionId]: getPrimitive
 	signals: { [key: string]: Signal } = {}
 
 	constructor() {
@@ -72,12 +74,14 @@ export default class Midi {
 	}
 
 	createSignal(signalFunctionId: string, midiControlId: MidiControlId) {
-		this[signalFunctionId] = () => this[midiControlId]
+		this.signalFunctions[signalFunctionId] = () => this.primitives[midiControlId]
 
-		const signal = new Signal('midi', signalFunctionId, () => this[signalFunctionId](), [
-			() => 0,
-			() => 1
-		])
+		const signal = new Signal(
+			'midi',
+			signalFunctionId,
+			() => this.signalFunctions[signalFunctionId](), // TODO: look at this line
+			[() => 0, () => 1]
+		)
 
 		this.signals[signalFunctionId] = signal
 		return this.signals[signalFunctionId]
@@ -86,7 +90,7 @@ export default class Midi {
 	// Add a midi input to the store
 	addMidiInput(midiControlId: MidiControlId) {
 		// Append a new midi control signal to the state
-		this[midiControlId] = 0
+		this.primitives[midiControlId] = 0
 
 		// Create a new signalFunctionId
 		const signalFunctionId = this.createMidiSignalId(midiControlId)
@@ -124,13 +128,11 @@ export default class Midi {
 	}
 
 	handleMidiMessage(message: any) {
-		console.log(this)
-
 		const midiControlId = this.constructMidiControlId(message)
 
 		// Handle new midi control setup
 		if (this.listening) {
-			if (!(midiControlId in this)) {
+			if (!(midiControlId in this.primitives)) {
 				this.addMidiInput(midiControlId)
 			}
 		}
@@ -139,10 +141,8 @@ export default class Midi {
 		const value = this.normalizeMidiValue(message.data)
 
 		// Update existing midi control value
-		if (midiControlId in this) {
-			console.log('Updating existing midi control value: ', midiControlId, value)
-
-			this[midiControlId] = value
+		if (midiControlId in this.primitives) {
+			this.primitives[midiControlId] = value
 		}
 
 		// Set helper state: activeInput
@@ -167,16 +167,10 @@ export default class Midi {
 			this.listening = true
 
 			const interval = setInterval(() => {
-				console.log('checking for new input')
-
 				// Periodically check for a new input
 				const newInput = this.recentInput
 
-				console.log(newInput, this)
-
 				if (newInput) {
-					console.log('New input detected" ', newInput)
-
 					// Once a new input is detected return it's signal function id
 					const controlSignalId = this.createMidiSignalId(newInput)
 					// Stop listening
