@@ -41,11 +41,19 @@ export default class Triag extends Mesh {
 		super(geometry, material)
 		this.frustumCulled = false
 
-		if (browser) window.addEventListener('resize', () => this.setSize())
+		if (browser) window.addEventListener('resize', () => this.onResize(renderer))
 	}
 
 	// TODO: Resizer
-	setSize() {}
+	onResize(renderer: WebGLRenderer) {
+		const size = new Vector2()
+		renderer.getSize(size)
+		size.multiplyScalar(window.devicePixelRatio)
+
+		const material = this.material as ShaderMaterial
+		material.uniforms.uResolution.value = size
+		material.uniformsNeedUpdate = true
+	}
 
 	set texture(texture) {
 		const material = this.material as ShaderMaterial

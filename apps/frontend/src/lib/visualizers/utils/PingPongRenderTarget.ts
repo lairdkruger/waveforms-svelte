@@ -1,5 +1,5 @@
 import { browser } from '$app/environment'
-import { HalfFloatType, LinearFilter } from 'three'
+import { HalfFloatType, LinearFilter, Vector2, WebGLRenderer } from 'three'
 import RenderTarget from './RenderTarget'
 
 // create 2 render targets to swap
@@ -7,9 +7,13 @@ export default class PingPongRenderTarget {
 	renderTargetA: RenderTarget
 	renderTargetB: RenderTarget
 
-	constructor(w = 512, h = 512) {
-		this.renderTargetA = new RenderTarget(w, h)
-		this.renderTargetB = new RenderTarget(w, h)
+	constructor(renderer: WebGLRenderer) {
+		const size = new Vector2()
+		renderer.getSize(size)
+		size.multiplyScalar(window.devicePixelRatio)
+
+		this.renderTargetA = new RenderTarget(size.width, size.height)
+		this.renderTargetB = new RenderTarget(size.width, size.height)
 
 		// FBO Settings
 		this.renderTargetA.texture.minFilter = LinearFilter
@@ -19,15 +23,19 @@ export default class PingPongRenderTarget {
 
 		if (browser) {
 			window.addEventListener('resize', () => {
-				this.setSize(window.innerWidth, window.innerHeight)
+				this.onResize(renderer)
 			})
 		}
 	}
 
-	setSize(w: number, h: number) {
-		this.renderTargetA.setSize(w, h)
+	onResize(renderer: WebGLRenderer) {
+		const size = new Vector2()
+		renderer.getSize(size)
+		size.multiplyScalar(window.devicePixelRatio)
+
+		this.renderTargetA.setSize(size.width, size.height)
 		this.renderTargetA.texture.needsUpdate = true
-		this.renderTargetB.setSize(w, h)
+		this.renderTargetB.setSize(size.width, size.height)
 		this.renderTargetB.texture.needsUpdate = true
 	}
 

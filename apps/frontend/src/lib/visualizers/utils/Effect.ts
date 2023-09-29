@@ -17,9 +17,9 @@ export default class Effect {
 		this.renderer = renderer
 
 		const resolution = new Vector2()
-		const size = renderer.getDrawingBufferSize(resolution)
+		const size = renderer.getSize(resolution)
 
-		this.pingpong = new PingPongRenderTarget(size.width, size.height)
+		this.pingpong = new PingPongRenderTarget(renderer)
 
 		this.uniforms = {
 			source: { value: this.pingpong.write.texture },
@@ -44,5 +44,11 @@ export default class Effect {
 		this.pingpong.swap()
 
 		return this.pingpong.write.texture
+	}
+
+	onResize() {
+		if (!this.camera || !this.renderer) return null
+		this.camera.updateProjectionMatrix()
+		this.renderer.setSize(window.innerWidth, window.innerHeight)
 	}
 }

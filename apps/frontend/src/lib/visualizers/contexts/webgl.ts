@@ -58,7 +58,7 @@ export function createWebglContext(key?: any) {
 		camera?.position.set(0, 0, 5)
 
 		const renderer = get(rendererCurrent)
-		renderer!.setPixelRatio(window.devicePixelRatio * 1.5)
+		renderer!.setPixelRatio(window.devicePixelRatio)
 		renderer!.setSize(window.innerWidth, window.innerHeight)
 		renderer!.setClearColor(0x000000, 0)
 
