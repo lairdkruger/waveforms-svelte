@@ -16,6 +16,7 @@ export default class Triag extends Mesh {
 	constructor(
 		renderer: WebGLRenderer,
 		texture = null,
+		vertexShader = triagVertexShader,
 		fragmentShader = triagFragmentShader,
 		params = {}
 	) {
@@ -34,7 +35,7 @@ export default class Triag extends Mesh {
 
 		const material = new RawShaderMaterial({
 			uniforms,
-			vertexShader: triagVertexShader,
+			vertexShader: vertexShader,
 			fragmentShader: fragmentShader
 		})
 

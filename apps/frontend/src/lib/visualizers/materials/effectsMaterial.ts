@@ -1,8 +1,9 @@
-import type { Texture } from 'three'
+import type { Matrix3, Texture } from 'three'
 
 export interface EffectsMaterialUniforms {
 	source: { value: Texture | null }
 	amount: { value: number }
+	uvTransformMatrix: { value: Matrix3 }
 }
 
 export const effectsVertexShader = /* glsl */ `
@@ -10,10 +11,18 @@ export const effectsVertexShader = /* glsl */ `
 	
 	attribute vec2 position;
 
+	uniform mat3 uvTransformMatrix;
+	uniform vec2 uResolution;
+
+	// varying vec2 vUv;
+
 	void main() {
 		// Because triag is a fullscreen triangle, we don't need to multiply
 		// It's already in clip space coordinates since its visible area is [-1...1]
 		gl_Position = vec4(position, 1.0, 1.0);
+
+		// Apply the uvTransformMatrix to the uv coordinates here in the vertex shader
+		// vUv = (uvTransformMatrix * vec3(position.xy / uResolution.xy, 1.0)).xy;
 	}
 `
 
@@ -23,13 +32,15 @@ export const effectsFragmentShader = /* glsl */ `
   	uniform sampler2D source;
 	uniform sampler2D diffuse;
 	uniform float amount;
-
 	uniform vec2 uResolution;
+	uniform mat3 uvTransformMatrix;
+
+	varying vec2 vUv;
 
 	void main() {
-		// Since we require [0...1] for UVs, we need to multiply by 2
 		vec2 uv = gl_FragCoord.xy / uResolution.xy;
-
+		uv = (uvTransformMatrix * vec3(uv, 1.0)).xy;
+		
 		// sample the source texture (the source rendertarget)
 		vec4 a = texture2D(source, uv);
 

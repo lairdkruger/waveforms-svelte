@@ -22,49 +22,13 @@
 	const { controls, audioAnalyzer } = getVisualizerContext()
 	const { onFrame } = getWebglContext()
 
-	const geometry = new MeshLineGeometry()
-	const materialColor = new Color(initialColor)
-	// @ts-ignore
-	const material = new MeshLineMaterial({
-		color: materialColor,
-		lineWidth: 0.1,
-		sizeAttenuation: false
-	})
-	const meshline = new MeshLine(geometry, material)
-
-	// Points
-	const audioResolution = Math.round(Math.log(audioAnalyzer.fft) / Math.log(2))
-
-	const numPoints = Math.pow(2, audioResolution)
-	const points: Point[] = new Array(numPoints)
-	const pointPositions: number[][] = []
-
-	function createLine() {
-		// Populate line array with points
-		const length = 6
-
-		for (let i = 0; i < numPoints; i++) {
-			const angle = radians(distributeAngles(i, numPoints)) + Math.PI / 2
-
-			const particle: Point = {
-				x: map(i, 0, numPoints - 1, -length / 2, length / 2),
-				y: 0,
-				z: 0,
-				angle: angle
-			}
-
-			points[i] = particle
-		}
-	}
-
-	createLine()
-
 	const folder = controls.createFolder(label, { label: label })
 	const group = controls.createGroup(label, {
 		folder: folder,
 		label: label
 	})
 
+	// Controls
 	const lineType = controls.createSelectControl(
 		'lineType',
 		{
@@ -85,10 +49,32 @@
 		{ defaultValue: 'Parallel' }
 	)
 
+	const lineShape = controls.createSelectControl(
+		'lineShape',
+		{
+			label: 'Shape',
+			group: group
+		},
+		{ values: ['Line', 'Circle'] },
+		{ defaultValue: 'Circle' }
+	)
+
 	function audioSymmetryTransformer(value: number) {
 		const symmetries = [1, 2, 4, 6, 8, 12, 16, 32]
 		return symmetries[Math.round(value) - 1]
 	}
+
+	const lineSize = controls.createNumberControl(
+		'lineSize',
+		{
+			label: 'Size',
+			group: group
+		},
+		{
+			defaultValue: 2,
+			range: [0.1, 5]
+		}
+	)
 
 	const lineSymmetry = controls.createNumberControl(
 		'lineSymmetry',
@@ -128,18 +114,8 @@
 			group: group
 		},
 		{
-			defaultValue: 1,
-			range: [0, 10],
-			signal: new Signal(
-				'audio',
-				'getVolume',
-				audioAnalyzer.signalFunctions['getVolume'],
-				[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
-				{
-					ease: 'out',
-					booster: audioAnalyzer.signals['getBassPeaked']
-				}
-			)
+			defaultValue: 0.5,
+			range: [0, 10]
 		},
 		{ transformer: (value) => value / 100 }
 	)
@@ -177,8 +153,52 @@
 		}
 	)
 
+	// Components
+	const geometry = new MeshLineGeometry()
+	const materialColor = new Color(initialColor)
+	// @ts-ignore
+	const material = new MeshLineMaterial({
+		color: materialColor,
+		lineWidth: $lineThickness(),
+		sizeAttenuation: false
+	})
+	const meshline = new MeshLine(geometry, material)
+
+	// Points
+	const audioResolution = Math.round(Math.log(audioAnalyzer.fft) / Math.log(2))
+
+	const numPoints = Math.pow(2, audioResolution)
+	const points: Point[] = new Array(numPoints)
+	const pointPositions: number[][] = []
+
+	function createLine() {
+		const size = $lineSize()
+		const shape = $lineShape()
+
+		// Populate line array with points
+		for (let i = 0; i < numPoints; i++) {
+			const angle = radians(distributeAngles(i, numPoints)) + Math.PI / 2
+
+			const particle: Point = {
+				x:
+					shape === 'Circle'
+						? Math.cos(angle) * size
+						: map(i, 0, numPoints - 1, -length / 2, length / 2),
+				y: shape === 'Circle' ? Math.sin(angle) * size : 0,
+				z: 0,
+				angle: angle
+			}
+
+			points[i] = particle
+			pointPositions[i] = [particle.x, particle.y, particle.z]
+		}
+	}
+
+	createLine()
+	meshline.geometry.setPoints(pointPositions.flat())
+
 	// Update line graphic to use current line data
-	function updateLine() {
+	function updateLinePoints() {
 		const symmetry = $lineSymmetry()
 
 		// Shorten line resolution as symmetry increases and segments become shorter
@@ -271,19 +291,48 @@
 					const point = points[pointIndex]
 					if (!point) continue
 
+					point.x =
+						$lineShape() === 'Circle'
+							? Math.cos(point.angle) * $lineSize()
+							: map(pointIndex, 0, numPoints - 1, -$lineSize(), $lineSize())
+
+					point.y = $lineShape() === 'Circle' ? Math.sin(point.angle) * $lineSize() : 0
+
 					// Update xy positions if direction is set to parallel
-					const x = point.x
+					let x = point.x
+					let y = point.y
+					let z = point.z
 
-					const y =
-						$lineDirection() === 'Parallel'
-							? point.y + audioValue * $lineIntensity()
-							: point.y
+					if ($lineShape() === 'Circle') {
+						x =
+							$lineDirection() === 'Parallel'
+								? point.x + Math.cos(point.angle) * (audioValue * $lineIntensity())
+								: point.x
 
-					// Update z position if direction is set to perpendicular
-					const z =
-						$lineDirection() === 'Perpendicular'
-							? point.z + audioValue * $lineIntensity()
-							: point.z
+						y =
+							$lineDirection() === 'Parallel'
+								? point.y + Math.sin(point.angle) * (audioValue * $lineIntensity())
+								: point.y
+
+						z =
+							$lineDirection() === 'Parallel'
+								? point.z
+								: point.z + audioValue * $lineIntensity()
+					}
+
+					if ($lineShape() === 'Line') {
+						x = point.x
+
+						y =
+							$lineDirection() === 'Parallel'
+								? point.y + audioValue * $lineIntensity()
+								: point.y
+
+						z =
+							$lineDirection() === 'Parallel'
+								? point.z
+								: point.z + audioValue * $lineIntensity()
+					}
 
 					pointPositions[pointIndex] = [x, y, z] // use z coord instead
 				}
@@ -291,16 +340,18 @@
 		}
 
 		meshline.geometry.setPoints(pointPositions.flat())
+	}
 
+	function updateLineProperties() {
 		meshline.material.uniforms.lineWidth.value = $lineThickness()
 		materialColor.set(...$lineColor())
 		meshline.material.uniforms.color.value = materialColor
 
 		meshline.material.uniformsNeedUpdate = true
 	}
-
 	onFrame(() => {
-		updateLine()
+		updateLinePoints()
+		updateLineProperties()
 	})
 
 	$: if (parent) {

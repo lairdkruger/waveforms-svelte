@@ -1,8 +1,17 @@
-import { OrthographicCamera, Scene, Vector2, Texture, WebGLRenderer, ShaderMaterial } from 'three'
+import {
+	OrthographicCamera,
+	Scene,
+	Vector2,
+	Texture,
+	WebGLRenderer,
+	ShaderMaterial,
+	Matrix3
+} from 'three'
 import PingPongRenderTarget from './PingPongRenderTarget'
 import Triag from './Triag'
 import {
 	effectsFragmentShader,
+	effectsVertexShader,
 	type EffectsMaterialUniforms
 } from '../../materials/effectsMaterial'
 
@@ -16,20 +25,24 @@ export default class Effect {
 
 	constructor(renderer: WebGLRenderer) {
 		this.scene = new Scene()
-		this.camera = new OrthographicCamera(-1, 1, 1, -1, 0.0001, 100000)
+		this.camera = new OrthographicCamera(-1, 1, 1, -1, 0.01, 100)
 		this.renderer = renderer
-
-		const resolution = new Vector2()
-		const size = renderer.getSize(resolution)
 
 		this.pingpong = new PingPongRenderTarget(renderer)
 
 		this.uniforms = {
 			source: { value: this.pingpong.write.texture },
-			amount: { value: 0.8 }
+			amount: { value: 0.8 },
+			uvTransformMatrix: { value: new Matrix3() }
 		}
 
-		this.quad = new Triag(this.renderer, null, effectsFragmentShader, this.uniforms)
+		this.quad = new Triag(
+			this.renderer,
+			null,
+			effectsVertexShader,
+			effectsFragmentShader,
+			this.uniforms
+		)
 		this.scene.add(this.quad)
 	}
 

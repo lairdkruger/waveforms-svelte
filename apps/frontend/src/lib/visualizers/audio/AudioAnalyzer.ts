@@ -11,7 +11,7 @@ export default class AudioAnalyzer {
 
 	// Variables
 	fft = 2048
-	smoothing = 0.8
+	smoothing = 0.65
 	audioInput: AudioInput = 'microphone'
 
 	// Constants
