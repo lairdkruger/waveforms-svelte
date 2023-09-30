@@ -56,13 +56,8 @@
 			group: group
 		},
 		{ values: ['Line', 'Circle'] },
-		{ defaultValue: 'Circle' }
+		{ defaultValue: 'Line' }
 	)
-
-	function audioSymmetryTransformer(value: number) {
-		const symmetries = [1, 2, 4, 6, 8, 12, 16, 32]
-		return symmetries[Math.round(value) - 1]
-	}
 
 	const lineSize = controls.createNumberControl(
 		'lineSize',
@@ -75,6 +70,11 @@
 			range: [0.1, 5]
 		}
 	)
+
+	function audioSymmetryTransformer(value: number) {
+		const symmetries = [1, 2, 4, 6, 8, 12, 16, 32]
+		return symmetries[Math.round(value) - 1]
+	}
 
 	const lineSymmetry = controls.createNumberControl(
 		'lineSymmetry',
@@ -99,7 +99,7 @@
 			label: 'Resolution',
 			group: group
 		},
-		{ defaultValue: 1, range: [1, 8] },
+		{ defaultValue: 2, range: [1, 8] },
 		{
 			rangeReadOnly: true,
 			// Only allow values that are powers of 2 for resolution (1, 2, 4, 8, 16, etc.)
@@ -167,7 +167,9 @@
 	// Points
 	const audioResolution = Math.round(Math.log(audioAnalyzer.fft) / Math.log(2))
 
-	const numPoints = Math.pow(2, audioResolution)
+	let numPoints = 16
+	numPoints = Math.pow(2, audioResolution)
+
 	const points: Point[] = new Array(numPoints)
 	const pointPositions: number[][] = []
 
@@ -176,6 +178,7 @@
 		const shape = $lineShape()
 
 		// Populate line array with points
+		// Extra loop iteration to close the line
 		for (let i = 0; i < numPoints; i++) {
 			const angle = radians(distributeAngles(i, numPoints)) + Math.PI / 2
 
@@ -194,7 +197,8 @@
 		}
 	}
 
-	createLine()
+	createLine() // Call once on mount
+
 	meshline.geometry.setPoints(pointPositions.flat())
 
 	// Update line graphic to use current line data
@@ -206,16 +210,16 @@
 
 		// Construct sorted array of indexes indicating where the symmetry segments begin and end
 		const symmetrySegments: [number, number][] = []
+		const symmetrySegmentLength = Math.round(numPoints / symmetry)
 		for (let s = 0; s < symmetry; s++) {
-			symmetrySegments.push([
-				Math.round(numPoints / symmetry) * s,
-				Math.round((numPoints / symmetry) * (s + 1))
-			])
+			symmetrySegments.push([symmetrySegmentLength * s, symmetrySegmentLength * (s + 1) - 1])
 		}
+
+		const resolution = $lineResolution()
 
 		// Loop through point while maintaining linear sequence, but apply mirrored line data based on symmetry array
 		for (let i = 0; i < symmetrySegments.length; i++) {
-			for (let j = symmetrySegments[i][0]; j < symmetrySegments[i][1]; j += $lineResolution()) {
+			for (let j = symmetrySegments[i][0]; j <= symmetrySegments[i][1]; j += resolution) {
 				let audioValue = 0
 
 				// Reverse how the audioValue is applied for every second segment
@@ -286,9 +290,10 @@
 				}
 
 				// Loop by resolution, and apply audio value accordingly (ie: into groups of vertices)
-				for (let k = 0; k < $lineResolution(); k++) {
-					const pointIndex = j + k
+				for (let k = 0; k < resolution; k++) {
+					let pointIndex = j + k
 					const point = points[pointIndex]
+
 					if (!point) continue
 
 					point.x =
@@ -338,6 +343,9 @@
 				}
 			}
 		}
+
+		// Close the cicle by setting the extra end point coord to the first point coord
+		// if ($lineShape() === 'Circle') pointPositions[numPoints] = pointPositions[0]
 
 		meshline.geometry.setPoints(pointPositions.flat())
 	}

@@ -26,15 +26,15 @@ export function degreesToPoint(deg: number, diameter: number) {
 }
 
 export function distributeAngles(me: number, total: number) {
-	return (me / total) * 360
+	return (me / (total - 1)) * 360
 }
 
 export function halfDistributeAngles(me: number, total: number) {
-	return (me / total) * 181
+	return (me / (total - 1)) * 180
 }
 
 export function quarterDistributeAngles(me: number, total: number) {
-	return (me / total) * 91
+	return (me / (total - 1)) * 90
 }
 
 export function random(min: number, max: number) {
@@ -56,7 +56,10 @@ export function closest2(number: number, numbers: number[]) {
 	return greaterThan ? [index, index + 1] : [index - 1, index]
 }
 
-export function lerpColors(colors: [[number, number, number], [number, number, number]], mix: number) {
+export function lerpColors(
+	colors: [[number, number, number], [number, number, number]],
+	mix: number
+) {
 	let color: [number, number, number] = [0, 0, 0]
 
 	// Loop through and lerp each value of [R, G, B] to mix value

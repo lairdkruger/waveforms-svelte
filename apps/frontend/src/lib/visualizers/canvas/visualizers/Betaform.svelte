@@ -13,7 +13,6 @@
 
 	const { scene, onFrame } = getWebglContext()
 
-	const boxGroup = new Group()
 	const waveformGroup = new Group()
 
 	onFrame(() => {
@@ -22,13 +21,11 @@
 	})
 
 	$: if ($scene) {
-		$scene.add(boxGroup)
 		$scene.add(waveformGroup)
 	}
 
 	onDestroy(() => {
 		if ($scene) {
-			$scene.remove(boxGroup)
 			$scene.remove(waveformGroup)
 		}
 	})

@@ -11,7 +11,7 @@ export default class AudioAnalyzer {
 
 	// Variables
 	fft = 2048
-	smoothing = 0.65
+	smoothing = 0.7
 	audioInput: AudioInput = 'microphone'
 
 	// Constants
@@ -311,7 +311,7 @@ export default class AudioAnalyzer {
 		return this.waveform
 	}
 
-	mapSpectrum(index: number, min: number, max: number, shortener: number | undefined) {
+	mapSpectrum(index: number, min: number, max: number, shortener?: number) {
 		const spectrumShortener = shortener || 1
 
 		const valueBand = Math.floor(
@@ -322,7 +322,7 @@ export default class AudioAnalyzer {
 		return value
 	}
 
-	mapWaveform(index: number, min: number, max: number, shortener: number | undefined) {
+	mapWaveform(index: number, min: number, max: number, shortener?: number) {
 		const waveformShortener = shortener || 1
 
 		const valueBand = Math.floor(
