@@ -21,6 +21,12 @@
 		inputValue = controlValue
 		showCurrentValue = true
 	}
+
+	const cancelEvent = (event: Event) => {
+		event.preventDefault()
+		event.stopPropagation()
+		handleBlur()
+	}
 </script>
 
 <input
@@ -31,6 +37,7 @@
 	step={0.1}
 	value={showCurrentValue ? controlValue : inputValue}
 	on:change={validateInput}
+	on:mousemove={cancelEvent}
 	on:focus={() => (showCurrentValue = false)}
 	on:blur={handleBlur}
 />
