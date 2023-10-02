@@ -56,7 +56,7 @@
 			group: group
 		},
 		{ values: ['Line', 'Circle'] },
-		{ defaultValue: 'Line' }
+		{ defaultValue: 'Circle' }
 	)
 
 	const lineSize = controls.createNumberControl(
@@ -99,7 +99,7 @@
 			label: 'Resolution',
 			group: group
 		},
-		{ defaultValue: 2, range: [1, 8] },
+		{ defaultValue: 1, range: [1, 8] },
 		{
 			rangeReadOnly: true,
 			// Only allow values that are powers of 2 for resolution (1, 2, 4, 8, 16, etc.)
@@ -168,7 +168,7 @@
 	const audioResolution = Math.round(Math.log(audioAnalyzer.fft) / Math.log(2))
 
 	let numPoints = 16
-	numPoints = Math.pow(2, audioResolution)
+	numPoints = Math.pow(2, audioResolution) / 2 / 2
 
 	const points: Point[] = new Array(numPoints)
 	const pointPositions: number[][] = []

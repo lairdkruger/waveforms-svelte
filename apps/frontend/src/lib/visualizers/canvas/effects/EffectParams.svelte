@@ -18,22 +18,22 @@
 		{ label: 'Persistance', group: group },
 		{
 			defaultValue: 1,
-			range: [0.7, 0.9],
-			signal: new Signal(
-				'audio',
-				'getHighsVolume',
-				audioAnalyzer.signalFunctions['getHighsVolume'],
-				[() => 0, audioAnalyzer.signalFunctions['getPeakHighsVolume']],
-				{
-					ease: 'in',
-					booster: new Signal(
-						'audio',
-						'getVolumePeaked',
-						audioAnalyzer.signalFunctions['getVolumePeaked'],
-						[() => 0, () => 1]
-					)
-				}
-			)
+			range: [0.7, 0.99]
+			// signal: new Signal(
+			// 	'audio',
+			// 	'getHighsVolume',
+			// 	audioAnalyzer.signalFunctions['getHighsVolume'],
+			// 	[() => 0, audioAnalyzer.signalFunctions['getPeakHighsVolume']],
+			// 	{
+			// 		ease: 'in',
+			// 		booster: new Signal(
+			// 			'audio',
+			// 			'getVolumePeaked',
+			// 			audioAnalyzer.signalFunctions['getVolumePeaked'],
+			// 			[() => 0, () => 1]
+			// 		)
+			// 	}
+			// )
 		},
 		{
 			transformer: (value) => clamp(value, 0, 1)

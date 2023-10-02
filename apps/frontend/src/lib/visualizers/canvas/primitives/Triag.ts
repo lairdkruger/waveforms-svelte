@@ -16,6 +16,7 @@ export default class Triag extends Mesh {
 	constructor(
 		renderer: WebGLRenderer,
 		texture = null,
+		backgroundTexture = null,
 		vertexShader = triagVertexShader,
 		fragmentShader = triagFragmentShader,
 		params = {}
@@ -25,6 +26,7 @@ export default class Triag extends Mesh {
 
 		const uniforms = {
 			diffuse: { value: texture },
+			background: { value: backgroundTexture },
 			uResolution: { value: resolution },
 			...params
 		}
@@ -62,5 +64,14 @@ export default class Triag extends Mesh {
 	get texture() {
 		const material = this.material as ShaderMaterial
 		return material.uniforms.diffuse.value
+	}
+
+	set backgroundTexture(texture) {
+		const material = this.material as ShaderMaterial
+		material.uniforms.background.value = texture
+	}
+	get backgroundTexture() {
+		const material = this.material as ShaderMaterial
+		return material.uniforms.background.value
 	}
 }

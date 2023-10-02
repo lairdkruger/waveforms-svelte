@@ -14,12 +14,21 @@ export const triagFragmentShader = /* glsl */ `
 	precision highp float;
 
 	uniform sampler2D diffuse;
+	uniform sampler2D background;
+
 	uniform vec2 uResolution;
 
 
 	void main() {
 		vec2 uv = gl_FragCoord.xy / uResolution.xy;
 
-		gl_FragColor = texture2D(diffuse, uv);
+		vec4 scene = texture2D(diffuse, uv);
+		vec4 background = texture2D(background, uv);
+
+		// if the scene is not transparent, render the background, otherwise render the scene
+		vec4 fragColor = mix(background, scene, scene.a);
+		// fragColor = background;
+
+		gl_FragColor = fragColor;
 	}
 `

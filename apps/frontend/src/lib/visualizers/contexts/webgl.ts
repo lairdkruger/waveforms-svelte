@@ -7,6 +7,7 @@ import Screen from '../canvas/primitives/Screen'
 
 interface WebglContext {
 	scene: Writable<Scene | null>
+	backgroundScene: Writable<Scene | null>
 	camera: Writable<PerspectiveCamera | null>
 	renderer: Writable<WebGLRenderer | null>
 	effects: Writable<Effect | null>
@@ -18,6 +19,7 @@ export function createWebglContext(key?: any) {
 	const contextKey = key || 'webgl'
 
 	let sceneCurrent: Writable<Scene | null> = writable(null)
+	let backgroundSceneCurrent: Writable<Scene | null> = writable(null)
 	let cameraCurrent: Writable<PerspectiveCamera | null> = writable(null)
 	let rendererCurrent: Writable<WebGLRenderer | null> = writable(null)
 	let renderTargetCurrent: Writable<RenderTarget | null> = writable(null)
@@ -39,6 +41,7 @@ export function createWebglContext(key?: any) {
 
 	function init(canvas: HTMLCanvasElement) {
 		sceneCurrent.set(new Scene())
+		backgroundSceneCurrent.set(new Scene())
 		cameraCurrent.set(
 			new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
 		)
@@ -67,7 +70,8 @@ export function createWebglContext(key?: any) {
 
 		renderTargetCurrent.set(new RenderTarget(size.width, size.height))
 
-		effectsCurrent.set(new Effect(renderer!))
+		const backgroundScene = get(backgroundSceneCurrent)
+		effectsCurrent.set(new Effect(renderer!, backgroundScene!))
 		screenCurrent.set(new Screen(renderer!))
 
 		// Events
@@ -84,6 +88,7 @@ export function createWebglContext(key?: any) {
 	function render() {
 		let camera = get(cameraCurrent)
 		let scene = get(sceneCurrent)
+		let backgroundScene = get(backgroundSceneCurrent)
 		let renderer = get(rendererCurrent)
 		let renderTarget = get(renderTargetCurrent)
 		let screen = get(screenCurrent)
@@ -91,16 +96,27 @@ export function createWebglContext(key?: any) {
 		let effects = get(effectsCurrent)
 
 		// Render the scene into render target
-		if (!renderer || !scene || !camera || !renderTarget || !effects || !screen) return null
+		if (
+			!renderer ||
+			!scene ||
+			!camera ||
+			!renderTarget ||
+			!effects ||
+			!screen ||
+			!backgroundScene
+		) {
+			return null
+		}
+
 		renderer.setRenderTarget(renderTarget)
 		renderer.render(scene, camera)
 		renderer.setRenderTarget(null)
 
 		// Render the effects
-		let result = effects.render(renderTarget.texture)
+		let { sceneTexture, backgroundTexture } = effects.render(renderTarget.texture)
 
 		// Render the screen
-		screen.render(result)
+		screen.render(sceneTexture, backgroundTexture)
 	}
 
 	function loop() {
@@ -111,6 +127,7 @@ export function createWebglContext(key?: any) {
 
 	return setContext<WebglContext>(contextKey, {
 		scene: sceneCurrent,
+		backgroundScene: backgroundSceneCurrent,
 		camera: cameraCurrent,
 		renderer: rendererCurrent,
 		effects: effectsCurrent,

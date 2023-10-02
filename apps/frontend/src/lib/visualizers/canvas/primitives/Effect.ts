@@ -14,21 +14,39 @@ import {
 	effectsVertexShader,
 	type EffectsMaterialUniforms
 } from '../../materials/effectsMaterial'
+import RenderTarget from './RenderTarget'
+import Screen from './Screen'
+import { browser } from '$app/environment'
 
 export default class Effect {
 	scene: Scene
+	backgroundScene: Scene
 	camera: OrthographicCamera
 	renderer: WebGLRenderer
 	pingpong: PingPongRenderTarget
+	backgroundRenderTarget: RenderTarget
 	quad: Triag
 	uniforms: EffectsMaterialUniforms
 
-	constructor(renderer: WebGLRenderer) {
+	constructor(renderer: WebGLRenderer, backgroundScene: Scene) {
 		this.scene = new Scene()
+		this.backgroundScene = backgroundScene
 		this.camera = new OrthographicCamera(-1, 1, 1, -1, 0.01, 100)
 		this.renderer = renderer
 
 		this.pingpong = new PingPongRenderTarget(renderer)
+
+		const size = new Vector2()
+		renderer.getSize(size)
+		size.multiplyScalar(window.devicePixelRatio)
+
+		if (browser) {
+			window.addEventListener('resize', () => {
+				this.onResize(renderer)
+			})
+		}
+
+		this.backgroundRenderTarget = new RenderTarget()
 
 		this.uniforms = {
 			source: { value: this.pingpong.write.texture },
@@ -39,10 +57,12 @@ export default class Effect {
 		this.quad = new Triag(
 			this.renderer,
 			null,
+			null,
 			effectsVertexShader,
 			effectsFragmentShader,
 			this.uniforms
 		)
+
 		this.scene.add(this.quad)
 	}
 
@@ -59,12 +79,27 @@ export default class Effect {
 
 		this.pingpong.swap()
 
-		return this.pingpong.write.texture
+		// Finally render the background scene
+		this.renderer.setRenderTarget(this.backgroundRenderTarget)
+		this.renderer.render(this.backgroundScene, this.camera)
+		this.renderer.setRenderTarget(null)
+
+		return {
+			sceneTexture: this.pingpong.write.texture,
+			backgroundTexture: this.backgroundRenderTarget.texture
+		}
 	}
 
-	onResize() {
+	onResize(renderer: WebGLRenderer) {
 		if (!this.camera || !this.renderer) return null
 		this.camera.updateProjectionMatrix()
 		this.renderer.setSize(window.innerWidth, window.innerHeight)
+
+		const size = new Vector2()
+		renderer.getSize(size)
+		size.multiplyScalar(window.devicePixelRatio)
+
+		this.backgroundRenderTarget.setSize(size.width, size.height)
+		this.backgroundRenderTarget.texture.needsUpdate = true
 	}
 }

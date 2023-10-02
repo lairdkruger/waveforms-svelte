@@ -7,7 +7,7 @@
 	export let initialColor = new Color(0x000000)
 
 	const { controls } = getVisualizerContext()
-	const { onFrame, scene } = getWebglContext()
+	const { onFrame, backgroundScene } = getWebglContext()
 
 	const geometry = new BoxGeometry(1, 1, 1)
 	const materialColor = new Color(initialColor)
@@ -49,11 +49,11 @@
 		mesh.material.color.set(materialColor)
 	})
 
-	$: if ($scene) {
-		$scene.add(mesh)
+	$: if ($backgroundScene) {
+		$backgroundScene.add(mesh)
 	}
 
 	onDestroy(() => {
-		if ($scene) $scene.remove(mesh)
+		if ($backgroundScene) $backgroundScene.remove(mesh)
 	})
 </script>

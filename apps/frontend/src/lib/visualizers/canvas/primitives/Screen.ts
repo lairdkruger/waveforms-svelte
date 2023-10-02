@@ -16,8 +16,9 @@ export default class Screen {
 		this.scene.add(this.screen)
 	}
 
-	render(sourceTexture: Texture) {
-		this.screen.texture = sourceTexture
+	render(sceneTexture: Texture, backgroundTexture: Texture) {
+		this.screen.texture = sceneTexture
+		this.screen.backgroundTexture = backgroundTexture
 		this.renderer.render(this.scene, this.camera)
 	}
 }
