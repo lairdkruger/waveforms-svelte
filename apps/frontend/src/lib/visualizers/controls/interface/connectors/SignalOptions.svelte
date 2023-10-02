@@ -4,6 +4,7 @@
 	import EaseOutIcon from '$lib/svgs/EaseOutIcon.svelte'
 	import OptionsIcon from '$lib/svgs/OptionsIcon.svelte'
 	import OptionsLoopIcon from '$lib/svgs/OptionsLoopIcon.svelte'
+	import OptionsPingPongIcon from '$lib/svgs/OptionsPingPongIcon.svelte'
 	import OptionsStraightIcon from '$lib/svgs/OptionsStraightIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import { spring } from 'svelte/motion'
@@ -81,6 +82,17 @@
 							})}
 					>
 						<OptionsLoopIcon />
+					</button>
+					<button
+						class="button"
+						class:enabled={$signalConfig?.behaviour === 'pingpong'}
+						on:click={() =>
+							signalConfig?.update((config) => {
+								config.behaviour = 'pingpong'
+								return config
+							})}
+					>
+						<OptionsPingPongIcon />
 					</button>
 				</div>
 			</div>

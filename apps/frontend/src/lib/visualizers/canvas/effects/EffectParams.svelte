@@ -107,7 +107,6 @@
 				0.5,
 				0.5
 			)
-			// uvTransformMatrix.setUvTransform(0.01, 0.01, 1.03, 1.03, 0, 0.5, 0.5)
 
 			$effects.uniforms.uvTransformMatrix.value = uvTransformMatrix
 		}

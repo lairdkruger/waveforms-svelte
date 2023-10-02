@@ -126,7 +126,7 @@
 			label: 'Intensity',
 			group: group
 		},
-		{ defaultValue: 5, range: [0, 10] }
+		{ defaultValue: 5, range: [0, 20] }
 	)
 
 	const lineColor = controls.createColorControl(

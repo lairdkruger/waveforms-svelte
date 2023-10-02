@@ -5,9 +5,10 @@ import type {
 	SignalConfig,
 	SignalContext,
 	SignalId,
-	SignalOutput
+	SignalOutput,
+	Ticker
 } from '../../types'
-import { map, mapLoop } from '$lib/visualizers/utils/Maths'
+import { map, mapLoop, mapPingPong } from '$lib/visualizers/utils/Maths'
 import { clamp } from 'three/src/math/MathUtils'
 import bezier, { getBezierValues } from '$lib/visualizers/utils/CubicBezier'
 
@@ -20,6 +21,10 @@ export default class Signal {
 
 	config: Writable<SignalConfig>
 	output: Readable<SignalOutput>
+
+	ticker: Ticker = {
+		value: 0
+	}
 
 	constructor(
 		context: SignalContext,
@@ -79,12 +84,23 @@ export default class Signal {
 		} else if (config.behaviour === 'loop') {
 			// Looping behaviour
 			// Map bezier value to speed range
+			const minSpeed = 0.0001 // Always moving for colors
+			const maxSpeed = 2
+			const speedValue = map(mixAmount, 0, 1, minSpeed, maxSpeed)
+
+			// Use speed value as speed for looping (ping pong)
+			const loopValue = mapLoop(speedValue, this.ticker)
+
+			output = loopValue
+		} else if (config.behaviour === 'pingpong') {
+			// Looping behaviour
+			// Map bezier value to speed range
 			const minSpeed = 0.1 // Always moving for colors
 			const maxSpeed = 2
 			const speedValue = map(mixAmount, 0, 1, minSpeed, maxSpeed)
 
 			// Use speed value as speed for looping (ping pong)
-			const loopValue = mapLoop(speedValue)
+			const loopValue = mapPingPong(speedValue, this.ticker)
 
 			output = loopValue
 		}

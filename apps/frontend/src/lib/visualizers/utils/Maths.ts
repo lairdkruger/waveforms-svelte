@@ -1,3 +1,5 @@
+import type { Ticker } from '../controls/types'
+
 export function map(value: number, min1: number, max1: number, min2: number, max2: number) {
 	if (min1 === max1 || isNaN(value)) return min1 // No dividing by zero allowed
 	return ((value - min1) / (max1 - min1)) * (max2 - min2) + min2
@@ -72,20 +74,24 @@ export function lerpColors(
 
 export function triangleWave(value: number, period: number, amplitude: number, speed: number) {
 	const y = (amplitude / period) * (period - Math.abs((value % (2 * period)) - period))
-	const ticker = (value += speed)
+	const ticker = (value += speed / 1000)
 
 	return [y, ticker]
 }
 
-let tick = 0
-
-export function mapLoop(speed: number) {
+export function mapPingPong(speed: number, ticker: Ticker) {
 	const period = 24
 	const amplitude = 1
-	const value = tick ? tick : Date.now() / 1000
 
-	let [y, ticker] = triangleWave(value, period, amplitude, speed)
-	tick = ticker
+	let [y, tick] = triangleWave(ticker.value, period, amplitude, speed)
+	ticker.value = tick
 
 	return y
+}
+
+export function mapLoop(speed: number, ticker: Ticker) {
+	if (ticker.value > 1) ticker.value = 0
+	ticker.value += speed / 1000
+
+	return ticker.value
 }

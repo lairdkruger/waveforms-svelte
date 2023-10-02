@@ -5,7 +5,11 @@ import type { SignalContext } from './functions'
 export type SignalId = string
 
 export type SignalType = 'boolean' | 'number'
-export type SignalBehaviour = 'straight' | 'loop'
+export type SignalBehaviour = 'straight' | 'loop' | 'pingpong'
+
+export type Ticker = {
+	value: number
+}
 
 export interface SignalConfig {
 	ease: Ease
