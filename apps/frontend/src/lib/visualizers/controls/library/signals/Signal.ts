@@ -84,13 +84,12 @@ export default class Signal {
 		} else if (config.behaviour === 'loop') {
 			// Looping behaviour
 			// Map bezier value to speed range
-			const minSpeed = 0.0001 // Always moving for colors
+			const minSpeed = 0.1 // Always moving for colors
 			const maxSpeed = 2
 			const speedValue = map(mixAmount, 0, 1, minSpeed, maxSpeed)
 
-			// Use speed value as speed for looping (ping pong)
+			// Use speed value as speed for looping
 			const loopValue = mapLoop(speedValue, this.ticker)
-
 			output = loopValue
 		} else if (config.behaviour === 'pingpong') {
 			// Looping behaviour
@@ -99,9 +98,8 @@ export default class Signal {
 			const maxSpeed = 2
 			const speedValue = map(mixAmount, 0, 1, minSpeed, maxSpeed)
 
-			// Use speed value as speed for looping (ping pong)
+			// Use speed value as speed for pingponging
 			const loopValue = mapPingPong(speedValue, this.ticker)
-
 			output = loopValue
 		}
 

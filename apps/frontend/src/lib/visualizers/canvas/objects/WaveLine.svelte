@@ -22,6 +22,8 @@
 	const { controls, audioAnalyzer } = getVisualizerContext()
 	const { onFrame } = getWebglContext()
 
+	console.log('moutn waveline')
+
 	const folder = controls.createFolder(label, { label: label })
 	const group = controls.createGroup(label, {
 		folder: folder,
@@ -343,9 +345,6 @@
 				}
 			}
 		}
-
-		// Close the cicle by setting the extra end point coord to the first point coord
-		// if ($lineShape() === 'Circle') pointPositions[numPoints] = pointPositions[0]
 
 		meshline.geometry.setPoints(pointPositions.flat())
 	}

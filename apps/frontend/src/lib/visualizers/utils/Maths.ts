@@ -72,26 +72,19 @@ export function lerpColors(
 	return color
 }
 
-export function triangleWave(value: number, period: number, amplitude: number, speed: number) {
-	const y = (amplitude / period) * (period - Math.abs((value % (2 * period)) - period))
-	const ticker = (value += speed / 1000)
-
-	return [y, ticker]
-}
-
 export function mapPingPong(speed: number, ticker: Ticker) {
-	const period = 24
-	const amplitude = 1
+	ticker.value += speed / 1000
+	if (ticker.value > 2) ticker.value = 0
 
-	let [y, tick] = triangleWave(ticker.value, period, amplitude, speed)
-	ticker.value = tick
+	let value = ticker.value
+	if (ticker.value > 1) value = 1 - (ticker.value - 1)
 
-	return y
+	return value
 }
 
 export function mapLoop(speed: number, ticker: Ticker) {
-	if (ticker.value > 1) ticker.value = 0
 	ticker.value += speed / 1000
+	if (ticker.value > 1) ticker.value = 0
 
 	return ticker.value
 }
