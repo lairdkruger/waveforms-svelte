@@ -2,7 +2,7 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
 	import Signal from '$lib/visualizers/controls/library/signals/Signal'
-	import { clamp } from '$lib/visualizers/utils/Maths'
+	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { Matrix3 } from 'three'
 
 	const { effects, onFrame } = getWebglContext()
@@ -67,6 +67,26 @@
 		}
 	)
 
+	const targetRadius = controls.createNumberControl(
+		'targetRadius',
+		{ label: 'Target Radius', group: group },
+		{
+			defaultValue: 0,
+			range: [0, 10.0]
+		},
+		{ transformer: (value) => value / 1000 }
+	)
+
+	const targetAngle = controls.createNumberControl(
+		'targetAngle',
+		{ label: 'Target Angle', group: group },
+		{
+			defaultValue: 0,
+			range: [-1.0, 1.0]
+		},
+		{ transformer: (value) => map(value, -1, 1, -Math.PI, Math.PI) }
+	)
+
 	onFrame(() => {
 		if ($effects) {
 			$effects.uniforms.amount.value = $persistance()
@@ -74,7 +94,19 @@
 			const uvScaleX = 1 + $scaleX() / 1000
 			const uvScaleY = 1 + $scaleY() / 1000
 			const uvRotation = $rotation() / 100
-			uvTransformMatrix.setUvTransform(0.0, 0.0, uvScaleX, uvScaleY, uvRotation, 0.5, 0.5)
+
+			const targetX = Math.cos($targetAngle()) * $targetRadius()
+			const targetY = Math.sin($targetAngle()) * $targetRadius()
+
+			uvTransformMatrix.setUvTransform(
+				targetX,
+				targetY,
+				uvScaleX,
+				uvScaleY,
+				uvRotation,
+				0.5,
+				0.5
+			)
 			// uvTransformMatrix.setUvTransform(0.01, 0.01, 1.03, 1.03, 0, 0.5, 0.5)
 
 			$effects.uniforms.uvTransformMatrix.value = uvTransformMatrix
