@@ -35,6 +35,8 @@ export const effectsFragmentShader = /* glsl */ `
 	void main() {
 		vec2 uv = gl_FragCoord.xy / uResolution.xy;
 		uv = (uvTransformMatrix * vec3(uv, 1.0)).xy;
+
+		// uv -= 0.01;
 		
 		// sample the source texture (the source rendertarget)
 		vec4 sceneTexture = texture2D(source, uv);

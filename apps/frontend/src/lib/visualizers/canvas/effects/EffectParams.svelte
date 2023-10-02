@@ -18,7 +18,7 @@
 		{ label: 'Persistance', group: group },
 		{
 			defaultValue: 1,
-			range: [0.7, 0.99]
+			range: [0.7, 0.95]
 			// signal: new Signal(
 			// 	'audio',
 			// 	'getHighsVolume',
@@ -45,7 +45,7 @@
 		{ label: 'Scale X', group: group },
 		{
 			defaultValue: 0,
-			range: [-10.0, 10.0]
+			range: [-10.0, 200.0]
 		}
 	)
 
@@ -54,7 +54,7 @@
 		{ label: 'Scale Y', group: group },
 		{
 			defaultValue: 0,
-			range: [-10.0, 10.0]
+			range: [-10.0, 200.0]
 		}
 	)
 
@@ -74,7 +74,8 @@
 			const uvScaleX = 1 + $scaleX() / 1000
 			const uvScaleY = 1 + $scaleY() / 1000
 			const uvRotation = $rotation() / 100
-			uvTransformMatrix.setUvTransform(0, 0, uvScaleX, uvScaleY, uvRotation, 0.5, 0.5)
+			uvTransformMatrix.setUvTransform(0.0, 0.0, uvScaleX, uvScaleY, uvRotation, 0.5, 0.5)
+			// uvTransformMatrix.setUvTransform(0.01, 0.01, 1.03, 1.03, 0, 0.5, 0.5)
 
 			$effects.uniforms.uvTransformMatrix.value = uvTransformMatrix
 		}
