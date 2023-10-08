@@ -7,7 +7,11 @@ import {
 	BufferAttribute,
 	WebGLRenderer
 } from 'three'
-import { triagFragmentShader, triagVertexShader } from '../../materials/triagMaterial'
+import {
+	triagFragmentShader,
+	triagVertexShader,
+	type TriagMaterialUniforms
+} from '../../materials/triagMaterial'
 import { browser } from '$app/environment'
 
 // Fullscreen triangle that renders a texure
@@ -24,7 +28,7 @@ export default class Triag extends Mesh {
 		const resolution = new Vector2()
 		renderer.getDrawingBufferSize(resolution)
 
-		const uniforms = {
+		const uniforms: TriagMaterialUniforms = {
 			diffuse: { value: texture },
 			background: { value: backgroundTexture },
 			uResolution: { value: resolution },
@@ -36,6 +40,7 @@ export default class Triag extends Mesh {
 		geometry.setAttribute('position', new BufferAttribute(vertices, 3))
 
 		const material = new RawShaderMaterial({
+			// @ts-expect-error
 			uniforms,
 			vertexShader: vertexShader,
 			fragmentShader: fragmentShader

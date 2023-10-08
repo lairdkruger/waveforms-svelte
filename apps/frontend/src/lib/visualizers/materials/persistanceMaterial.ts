@@ -1,12 +1,12 @@
 import type { Matrix3, Texture } from 'three'
 
-export interface EffectsMaterialUniforms {
+export interface PersistanceMaterialUniforms {
 	source: { value: Texture | null }
 	amount: { value: number }
 	uvTransformMatrix: { value: Matrix3 }
 }
 
-export const effectsVertexShader = /* glsl */ `
+export const persistanceVertexShader = /* glsl */ `
 	precision highp float;
 	
 	attribute vec2 position;
@@ -21,7 +21,7 @@ export const effectsVertexShader = /* glsl */ `
 	}
 `
 
-export const effectsFragmentShader = /* glsl */ `
+export const persistanceFragmentShader = /* glsl */ `
 	precision highp float;
 
   	uniform sampler2D source;
@@ -35,8 +35,6 @@ export const effectsFragmentShader = /* glsl */ `
 	void main() {
 		vec2 uv = gl_FragCoord.xy / uResolution.xy;
 		uv = (uvTransformMatrix * vec3(uv, 1.0)).xy;
-
-		// uv -= 0.01;
 		
 		// sample the source texture (the source rendertarget)
 		vec4 sceneTexture = texture2D(source, uv);

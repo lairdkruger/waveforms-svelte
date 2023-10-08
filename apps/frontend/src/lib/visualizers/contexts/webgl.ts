@@ -1,16 +1,18 @@
 import { getContext, setContext } from 'svelte'
 import { get, writable, type Writable } from 'svelte/store'
 import { WebGLRenderer, PerspectiveCamera, Scene, Vector2 } from 'three'
-import Effect from '../canvas/primitives/Effect'
+import Persistance from '../canvas/primitives/Persistance'
 import RenderTarget from '../canvas/primitives/RenderTarget'
 import Screen from '../canvas/primitives/Screen'
+import PostEffect from '../canvas/primitives/PostEffect'
 
 interface WebglContext {
 	scene: Writable<Scene | null>
 	backgroundScene: Writable<Scene | null>
 	camera: Writable<PerspectiveCamera | null>
 	renderer: Writable<WebGLRenderer | null>
-	effects: Writable<Effect | null>
+	persistance: Writable<Persistance | null>
+	postEffect: Writable<PostEffect | null>
 	initWebgl: (canvas: HTMLCanvasElement) => void
 	onFrame: (callback: () => void) => void
 }
@@ -24,7 +26,8 @@ export function createWebglContext(key?: any) {
 	let rendererCurrent: Writable<WebGLRenderer | null> = writable(null)
 	let renderTargetCurrent: Writable<RenderTarget | null> = writable(null)
 
-	let effectsCurrent: Writable<Effect | null> = writable(null)
+	let persistanceCurrent: Writable<Persistance | null> = writable(null)
+	let postEffectCurrent: Writable<PostEffect | null> = writable(null)
 	let screenCurrent: Writable<Screen | null> = writable(null)
 
 	let callbacks: (() => void)[] = []
@@ -47,7 +50,7 @@ export function createWebglContext(key?: any) {
 		)
 		rendererCurrent.set(
 			new WebGLRenderer({
-				// Most performant settings when using custom post-processing effects
+				// Most performant settings when using custom post-processing persistance
 				canvas: canvas,
 				antialias: false,
 				alpha: false,
@@ -71,7 +74,8 @@ export function createWebglContext(key?: any) {
 		renderTargetCurrent.set(new RenderTarget(size.width, size.height))
 
 		const backgroundScene = get(backgroundSceneCurrent)
-		effectsCurrent.set(new Effect(renderer!, backgroundScene!))
+		persistanceCurrent.set(new Persistance(renderer!, backgroundScene!))
+		postEffectCurrent.set(new PostEffect(renderer!))
 		screenCurrent.set(new Screen(renderer!))
 
 		// Events
@@ -93,7 +97,8 @@ export function createWebglContext(key?: any) {
 		let renderTarget = get(renderTargetCurrent)
 		let screen = get(screenCurrent)
 
-		let effects = get(effectsCurrent)
+		let persistance = get(persistanceCurrent)
+		let postEffect = get(postEffectCurrent)
 
 		// Render the scene into render target
 		if (
@@ -101,9 +106,10 @@ export function createWebglContext(key?: any) {
 			!scene ||
 			!camera ||
 			!renderTarget ||
-			!effects ||
+			!persistance ||
 			!screen ||
-			!backgroundScene
+			!backgroundScene ||
+			!postEffect
 		) {
 			return null
 		}
@@ -112,11 +118,12 @@ export function createWebglContext(key?: any) {
 		renderer.render(scene, camera)
 		renderer.setRenderTarget(null)
 
-		// Render the effects
-		let { sceneTexture, backgroundTexture } = effects.render(renderTarget.texture)
+		// Render the persistance
+		let { sceneTexture, backgroundTexture } = persistance.render(renderTarget.texture)
+		let postTexture = postEffect.render(sceneTexture)
 
 		// Render the screen
-		screen.render(sceneTexture, backgroundTexture)
+		screen.render(postTexture, backgroundTexture)
 	}
 
 	function loop() {
@@ -130,7 +137,8 @@ export function createWebglContext(key?: any) {
 		backgroundScene: backgroundSceneCurrent,
 		camera: cameraCurrent,
 		renderer: rendererCurrent,
-		effects: effectsCurrent,
+		persistance: persistanceCurrent,
+		postEffect: postEffectCurrent,
 		initWebgl: (canvas: HTMLCanvasElement) => init(canvas),
 		onFrame
 	})

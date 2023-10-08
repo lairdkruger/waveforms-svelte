@@ -1,3 +1,11 @@
+import type { Matrix3, Texture, Vector2 } from 'three'
+
+export interface TriagMaterialUniforms {
+	diffuse: { value: Texture | null }
+	background: { value: Texture | null }
+	uResolution: { value: Vector2 }
+}
+
 export const triagVertexShader = /* glsl */ `
 	precision highp float;
 
@@ -25,9 +33,8 @@ export const triagFragmentShader = /* glsl */ `
 		vec4 scene = texture2D(diffuse, uv);
 		vec4 background = texture2D(background, uv);
 
-		// if the scene is not transparent, render the background, otherwise render the scene
+		// Overlay the scene over the background
 		vec4 fragColor = mix(background, scene, scene.a);
-		// fragColor = background;
 
 		gl_FragColor = fragColor;
 	}

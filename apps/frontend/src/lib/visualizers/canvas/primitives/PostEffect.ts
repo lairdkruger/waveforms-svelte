@@ -7,38 +7,33 @@ import {
 	ShaderMaterial,
 	Matrix3
 } from 'three'
-import PingPongRenderTarget from './PingPongRenderTarget'
 import Triag from './Triag'
 import {
-	effectsFragmentShader,
-	effectsVertexShader,
-	type EffectsMaterialUniforms
-} from '../../materials/effectsMaterial'
+	postEffectFragmentShader,
+	postEffectVertexShader,
+	type PostEffectMaterialUniforms
+} from '../../materials/postEffectMaterial'
 import RenderTarget from './RenderTarget'
-import Screen from './Screen'
 import { browser } from '$app/environment'
 
-export default class Effect {
+export default class PostEffect {
 	scene: Scene
-	backgroundScene: Scene
 	camera: OrthographicCamera
 	renderer: WebGLRenderer
-	pingpong: PingPongRenderTarget
-	backgroundRenderTarget: RenderTarget
+	renderTarget: RenderTarget
 	quad: Triag
-	uniforms: EffectsMaterialUniforms
+	uniforms: PostEffectMaterialUniforms
 
-	constructor(renderer: WebGLRenderer, backgroundScene: Scene) {
+	constructor(renderer: WebGLRenderer) {
 		this.scene = new Scene()
-		this.backgroundScene = backgroundScene
 		this.camera = new OrthographicCamera(-1, 1, 1, -1, 0.01, 100)
 		this.renderer = renderer
-
-		this.pingpong = new PingPongRenderTarget(renderer)
 
 		const size = new Vector2()
 		renderer.getSize(size)
 		size.multiplyScalar(window.devicePixelRatio)
+
+		this.renderTarget = new RenderTarget(size.width, size.height)
 
 		if (browser) {
 			window.addEventListener('resize', () => {
@@ -46,11 +41,10 @@ export default class Effect {
 			})
 		}
 
-		this.backgroundRenderTarget = new RenderTarget()
-
 		this.uniforms = {
-			source: { value: this.pingpong.write.texture },
+			source: { value: new Texture() },
 			amount: { value: 0.8 },
+			uResolution: { value: size },
 			uvTransformMatrix: { value: new Matrix3() }
 		}
 
@@ -58,8 +52,8 @@ export default class Effect {
 			this.renderer,
 			null,
 			null,
-			effectsVertexShader,
-			effectsFragmentShader,
+			postEffectVertexShader,
+			postEffectFragmentShader,
 			this.uniforms
 		)
 
@@ -71,23 +65,13 @@ export default class Effect {
 		material.uniforms.source.value = sourceTexture
 		material.uniforms.amount.value = this.uniforms.amount.value
 
-		this.quad.texture = this.pingpong.read.texture
-		this.renderer.setRenderTarget(this.pingpong.write)
+		this.quad.texture = sourceTexture
 
+		this.renderer.setRenderTarget(this.renderTarget)
 		this.renderer.render(this.scene, this.camera)
 		this.renderer.setRenderTarget(null)
 
-		this.pingpong.swap()
-
-		// Finally render the background scene
-		this.renderer.setRenderTarget(this.backgroundRenderTarget)
-		this.renderer.render(this.backgroundScene, this.camera)
-		this.renderer.setRenderTarget(null)
-
-		return {
-			sceneTexture: this.pingpong.write.texture,
-			backgroundTexture: this.backgroundRenderTarget.texture
-		}
+		return this.renderTarget.texture
 	}
 
 	onResize(renderer: WebGLRenderer) {
@@ -99,7 +83,7 @@ export default class Effect {
 		renderer.getSize(size)
 		size.multiplyScalar(window.devicePixelRatio)
 
-		this.backgroundRenderTarget.setSize(size.width, size.height)
-		this.backgroundRenderTarget.texture.needsUpdate = true
+		this.renderTarget.setSize(size.width, size.height)
+		this.renderTarget.texture.needsUpdate = true
 	}
 }

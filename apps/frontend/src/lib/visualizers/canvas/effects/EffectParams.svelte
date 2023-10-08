@@ -1,19 +1,18 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
-	import Signal from '$lib/visualizers/controls/library/signals/Signal'
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { Matrix3 } from 'three'
 
-	const { effects, onFrame } = getWebglContext()
+	const { persistance, onFrame } = getWebglContext()
 	const { controls, audioAnalyzer } = getVisualizerContext()
 
-	const folder = controls.createFolder('effects', { label: 'Effects' })
+	const folder = controls.createFolder('persistance', { label: 'Persistance' })
 	const group = controls.createGroup('frames', { label: 'Frames', folder: folder })
 
 	let uvTransformMatrix = new Matrix3()
 
-	const persistance = controls.createNumberControl(
+	const persistanceAmount = controls.createNumberControl(
 		'persistance',
 		{ label: 'Persistance', group: group },
 		{
@@ -88,8 +87,8 @@
 	)
 
 	onFrame(() => {
-		if ($effects) {
-			$effects.uniforms.amount.value = $persistance()
+		if ($persistance) {
+			$persistance.uniforms.amount.value = $persistanceAmount()
 
 			const uvScaleX = 1 + $scaleX() / 1000
 			const uvScaleY = 1 + $scaleY() / 1000
@@ -108,7 +107,7 @@
 				0.5
 			)
 
-			$effects.uniforms.uvTransformMatrix.value = uvTransformMatrix
+			$persistance.uniforms.uvTransformMatrix.value = uvTransformMatrix
 		}
 	})
 </script>
