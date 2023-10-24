@@ -4,17 +4,20 @@
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { Matrix3 } from 'three'
 
-	const { persistance, onFrame } = getWebglContext()
+	const { persistance, postEffect, onFrame } = getWebglContext()
 	const { controls, audioAnalyzer } = getVisualizerContext()
 
-	const folder = controls.createFolder('persistance', { label: 'Persistance' })
-	const group = controls.createGroup('frames', { label: 'Frames', folder: folder })
+	const persistanceFolder = controls.createFolder('persistance', { label: 'Persistance' })
+	const persistanceGroup = controls.createGroup('frames', {
+		label: 'Frames',
+		folder: persistanceFolder
+	})
 
 	let uvTransformMatrix = new Matrix3()
 
 	const persistanceAmount = controls.createNumberControl(
 		'persistance',
-		{ label: 'Persistance', group: group },
+		{ label: 'Persistance', group: persistanceGroup },
 		{
 			defaultValue: 1,
 			range: [0.7, 0.95]
@@ -41,7 +44,7 @@
 
 	const scaleX = controls.createNumberControl(
 		'scaleX',
-		{ label: 'Scale X', group: group },
+		{ label: 'Scale X', group: persistanceGroup },
 		{
 			defaultValue: 0,
 			range: [-10.0, 200.0]
@@ -50,7 +53,7 @@
 
 	const scaleY = controls.createNumberControl(
 		'scaleY',
-		{ label: 'Scale Y', group: group },
+		{ label: 'Scale Y', group: persistanceGroup },
 		{
 			defaultValue: 0,
 			range: [-10.0, 200.0]
@@ -59,7 +62,7 @@
 
 	const rotation = controls.createNumberControl(
 		'rotation',
-		{ label: 'Rotation', group: group },
+		{ label: 'Rotation', group: persistanceGroup },
 		{
 			defaultValue: 0,
 			range: [-1.0, 1.0]
@@ -68,7 +71,7 @@
 
 	const targetRadius = controls.createNumberControl(
 		'targetRadius',
-		{ label: 'Target Radius', group: group },
+		{ label: 'Target Radius', group: persistanceGroup },
 		{
 			defaultValue: 0,
 			range: [0, 10.0]
@@ -78,12 +81,51 @@
 
 	const targetAngle = controls.createNumberControl(
 		'targetAngle',
-		{ label: 'Target Angle', group: group },
+		{ label: 'Target Angle', group: persistanceGroup },
 		{
 			defaultValue: 0,
 			range: [-1.0, 1.0]
 		},
 		{ transformer: (value) => map(value, -1, 1, -Math.PI, Math.PI) }
+	)
+
+	const kaleidoscopeFolder = controls.createFolder('kaleidoscope', { label: 'Kaleidoscope' })
+	const kaleidoscopeGroup = controls.createGroup('kaleidoscope', {
+		label: 'Kaleidoscope',
+		folder: kaleidoscopeFolder
+	})
+
+	const kaleidoscopeSegments = controls.createNumberControl(
+		'segments',
+		{ label: 'Segments', group: kaleidoscopeGroup },
+		{
+			defaultValue: 2,
+			range: [0, 24]
+		},
+		{
+			transformer: (value) => Math.floor(value)
+		}
+	)
+
+	const kaleidoscopeRotation = controls.createNumberControl(
+		'kaleidoscopeRotation',
+		{ label: 'Rotation', group: kaleidoscopeGroup },
+		{
+			defaultValue: 0,
+			range: [0, 1]
+		},
+		{
+			transformer: (value) => value * Math.PI * 2
+		}
+	)
+
+	const kaleidoscopeMovement = controls.createNumberControl(
+		'kaleidoscopeMovement',
+		{ label: 'Movement', group: kaleidoscopeGroup },
+		{
+			defaultValue: 0,
+			range: [0, 1]
+		}
 	)
 
 	onFrame(() => {
@@ -108,6 +150,12 @@
 			)
 
 			$persistance.uniforms.uvTransformMatrix.value = uvTransformMatrix
+		}
+
+		if ($postEffect) {
+			$postEffect.uniforms.segments.value = $kaleidoscopeSegments()
+			$postEffect.uniforms.rotation.value = $kaleidoscopeRotation()
+			$postEffect.uniforms.movement.value = $kaleidoscopeMovement()
 		}
 	})
 </script>

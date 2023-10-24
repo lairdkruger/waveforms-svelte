@@ -1,12 +1,4 @@
-import {
-	OrthographicCamera,
-	Scene,
-	Vector2,
-	Texture,
-	WebGLRenderer,
-	ShaderMaterial,
-	Matrix3
-} from 'three'
+import { OrthographicCamera, Scene, Vector2, Texture, WebGLRenderer, ShaderMaterial } from 'three'
 import Triag from './Triag'
 import {
 	postEffectFragmentShader,
@@ -43,9 +35,10 @@ export default class PostEffect {
 
 		this.uniforms = {
 			source: { value: new Texture() },
-			amount: { value: 0.8 },
 			uResolution: { value: size },
-			uvTransformMatrix: { value: new Matrix3() }
+			segments: { value: 2 },
+			rotation: { value: 0 },
+			movement: { value: 0 }
 		}
 
 		this.quad = new Triag(
@@ -63,7 +56,9 @@ export default class PostEffect {
 	render(sourceTexture: Texture) {
 		const material = this.quad.material as ShaderMaterial
 		material.uniforms.source.value = sourceTexture
-		material.uniforms.amount.value = this.uniforms.amount.value
+		material.uniforms.segments.value = this.uniforms.segments.value
+		material.uniforms.rotation.value = this.uniforms.rotation.value
+		material.uniforms.movement.value = this.uniforms.movement.value
 
 		this.quad.texture = sourceTexture
 
