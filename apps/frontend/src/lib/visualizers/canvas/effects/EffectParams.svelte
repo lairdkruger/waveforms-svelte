@@ -128,6 +128,15 @@
 		}
 	)
 
+	const kaleidoscopeRadius = controls.createNumberControl(
+		'kaleidoscopeRadius',
+		{ label: 'Radius', group: kaleidoscopeGroup },
+		{
+			defaultValue: 0,
+			range: [0, 1]
+		}
+	)
+
 	onFrame(() => {
 		if ($persistance) {
 			$persistance.uniforms.amount.value = $persistanceAmount()
@@ -156,6 +165,7 @@
 			$postEffect.uniforms.segments.value = $kaleidoscopeSegments()
 			$postEffect.uniforms.rotation.value = $kaleidoscopeRotation()
 			$postEffect.uniforms.movement.value = $kaleidoscopeMovement()
+			$postEffect.uniforms.radius.value = $kaleidoscopeRadius()
 		}
 	})
 </script>

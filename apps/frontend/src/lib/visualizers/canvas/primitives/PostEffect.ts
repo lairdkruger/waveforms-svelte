@@ -38,7 +38,8 @@ export default class PostEffect {
 			uResolution: { value: size },
 			segments: { value: 2 },
 			rotation: { value: 0 },
-			movement: { value: 0 }
+			movement: { value: 0 },
+			radius: { value: 0 }
 		}
 
 		this.quad = new Triag(
@@ -59,6 +60,7 @@ export default class PostEffect {
 		material.uniforms.segments.value = this.uniforms.segments.value
 		material.uniforms.rotation.value = this.uniforms.rotation.value
 		material.uniforms.movement.value = this.uniforms.movement.value
+		material.uniforms.radius.value = this.uniforms.radius.value
 
 		this.quad.texture = sourceTexture
 

@@ -6,6 +6,7 @@ export interface PostEffectMaterialUniforms {
 	segments: { value: number }
 	rotation: { value: number }
 	movement: { value: number }
+	radius: { value: number }
 }
 
 export const postEffectVertexShader = /* glsl */ `
@@ -32,6 +33,7 @@ export const postEffectFragmentShader = /* glsl */ `
 	uniform float segments;
 	uniform float rotation;
 	uniform float movement;
+	uniform float radius;
 
 	varying vec2 vUv;
 
@@ -59,10 +61,13 @@ export const postEffectFragmentShader = /* glsl */ `
 
 		float angle = atan(uv.y, uv.x);
 
-		float radius = length(uv);
+		float distance = length(uv);
 		// Radius needs to extend to the corner of the screen
 		float aspect = uResolution.x / uResolution.y;
-		radius /= aspect;
+		distance /= aspect;
+
+		// Apply radius uniform to radius
+		distance = distance + radius;
 
 		// Apply angle uniform to angle
 		angle = angle + rotation;
@@ -91,7 +96,7 @@ export const postEffectFragmentShader = /* glsl */ `
 		// angle = (angle * range) - offset;
 		// angle = 0.5 + angle;
 
-		uv = vec2(angle, radius);
+		uv = vec2(angle, distance);
 
 		// Check out the UV pattern here:
 		gl_FragColor = vec4(angle, angle, angle, 1.0);
