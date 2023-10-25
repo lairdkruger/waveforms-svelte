@@ -137,6 +137,14 @@
 		}
 	)
 
+	const kaleidoscopeStretch = controls.createBooleanControl(
+		'kaleidoscopeStretch',
+		{ label: 'Stretch', group: kaleidoscopeGroup },
+		{
+			defaultValue: 0
+		}
+	)
+
 	onFrame(() => {
 		if ($persistance) {
 			$persistance.uniforms.amount.value = $persistanceAmount()
@@ -166,6 +174,7 @@
 			$postEffect.uniforms.rotation.value = $kaleidoscopeRotation()
 			$postEffect.uniforms.movement.value = $kaleidoscopeMovement()
 			$postEffect.uniforms.radius.value = $kaleidoscopeRadius()
+			$postEffect.uniforms.stretch.value = $kaleidoscopeStretch()
 		}
 	})
 </script>

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
-	import { clamp } from '$lib/visualizers/utils/Maths'
 	import { onDestroy } from 'svelte'
 	import { Group } from 'three'
 
@@ -16,7 +15,7 @@
 	const orbit = controls.createBooleanControl(
 		'orbit',
 		{ label: 'Enabled', group: group },
-		{ defaultValue: 1 }
+		{ defaultValue: 0 }
 	)
 
 	const verticalSpeed = controls.createNumberControl(

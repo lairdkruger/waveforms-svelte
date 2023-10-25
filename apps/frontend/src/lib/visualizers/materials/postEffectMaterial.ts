@@ -7,6 +7,7 @@ export interface PostEffectMaterialUniforms {
 	rotation: { value: number }
 	movement: { value: number }
 	radius: { value: number }
+	stretch: { value: number }
 }
 
 export const postEffectVertexShader = /* glsl */ `
@@ -34,6 +35,7 @@ export const postEffectFragmentShader = /* glsl */ `
 	uniform float rotation;
 	uniform float movement;
 	uniform float radius;
+	uniform float stretch;
 
 	varying vec2 vUv;
 
@@ -59,23 +61,27 @@ export const postEffectFragmentShader = /* glsl */ `
 		// [0, 1] to [-0.5, 0.5]
 		uv -= vec2(0.5);
 
-		float angle = atan(uv.y, uv.x);
-
-		float distance = length(uv);
-		// Radius needs to extend to the corner of the screen
+		// Handle screen aspect ratio and apply to uv
 		float aspect = uResolution.x / uResolution.y;
+		uv.x *= aspect;
+
+		// Convert uv to polar coords
+		float angle = atan(uv.y, uv.x);
+		float distance = length(uv) * 2.0;
+
+		// Radius needs to extend to the corner of the screen
 		distance /= aspect;
 
 		// Apply radius uniform to radius
-		distance = distance + radius;
+		distance = distance;
 
 		// Apply angle uniform to angle
 		angle = angle + rotation;
 
 		// Remap angle from [-PI, PI] to [0, 1]
 		angle = (angle / (2.0 * PI)) + 0.5;
-		// angle += 0.0;
 
+		// Handle segment fragments
 		angle = fract(angle * segments);
 
 		// Angle goes from 0 - 1 - 0
@@ -84,22 +90,20 @@ export const postEffectFragmentShader = /* glsl */ `
 		// Apply movement uniform
 		angle = angle + movement;
 
-		// Clamp value from 0 to 2 * PI after adding rotation vector
-
-		// Option:
-		// We want it to straddle 0.5 - where the size of the range depends on the value of segments
-		// Eg: 4 segments = 1 / 4 = 0.25 so angle should be 0.5 +/- 0.25 = [0.25 - 0.75]
-		// float range = 1.0 / (segments / 2.0);
-		// float offset = range / 2.0;
-		
-		// // From 0 - 1 to 0 - 0.25 to -0.125 - 0.125
-		// angle = (angle * range) - offset;
-		// angle = 0.5 + angle;
-
+		// Set UV to polar coords
 		uv = vec2(angle, distance);
 
+		// Use uniform to toggle between polar and cartesian coords
+		if (stretch == 0.0) {
+			// If stretch is disabled, perform final conversion back to cartesian coords
+			uv = vec2(cos(angle), sin(angle)) * distance + 0.5 + radius;		
+		}
+
+		// Handle out of bounds: Reflect outside the inner circle boundary.
+		uv = max(min(uv, 2.0 - uv), -uv);	
+		
 		// Check out the UV pattern here:
-		gl_FragColor = vec4(angle, angle, angle, 1.0);
+		gl_FragColor = vec4(uv.y, uv.y, uv.y, 1.0);
 		
 		vec4 sceneTexture = texture2D(source, uv);
 		vec4 fragColor = sceneTexture;

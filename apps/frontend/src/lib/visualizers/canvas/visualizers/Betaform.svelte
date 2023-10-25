@@ -6,6 +6,7 @@
 	import EffectParams from '../effects/EffectParams.svelte'
 	import WaveLine from '../objects/WaveLine.svelte'
 	import Background from '../objects/Background.svelte'
+	import CameraMovement from '../camera/CameraMovement.svelte'
 
 	const { audioAnalyzer } = getVisualizerContext()
 
@@ -32,5 +33,6 @@
 </script>
 
 <WaveLine parent={waveformGroup} label="Main Line" initialColor={new Color(0x000000)} />
-<EffectParams />
 <Background initialColor={new Color(0xffffff)} />
+<CameraMovement />
+<EffectParams />

@@ -5,7 +5,6 @@
 	import { type Group, Color } from 'three'
 	import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshline'
 	import { distributeAngles, map, radians } from '$lib/visualizers/utils/Maths'
-	import Signal from '$lib/visualizers/controls/library/signals/Signal'
 
 	// Type declarations
 	type Point = {
@@ -49,6 +48,30 @@
 		},
 		{ values: ['Parallel', 'Perpendicular'] },
 		{ defaultValue: 'Parallel' }
+	)
+
+	const linePositionX = controls.createNumberControl(
+		'linePositionX',
+		{
+			label: 'Position X',
+			group: group
+		},
+		{
+			defaultValue: 0,
+			range: [-5, 5]
+		}
+	)
+
+	const linePositionY = controls.createNumberControl(
+		'linePositionY',
+		{
+			label: 'Position Y',
+			group: group
+		},
+		{
+			defaultValue: 0,
+			range: [-5, 5]
+		}
 	)
 
 	const lineShape = controls.createSelectControl(
@@ -355,7 +378,10 @@
 		meshline.material.uniforms.color.value = materialColor
 
 		meshline.material.uniformsNeedUpdate = true
+
+		meshline.position.set($linePositionX(), $linePositionY(), 0)
 	}
+
 	onFrame(() => {
 		updateLinePoints()
 		updateLineProperties()
