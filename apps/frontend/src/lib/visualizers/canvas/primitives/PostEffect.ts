@@ -40,7 +40,8 @@ export default class PostEffect {
 			rotation: { value: 0 },
 			movement: { value: 0 },
 			radius: { value: 0 },
-			stretch: { value: 0 }
+			stretch: { value: 0 },
+			loops: { value: 0 }
 		}
 
 		this.quad = new Triag(
@@ -63,6 +64,7 @@ export default class PostEffect {
 		material.uniforms.movement.value = this.uniforms.movement.value
 		material.uniforms.radius.value = this.uniforms.radius.value
 		material.uniforms.stretch.value = this.uniforms.stretch.value
+		material.uniforms.loops.value = this.uniforms.loops.value
 
 		this.quad.texture = sourceTexture
 

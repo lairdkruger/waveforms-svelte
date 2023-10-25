@@ -8,6 +8,7 @@ export interface PostEffectMaterialUniforms {
 	movement: { value: number }
 	radius: { value: number }
 	stretch: { value: number }
+	loops: { value: number }
 }
 
 export const postEffectVertexShader = /* glsl */ `
@@ -36,6 +37,7 @@ export const postEffectFragmentShader = /* glsl */ `
 	uniform float movement;
 	uniform float radius;
 	uniform float stretch;
+	uniform float loops;
 
 	varying vec2 vUv;
 
@@ -67,10 +69,10 @@ export const postEffectFragmentShader = /* glsl */ `
 
 		// Convert uv to polar coords
 		float angle = atan(uv.y, uv.x);
-		float distance = length(uv) * 2.0;
+		float distance = length(uv);
 
 		// Radius needs to extend to the corner of the screen
-		distance /= aspect;
+		distance *= loops;
 
 		// Apply radius uniform to radius
 		distance = distance;

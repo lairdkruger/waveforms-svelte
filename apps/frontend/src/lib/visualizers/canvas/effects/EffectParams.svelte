@@ -145,6 +145,15 @@
 		}
 	)
 
+	const kaleidoscopeLoops = controls.createNumberControl(
+		'kaleidoscopeLoops',
+		{ label: 'Loops', group: kaleidoscopeGroup },
+		{
+			defaultValue: 1,
+			range: [1, 4]
+		}
+	)
+
 	onFrame(() => {
 		if ($persistance) {
 			$persistance.uniforms.amount.value = $persistanceAmount()
@@ -175,6 +184,7 @@
 			$postEffect.uniforms.movement.value = $kaleidoscopeMovement()
 			$postEffect.uniforms.radius.value = $kaleidoscopeRadius()
 			$postEffect.uniforms.stretch.value = $kaleidoscopeStretch()
+			$postEffect.uniforms.loops.value = $kaleidoscopeLoops()
 		}
 	})
 </script>
