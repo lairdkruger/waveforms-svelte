@@ -125,7 +125,8 @@
 		{
 			defaultValue: 0,
 			range: [0, 1]
-		}
+		},
+		{ transformer: (value) => value * (2 * Math.PI) }
 	)
 
 	const kaleidoscopeRadius = controls.createNumberControl(

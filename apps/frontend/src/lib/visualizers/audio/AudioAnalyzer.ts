@@ -49,7 +49,7 @@ export default class AudioAnalyzer {
 		highsPeaked: 0
 	}
 	signalFunctions: { [key: string]: () => number } = {} // [signalFunctionId]: getPrimitive
-	signals: { [key: string]: Signal } = {}
+	signals: { [key: string]: () => Signal } = {} // [signalId]: Signal constructor (each signal needs to be a unique object per control and signals (unlike signalFunctions) must not be shared
 
 	///////////////////////////////////////////////
 	// Constructor
@@ -79,52 +79,46 @@ export default class AudioAnalyzer {
 		}
 
 		this.signals = {
-			getVolume: new Signal('audio', 'getVolume', this.signalFunctions['getVolume'], [
-				() => 0,
-				this.signalFunctions['getPeakVolume']
-			]),
-			getVolumePeaked: new Signal(
-				'audio',
-				'getVolumePeaked',
-				this.signalFunctions['getVolumePeaked'],
-				[() => 0, () => 1]
-			),
-			getBassVolume: new Signal(
-				'audio',
-				'getBassVolume',
-				this.signalFunctions['getBassVolume'],
-				[() => 0, this.signalFunctions['getPeakBassVolume']]
-			),
-			getBassPeaked: new Signal(
-				'audio',
-				'getBassPeaked',
-				this.signalFunctions['getBassPeaked'],
-				[() => 0, () => 1]
-			),
-			getMidsVolume: new Signal(
-				'audio',
-				'getMidsVolume',
-				this.signalFunctions['getMidsVolume'],
-				[() => 0, this.signalFunctions['getPeakMidsVolume']]
-			),
-			getMidsPeaked: new Signal(
-				'audio',
-				'getMidsPeaked',
-				this.signalFunctions['getMidsPeaked'],
-				[() => 0, () => 1]
-			),
-			getHighsVolume: new Signal(
-				'audio',
-				'getHighsVolume',
-				this.signalFunctions['getHighsVolume'],
-				[() => 0, this.signalFunctions['getPeakHighsVolume']]
-			),
-			getHighsPeaked: new Signal(
-				'audio',
-				'getHighsPeaked',
-				this.signalFunctions['getHighsPeaked'],
-				[() => 0, () => 1]
-			)
+			getVolume: () =>
+				new Signal('audio', 'getVolume', this.signalFunctions['getVolume'], [
+					() => 0,
+					this.signalFunctions['getPeakVolume']
+				]),
+			getVolumePeaked: () =>
+				new Signal('audio', 'getVolumePeaked', this.signalFunctions['getVolumePeaked'], [
+					() => 0,
+					() => 1
+				]),
+			getBassVolume: () =>
+				new Signal('audio', 'getBassVolume', this.signalFunctions['getBassVolume'], [
+					() => 0,
+					this.signalFunctions['getPeakBassVolume']
+				]),
+			getBassPeaked: () =>
+				new Signal('audio', 'getBassPeaked', this.signalFunctions['getBassPeaked'], [
+					() => 0,
+					() => 1
+				]),
+			getMidsVolume: () =>
+				new Signal('audio', 'getMidsVolume', this.signalFunctions['getMidsVolume'], [
+					() => 0,
+					this.signalFunctions['getPeakMidsVolume']
+				]),
+			getMidsPeaked: () =>
+				new Signal('audio', 'getMidsPeaked', this.signalFunctions['getMidsPeaked'], [
+					() => 0,
+					() => 1
+				]),
+			getHighsVolume: () =>
+				new Signal('audio', 'getHighsVolume', this.signalFunctions['getHighsVolume'], [
+					() => 0,
+					this.signalFunctions['getPeakHighsVolume']
+				]),
+			getHighsPeaked: () =>
+				new Signal('audio', 'getHighsPeaked', this.signalFunctions['getHighsPeaked'], [
+					() => 0,
+					() => 1
+				])
 		}
 
 		this.changeAudioInput(this.audioInput)

@@ -1,3 +1,4 @@
 TODO:
 
 1. Make number controls work when the upper range is less than the lower range, so that users can change the direction of certain things
+2. Fix signal sharing between controls

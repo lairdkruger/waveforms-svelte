@@ -1,4 +1,5 @@
 import { camelcase } from '$lib/visualizers/utils/Strings'
+import { writable } from 'svelte/store'
 import Signal from '../controls/library/signals/Signal'
 
 export type MidiDeviceId = string // Format midiDeviceName
@@ -8,7 +9,7 @@ export type MidiNoteEventType = 'noteOn' | 'noteOff'
 
 export default class Midi {
 	midiAccess: MIDIAccess | null = null
-	listening = false
+	listening = writable(false)
 	recentInput: MidiControlId | null = null
 	activeInput: MidiControlId | null = null
 
@@ -96,7 +97,7 @@ export default class Midi {
 		// Create a new signalFunction and append it to the state
 		this.createSignal(signalFunctionId, midiControlId)
 
-		this.listening = false
+		this.listening.set(false)
 	}
 
 	// Handle midiData and return a normalized value
@@ -162,7 +163,7 @@ export default class Midi {
 			this.recentInput = null
 
 			// Start listening
-			this.listening = true
+			this.listening.set(true)
 
 			const interval = setInterval(() => {
 				// Periodically check for a new input
@@ -172,7 +173,7 @@ export default class Midi {
 					// Once a new input is detected return it's signal function id
 					const controlSignalId = this.createMidiSignalId(newInput)
 					// Stop listening
-					this.listening = false
+					this.listening.set(false)
 
 					clearInterval(interval)
 					resolve(controlSignalId)
@@ -189,7 +190,7 @@ export default class Midi {
 
 	// Cancel listening for midi input
 	cancelListenForMidiInput() {
-		this.listening = false
+		this.listening.set(false)
 	}
 
 	// Manually create a midi signal function (eg: loading presets)

@@ -6,10 +6,11 @@
 	const { controls, midi } = getVisualizerContext()
 	const control = controls.getControl(controlId)
 	const controlConfig = control.config
+	const midiListening = midi.listening
 
 	$: midiActive = $controlConfig.signal?.context === 'midi'
 	$: midiLabel = () => {
-		if (midi.listening) {
+		if ($midiListening) {
 			return 'Key?'
 		} else if (midiActive) {
 			// First four characters of midi function id, without the get_
@@ -28,7 +29,7 @@
 	class:active={$controlConfig.signal?.context === 'midi'}
 	on:click={async () => {
 		// Toggle listening off if already listening
-		if (midi.listening) {
+		if ($midiListening) {
 			midi.cancelListenForMidiInput()
 			return
 		}

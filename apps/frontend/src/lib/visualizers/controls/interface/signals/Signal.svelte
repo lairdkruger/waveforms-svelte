@@ -5,7 +5,7 @@
 	import type Signal from '../../library/signals/Signal'
 	import type { SignalType } from '../../types'
 
-	export let signal: Signal
+	export let signal: () => Signal
 	export let type: SignalType
 
 	const { controls } = getVisualizerContext()
@@ -15,11 +15,11 @@
 </script>
 
 <div
-	id={signal.id}
+	id={signal().id}
 	class="signal"
 	on:pointerdown={(e) => {
 		e.stopPropagation()
-		controls.draggedSignal.set(signal)
+		controls.draggedSignal.set(signal())
 
 		if ($controlPanelRef) {
 			const controlPanelBounds = $controlPanelRef.getBoundingClientRect()

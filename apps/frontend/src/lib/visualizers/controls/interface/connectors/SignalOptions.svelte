@@ -15,10 +15,11 @@
 	const control = controls.getControl(controlId)
 	const config = control.config
 	$: signalConfig = $config.signal?.config
+	const midiListening = midi.listening
 
 	$: midiActive = $signalConfig?.booster?.context === 'midi'
 	$: midiLabel = () => {
-		if (midi.listening) {
+		if ($midiListening) {
 			return 'Key?'
 		} else if (midiActive) {
 			// First four characters of midi function id, without the get_
@@ -148,7 +149,7 @@
 						class:enabled={$signalConfig?.booster?.id === 'getBassPeaked'}
 						on:click={() =>
 							signalConfig?.update((config) => {
-								config.booster = audioAnalyzer.signals.getBassPeaked
+								config.booster = audioAnalyzer.signals.getBassPeaked()
 								return config
 							})}
 					>
@@ -159,7 +160,7 @@
 						class:enabled={$signalConfig?.booster?.id === 'getMidsPeaked'}
 						on:click={() =>
 							signalConfig?.update((config) => {
-								config.booster = audioAnalyzer.signals.getMidsPeaked
+								config.booster = audioAnalyzer.signals.getMidsPeaked()
 								return config
 							})}
 					>
@@ -170,7 +171,7 @@
 						class:enabled={$signalConfig?.booster?.id === 'getHighsPeaked'}
 						on:click={() =>
 							signalConfig?.update((config) => {
-								config.booster = audioAnalyzer.signals.getHighsPeaked
+								config.booster = audioAnalyzer.signals.getHighsPeaked()
 								return config
 							})}
 					>
@@ -181,7 +182,7 @@
 						class:enabled={$signalConfig?.booster?.id === 'getVolumePeaked'}
 						on:click={() =>
 							signalConfig?.update((config) => {
-								config.booster = audioAnalyzer.signals.getVolumePeaked
+								config.booster = audioAnalyzer.signals.getVolumePeaked()
 								return config
 							})}
 					>
@@ -205,8 +206,8 @@
 						class="button textLabel"
 						class:enabled={$signalConfig?.booster?.context === 'midi'}
 						on:click={async () => {
-							// Toggle listening off if already listening
-							if (midi.listening) {
+							// Toggle midiListening off if already midiListening
+							if ($midiListening) {
 								midi.cancelListenForMidiInput()
 								return
 							}
