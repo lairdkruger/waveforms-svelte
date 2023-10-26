@@ -5,3 +5,7 @@ export function camelcase(str: string) {
 		})
 		.replace(/\s+/g, '')
 }
+
+export function capitalize(str: string) {
+	return str.charAt(0).toUpperCase() + str.slice(1)
+}

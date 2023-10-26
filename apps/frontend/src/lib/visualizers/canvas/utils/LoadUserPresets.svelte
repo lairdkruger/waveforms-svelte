@@ -39,7 +39,7 @@
 								booster: undefined
 							}
 
-							const baseSignal = audioAnalyzer.signals[config.signal.booster.id]
+							const baseSignal = audioAnalyzer.signals[config.signal.booster.id]()
 							booster = new Signal(
 								baseSignal.context,
 								baseSignal.id,
@@ -75,7 +75,7 @@
 							booster: booster
 						}
 
-						const baseSignal = audioAnalyzer.signals[config.signal.id]
+						const baseSignal = audioAnalyzer.signals[config.signal.id]()
 						controlConfigs[controlId].signal = new Signal(
 							baseSignal.context,
 							baseSignal.id,

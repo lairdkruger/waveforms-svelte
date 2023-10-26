@@ -50,7 +50,7 @@
 	}
 
 	textarea {
-		padding-bottom: 2px;
+		padding-bottom: 4px;
 		max-width: 100%;
 		min-width: 100%;
 	}

@@ -1,4 +1,4 @@
-import type { Matrix3, Texture, Vector2 } from 'three'
+import type { Texture, Vector2 } from 'three'
 
 export interface TriagMaterialUniforms {
 	diffuse: { value: Texture | null }

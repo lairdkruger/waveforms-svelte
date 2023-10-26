@@ -138,9 +138,9 @@
 		}
 	)
 
-	const kaleidoscopeStretch = controls.createBooleanControl(
-		'kaleidoscopeStretch',
-		{ label: 'Stretch', group: kaleidoscopeGroup },
+	const kaleidoscopeSqueeze = controls.createBooleanControl(
+		'kaleidoscopeSqueeze',
+		{ label: 'Squeeze', group: kaleidoscopeGroup },
 		{
 			defaultValue: 0
 		}
@@ -184,7 +184,7 @@
 			$postEffect.uniforms.rotation.value = $kaleidoscopeRotation()
 			$postEffect.uniforms.movement.value = $kaleidoscopeMovement()
 			$postEffect.uniforms.radius.value = $kaleidoscopeRadius()
-			$postEffect.uniforms.stretch.value = $kaleidoscopeStretch()
+			$postEffect.uniforms.squeeze.value = $kaleidoscopeSqueeze()
 			$postEffect.uniforms.loops.value = $kaleidoscopeLoops()
 		}
 	})

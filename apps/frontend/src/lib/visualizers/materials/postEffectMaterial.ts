@@ -7,7 +7,7 @@ export interface PostEffectMaterialUniforms {
 	rotation: { value: number }
 	movement: { value: number }
 	radius: { value: number }
-	stretch: { value: number }
+	squeeze: { value: number }
 	loops: { value: number }
 }
 
@@ -36,7 +36,7 @@ export const postEffectFragmentShader = /* glsl */ `
 	uniform float rotation;
 	uniform float movement;
 	uniform float radius;
-	uniform float stretch;
+	uniform float squeeze;
 	uniform float loops;
 
 	varying vec2 vUv;
@@ -96,8 +96,8 @@ export const postEffectFragmentShader = /* glsl */ `
 		uv = vec2(angle, distance);
 
 		// Use uniform to toggle between polar and cartesian coords
-		if (stretch == 0.0) {
-			// If stretch is disabled, perform final conversion back to cartesian coords
+		if (squeeze == 0.0) {
+			// If squeeze is disabled, perform final conversion back to cartesian coords
 			uv = vec2(cos(angle), sin(angle)) * distance + 0.5 + radius;		
 		}
 

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { capitalize } from '$lib/visualizers/utils/Strings'
+
 	export let type: string = 'text'
 	export let name: string
 	export let value: string = ''
@@ -19,7 +21,7 @@
 
 <div class="wrapper">
 	{#if showPlaceholder}
-		<label for={name}>{name}</label>
+		<label for={name}>{capitalize(name)}</label>
 	{/if}
 	<input
 		{type}
@@ -32,7 +34,7 @@
 	/>
 	<div class="underline" />
 	{#if issue}
-		<span>{issue}</span>
+		<span class="issue">{issue}</span>
 	{/if}
 </div>
 
@@ -60,10 +62,15 @@
 	}
 
 	input {
-		padding-bottom: 2px;
+		padding-bottom: 4px;
 	}
 
 	input:disabled {
 		opacity: 0.5;
+	}
+
+	.issue {
+		opacity: 0.5;
+		margin-top: 2px;
 	}
 </style>

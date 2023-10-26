@@ -32,9 +32,14 @@
 	.enter {
 		width: 100%;
 		grid-area: block-3;
+
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
 	}
 
 	.form-toggle {
 		margin-top: var(--spacing16);
+		align-self: flex-end;
 	}
 </style>
