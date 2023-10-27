@@ -8,7 +8,7 @@ import type {
 	NumberOutput,
 	SerializedControlConfig
 } from '../../types'
-import { map } from '$lib/visualizers/utils/Maths'
+import { inRange, map } from '$lib/visualizers/utils/Maths'
 
 export default class NumberControl extends ControlBase {
 	settings: NumberControlSettings
@@ -67,7 +67,8 @@ export default class NumberControl extends ControlBase {
 		this.config.update((config) => {
 			config.range[0] = value
 
-			if (config.defaultValue < value) {
+			// Revalidate default value
+			if (!inRange(config.defaultValue, config.range[0], config.range[1])) {
 				config.defaultValue = value
 			}
 
@@ -77,11 +78,16 @@ export default class NumberControl extends ControlBase {
 
 	setUpperRange(value: number) {
 		this.config.update((config) => {
+			console.log('set upper range', value, config.range[0], config.range[1])
+
 			config.range[1] = value
 
-			if (config.defaultValue > value) {
+			// Revalidate default value
+			if (!inRange(config.defaultValue, config.range[0], config.range[1])) {
 				config.defaultValue = value
 			}
+
+			console.log('setted upper range', value, config.range[0], config.range[1])
 
 			return config
 		})
@@ -92,12 +98,22 @@ export default class NumberControl extends ControlBase {
 			config.defaultValue = value
 
 			// Revalidate range values
-			if (value > config.range[1]) {
-				config.range[1] = config.defaultValue
-			}
+			if (config.range[0] < config.range[1]) {
+				if (value > config.range[1]) {
+					config.range[1] = config.defaultValue
+				}
 
-			if (value < config.range[0]) {
-				config.range[0] = config.defaultValue
+				if (value < config.range[0]) {
+					config.range[0] = config.defaultValue
+				}
+			} else {
+				if (value > config.range[0]) {
+					config.range[0] = config.defaultValue
+				}
+
+				if (value < config.range[1]) {
+					config.range[1] = config.defaultValue
+				}
 			}
 
 			return config

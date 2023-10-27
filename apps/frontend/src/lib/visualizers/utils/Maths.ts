@@ -10,7 +10,9 @@ export function lerp(v0: number, v1: number, t: number) {
 }
 
 export function clamp(value: number, min: number, max: number) {
-	return Math.max(min, Math.min(max, value))
+	let minimum = min > max ? max : min
+	let maximum = min > max ? min : max
+	return Math.max(minimum, Math.min(maximum, value))
 }
 
 export function radians(deg: number) {
@@ -87,4 +89,11 @@ export function mapLoop(speed: number, ticker: Ticker) {
 	if (ticker.value > 1) ticker.value = 0
 
 	return ticker.value
+}
+
+export function inRange(value: number, min: number, max: number) {
+	let maximum = max > min ? max : min
+	let minimum = max > min ? min : max
+
+	return value >= minimum && value <= maximum
 }
