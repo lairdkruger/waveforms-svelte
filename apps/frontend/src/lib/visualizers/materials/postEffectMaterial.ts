@@ -3,12 +3,12 @@ import type { Texture, Vector2 } from 'three'
 export interface PostEffectMaterialUniforms {
 	source: { value: Texture | null }
 	uResolution: { value: Vector2 }
+	squeeze: { value: number }
 	segments: { value: number }
-	rotation: { value: number }
+	loops: { value: number }
 	movement: { value: number }
 	radius: { value: number }
-	squeeze: { value: number }
-	loops: { value: number }
+	rotation: { value: number }
 }
 
 export const postEffectVertexShader = /* glsl */ `
@@ -30,14 +30,14 @@ export const postEffectFragmentShader = /* glsl */ `
 	precision highp float;
 
   	uniform sampler2D source;
-	uniform float amount;
 	uniform vec2 uResolution;
+
+	uniform float squeeze;
 	uniform float segments;
-	uniform float rotation;
+	uniform float loops;
 	uniform float movement;
 	uniform float radius;
-	uniform float squeeze;
-	uniform float loops;
+	uniform float rotation;
 
 	varying vec2 vUv;
 

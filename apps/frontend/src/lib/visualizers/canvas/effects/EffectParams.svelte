@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
+	import Signal from '$lib/visualizers/controls/library/signals/Signal'
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { Matrix3 } from 'three'
 
 	const { persistance, postEffect, onFrame } = getWebglContext()
 	const { controls, audioAnalyzer } = getVisualizerContext()
 
+	// Kaleidoscope
 	const persistanceFolder = controls.createFolder('persistance', { label: 'Persistance' })
 	const persistanceGroup = controls.createGroup('frames', {
 		label: 'Frames',
@@ -20,22 +22,22 @@
 		{ label: 'Persistance', group: persistanceGroup },
 		{
 			defaultValue: 1,
-			range: [0.7, 0.95]
-			// signal: new Signal(
-			// 	'audio',
-			// 	'getHighsVolume',
-			// 	audioAnalyzer.signalFunctions['getHighsVolume'],
-			// 	[() => 0, audioAnalyzer.signalFunctions['getPeakHighsVolume']],
-			// 	{
-			// 		ease: 'in',
-			// 		booster: new Signal(
-			// 			'audio',
-			// 			'getVolumePeaked',
-			// 			audioAnalyzer.signalFunctions['getVolumePeaked'],
-			// 			[() => 0, () => 1]
-			// 		)
-			// 	}
-			// )
+			range: [0.7, 0.95],
+			signal: new Signal(
+				'audio',
+				'getHighsVolume',
+				audioAnalyzer.signalFunctions['getHighsVolume'],
+				[() => 0, audioAnalyzer.signalFunctions['getPeakHighsVolume']],
+				{
+					ease: 'in',
+					booster: new Signal(
+						'audio',
+						'getVolumePeaked',
+						audioAnalyzer.signalFunctions['getVolumePeaked'],
+						[() => 0, () => 1]
+					)
+				}
+			)
 		},
 		{
 			transformer: (value) => clamp(value, 0, 1)
@@ -89,17 +91,26 @@
 		{ transformer: (value) => map(value, -1, 1, -Math.PI, Math.PI) }
 	)
 
+	// Kaleidoscope
 	const kaleidoscopeFolder = controls.createFolder('kaleidoscope', { label: 'Kaleidoscope' })
 	const kaleidoscopeGroup = controls.createGroup('kaleidoscope', {
 		label: 'Kaleidoscope',
 		folder: kaleidoscopeFolder
 	})
 
+	const kaleidoscopeSqueeze = controls.createBooleanControl(
+		'kaleidoscopeSqueeze',
+		{ label: 'Squeeze', group: kaleidoscopeGroup },
+		{
+			defaultValue: 0
+		}
+	)
+
 	const kaleidoscopeSegments = controls.createNumberControl(
 		'segments',
 		{ label: 'Segments', group: kaleidoscopeGroup },
 		{
-			defaultValue: 2,
+			defaultValue: 4,
 			range: [0, 24]
 		},
 		{
@@ -107,15 +118,12 @@
 		}
 	)
 
-	const kaleidoscopeRotation = controls.createNumberControl(
-		'kaleidoscopeRotation',
-		{ label: 'Rotation', group: kaleidoscopeGroup },
+	const kaleidoscopeLoops = controls.createNumberControl(
+		'kaleidoscopeLoops',
+		{ label: 'Loops', group: kaleidoscopeGroup },
 		{
-			defaultValue: 0,
-			range: [0, 1]
-		},
-		{
-			transformer: (value) => value * Math.PI * 2
+			defaultValue: 2,
+			range: [1, 4]
 		}
 	)
 
@@ -124,7 +132,17 @@
 		{ label: 'Movement', group: kaleidoscopeGroup },
 		{
 			defaultValue: 0,
-			range: [0, 1]
+			range: [1, 0],
+			signal: new Signal(
+				'audio',
+				'getVolume',
+				audioAnalyzer.signalFunctions['getVolume'],
+				[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+				{
+					ease: 'in',
+					behaviour: 'loop'
+				}
+			)
 		},
 		{ transformer: (value) => value * (2 * Math.PI) }
 	)
@@ -138,20 +156,15 @@
 		}
 	)
 
-	const kaleidoscopeSqueeze = controls.createBooleanControl(
-		'kaleidoscopeSqueeze',
-		{ label: 'Squeeze', group: kaleidoscopeGroup },
+	const kaleidoscopeRotation = controls.createNumberControl(
+		'kaleidoscopeRotation',
+		{ label: 'Rotation', group: kaleidoscopeGroup },
 		{
-			defaultValue: 0
-		}
-	)
-
-	const kaleidoscopeLoops = controls.createNumberControl(
-		'kaleidoscopeLoops',
-		{ label: 'Loops', group: kaleidoscopeGroup },
+			defaultValue: 0,
+			range: [0, 1]
+		},
 		{
-			defaultValue: 1,
-			range: [1, 4]
+			transformer: (value) => value * Math.PI * 2
 		}
 	)
 
@@ -180,12 +193,12 @@
 		}
 
 		if ($postEffect) {
+			$postEffect.uniforms.squeeze.value = $kaleidoscopeSqueeze()
 			$postEffect.uniforms.segments.value = $kaleidoscopeSegments()
-			$postEffect.uniforms.rotation.value = $kaleidoscopeRotation()
+			$postEffect.uniforms.loops.value = $kaleidoscopeLoops()
 			$postEffect.uniforms.movement.value = $kaleidoscopeMovement()
 			$postEffect.uniforms.radius.value = $kaleidoscopeRadius()
-			$postEffect.uniforms.squeeze.value = $kaleidoscopeSqueeze()
-			$postEffect.uniforms.loops.value = $kaleidoscopeLoops()
+			$postEffect.uniforms.rotation.value = $kaleidoscopeRotation()
 		}
 	})
 </script>

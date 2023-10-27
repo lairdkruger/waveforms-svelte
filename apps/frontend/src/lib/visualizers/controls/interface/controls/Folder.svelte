@@ -11,7 +11,8 @@
 	const groups = controls.controls.groups
 	const relevantGroups = Object.entries(groups).filter(([, group]) => group.folder === folder.id)
 
-	let expanded = true
+	// Only expand the first folder by default
+	let expanded = folder.id === Object.keys(controls.controls.folders)[0]
 </script>
 
 <div class="folder">
@@ -86,9 +87,6 @@
 		position: absolute;
 		right: 0;
 		transform: translateY(50%);
-	}
-
-	.accordion {
 	}
 
 	.content {

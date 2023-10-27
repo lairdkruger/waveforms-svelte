@@ -78,16 +78,12 @@ export default class NumberControl extends ControlBase {
 
 	setUpperRange(value: number) {
 		this.config.update((config) => {
-			console.log('set upper range', value, config.range[0], config.range[1])
-
 			config.range[1] = value
 
 			// Revalidate default value
 			if (!inRange(config.defaultValue, config.range[0], config.range[1])) {
 				config.defaultValue = value
 			}
-
-			console.log('setted upper range', value, config.range[0], config.range[1])
 
 			return config
 		})

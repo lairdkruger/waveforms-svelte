@@ -38,8 +38,6 @@
 		let valueMapped = map($position, 0, trackWidth, $config.range[0], $config.range[1])
 		let valueClamped = clamp(valueMapped, $config.range[0], $config.range[1])
 		control.setDefaultValue(valueClamped)
-
-		console.log('valueMapped', valueMapped, valueClamped, $config.range)
 	}
 
 	let gesture: DragGesture

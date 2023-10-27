@@ -34,5 +34,5 @@
 
 <WaveLine parent={waveformGroup} label="Main Line" initialColor={new Color(0x000000)} />
 <Background initialColor={new Color(0xffffff)} />
-<CameraMovement />
 <EffectParams />
+<CameraMovement />

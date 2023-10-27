@@ -21,8 +21,6 @@
 	const { controls, audioAnalyzer } = getVisualizerContext()
 	const { onFrame } = getWebglContext()
 
-	console.log('moutn waveline')
-
 	const folder = controls.createFolder(label, { label: label })
 	const group = controls.createGroup(label, {
 		folder: folder,
@@ -30,6 +28,16 @@
 	})
 
 	// Controls
+	const lineShape = controls.createSelectControl(
+		'lineShape',
+		{
+			label: 'Shape',
+			group: group
+		},
+		{ values: ['Line', 'Circle'] },
+		{ defaultValue: 'Circle' }
+	)
+
 	const lineType = controls.createSelectControl(
 		'lineType',
 		{
@@ -37,17 +45,28 @@
 			group: group
 		},
 		{ values: ['Spectrum', 'Waveform', 'Wavetrum'] },
-		{ defaultValue: 'Spectrum' }
+		{ defaultValue: 'Waveform' }
 	)
 
-	const lineDirection = controls.createSelectControl(
-		'lineDirection',
+	const lineIntensity = controls.createNumberControl(
+		'lineIntensity',
 		{
-			label: 'Direction',
+			label: 'Intensity',
 			group: group
 		},
-		{ values: ['Parallel', 'Perpendicular'] },
-		{ defaultValue: 'Parallel' }
+		{ defaultValue: 12, range: [0, 20] }
+	)
+
+	const lineSize = controls.createNumberControl(
+		'lineSize',
+		{
+			label: 'Size',
+			group: group
+		},
+		{
+			defaultValue: 2,
+			range: [1, 5]
+		}
 	)
 
 	const linePositionX = controls.createNumberControl(
@@ -74,25 +93,31 @@
 		}
 	)
 
-	const lineShape = controls.createSelectControl(
-		'lineShape',
+	const lineDirection = controls.createSelectControl(
+		'lineDirection',
 		{
-			label: 'Shape',
+			label: 'Direction',
 			group: group
 		},
-		{ values: ['Line', 'Circle'] },
-		{ defaultValue: 'Circle' }
+		{ values: ['Parallel', 'Perpendicular'] },
+		{ defaultValue: 'Parallel' }
 	)
 
-	const lineSize = controls.createNumberControl(
-		'lineSize',
+	function audioResolutionTransformer(value: number) {
+		return value < 2 ? 1 : 2 ** Math.round(value)
+	}
+
+	const lineResolution = controls.createNumberControl(
+		'lineResolution',
 		{
-			label: 'Size',
+			label: 'Resolution',
 			group: group
 		},
+		{ defaultValue: 1, range: [8, 1] },
 		{
-			defaultValue: 2,
-			range: [0.1, 5]
+			rangeReadOnly: true,
+			// Only allow values that are powers of 2 for resolution (1, 2, 4, 8, 16, etc.)
+			transformer: audioResolutionTransformer
 		}
 	)
 
@@ -114,24 +139,6 @@
 		}
 	)
 
-	function audioResolutionTransformer(value: number) {
-		return value < 2 ? 1 : 2 ** Math.round(value)
-	}
-
-	const lineResolution = controls.createNumberControl(
-		'lineResolution',
-		{
-			label: 'Resolution',
-			group: group
-		},
-		{ defaultValue: 1, range: [1, 8] },
-		{
-			rangeReadOnly: true,
-			// Only allow values that are powers of 2 for resolution (1, 2, 4, 8, 16, etc.)
-			transformer: audioResolutionTransformer
-		}
-	)
-
 	const lineThickness = controls.createNumberControl(
 		'lineThickness',
 		{
@@ -143,15 +150,6 @@
 			range: [0, 10]
 		},
 		{ transformer: (value) => value / 100 }
-	)
-
-	const lineIntensity = controls.createNumberControl(
-		'lineIntensity',
-		{
-			label: 'Intensity',
-			group: group
-		},
-		{ defaultValue: 5, range: [0, 20] }
 	)
 
 	const lineColor = controls.createColorControl(
