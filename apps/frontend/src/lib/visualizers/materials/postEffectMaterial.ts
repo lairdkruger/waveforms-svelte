@@ -52,7 +52,7 @@ export const postEffectFragmentShader = /* glsl */ `
 	void main() {
 		vec2 uv = gl_FragCoord.xy / uResolution.xy;
 
-		// Kaleidoscope effect
+		// Kaleidoscope Effect
 		// If segments is 0, just show the source texture
 		if (segments == 0.0) {
 			gl_FragColor = texture2D(source, uv);
@@ -108,7 +108,10 @@ export const postEffectFragmentShader = /* glsl */ `
 		gl_FragColor = vec4(uv.y, uv.y, uv.y, 1.0);
 		
 		vec4 sceneTexture = texture2D(source, uv);
-		vec4 fragColor = sceneTexture;
-		gl_FragColor = fragColor;
+		vec4 kaleidoscopeColor = sceneTexture;
+
+		vec4 finalColor = kaleidoscopeColor;
+
+		gl_FragColor = finalColor;
 	}
 `
