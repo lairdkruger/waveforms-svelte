@@ -5,7 +5,6 @@
 	import { Group } from 'three'
 	import TestBox from '../objects/TestBox.svelte'
 	import CameraMovement from '../camera/CameraMovement.svelte'
-	import EffectParams from '../effects/EffectParams.svelte'
 	import WaveLine from '../objects/WaveLine.svelte'
 	import Background from '../objects/Background.svelte'
 
@@ -40,12 +39,11 @@
 
 <WaveLine parent={waveformGroup} label="Top Line" />
 
-<CameraMovement />
-<EffectParams />
-
 <TestBox parent={boxGroup} range="bass" />
 <TestBox parent={boxGroup} range="mids" />
 <TestBox parent={boxGroup} range="highs" />
 <TestBox parent={boxGroup} range="" />
 
 <Background />
+
+<CameraMovement enabledByDefault={true} />

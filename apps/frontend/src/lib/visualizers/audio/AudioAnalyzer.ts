@@ -292,6 +292,7 @@ export default class AudioAnalyzer {
 
 	analyzeSpectrum(volumeAccuracy: number) {
 		this.audioAnalyzer.getByteFrequencyData(this.spectrum)
+
 		this.analyzeVolumes(volumeAccuracy)
 
 		// Return spectrum data to caller

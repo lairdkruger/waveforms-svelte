@@ -1,8 +1,10 @@
 <script lang="ts">
+	import { uiHidden } from '$lib/stores/UiStore'
+
 	const currentYear = new Date().getFullYear()
 </script>
 
-<footer>
+<footer class:hidden={$uiHidden}>
 	<span class="copyright">{`Waveforms © ${currentYear} : VER:BETA.1.1`}</span>
 </footer>
 
@@ -18,6 +20,12 @@
 
 		color: var(--white);
 		mix-blend-mode: var(--mixBlendMode);
+
+		visibility: visible;
+	}
+
+	.hidden {
+		visibility: hidden;
 	}
 
 	.copyright {

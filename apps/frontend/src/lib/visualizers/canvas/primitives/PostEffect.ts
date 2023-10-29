@@ -36,7 +36,7 @@ export default class PostEffect {
 		this.uniforms = {
 			source: { value: new Texture() },
 			uResolution: { value: size },
-			segments: { value: 2 },
+			segments: { value: 0 },
 			rotation: { value: 0 },
 			movement: { value: 0 },
 			radius: { value: 0 },

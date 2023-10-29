@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { page } from '$app/stores'
+	import { uiHidden } from '$lib/stores/UiStore'
 	import WaveformsIcon from '$lib/svgs/WaveformsIcon.svelte'
 
 	const user = $page.data.session?.user
 </script>
 
-<header>
+<header class:hidden={$uiHidden}>
 	<nav>
 		<a class="logo" href="/">
 			<div class="logoImage">
@@ -33,6 +34,12 @@
 
 		color: var(--white);
 		mix-blend-mode: var(--mixBlendMode);
+
+		visibility: visible;
+	}
+
+	.hidden {
+		visibility: hidden;
 	}
 
 	nav {

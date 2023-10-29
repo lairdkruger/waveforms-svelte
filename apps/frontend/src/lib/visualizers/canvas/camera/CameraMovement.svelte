@@ -4,6 +4,8 @@
 	import { onDestroy } from 'svelte'
 	import { Group } from 'three'
 
+	export let enabledByDefault: boolean = false
+
 	const { controls } = getVisualizerContext()
 	const { camera, onFrame, scene } = getWebglContext()
 
@@ -15,7 +17,7 @@
 	const orbit = controls.createBooleanControl(
 		'orbit',
 		{ label: 'Enabled', group: group },
-		{ defaultValue: 0 }
+		{ defaultValue: enabledByDefault ? 1 : 0 }
 	)
 
 	const verticalSpeed = controls.createNumberControl(

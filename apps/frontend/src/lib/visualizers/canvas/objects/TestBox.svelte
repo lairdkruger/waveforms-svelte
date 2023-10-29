@@ -33,10 +33,12 @@
 	mesh.position.set(positionX[range], 0, 0)
 	mesh.scale.set(scaleX[range], 1, 1)
 
-	const folder = controls.createFolder(`${range}BoxFolder`, { label: `${title} Box` })
+	const folder = controls.createFolder(`${range}BoxFolder`, {
+		label: `${title === '' ? 'Volume' : title} Box`
+	})
 	const group = controls.createGroup(`${range}BoxGroup`, {
 		folder: folder,
-		label: `${title} Box`
+		label: `${title === '' ? 'Volume' : title} Box`
 	})
 
 	const enabled = controls.createBooleanControl(
@@ -54,7 +56,7 @@
 		{
 			defaultValue: 2,
 			range: [1, 2],
-			signal: audioAnalyzer.signals[`get${title}Volume`]
+			signal: audioAnalyzer.signals[`get${title}Volume`]()
 		}
 	)
 
@@ -62,9 +64,9 @@
 		`${range}BoxOpacity`,
 		{ label: 'Opacity', group: group },
 		{
-			defaultValue: 0.7,
-			range: [0.7, 0.9],
-			signal: audioAnalyzer.signals[`get${title}Peaked`]
+			defaultValue: 0.25,
+			range: [0.25, 0.5],
+			signal: audioAnalyzer.signals[`get${title === '' ? 'Volume' : title}Peaked`]()
 		}
 	)
 
@@ -76,8 +78,8 @@
 				{ id: '0', coord: 0, color: [0, 0, 0] },
 				{ id: '1', coord: 1, color: [1, 1, 1] }
 			],
-			signal: audioAnalyzer.signals[`get${title}Volume`],
-			defaultValue: 0.5
+			defaultValue: 0.5,
+			signal: audioAnalyzer.signals[`get${title}Volume`]()
 		}
 	)
 

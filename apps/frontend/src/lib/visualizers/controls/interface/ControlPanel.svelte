@@ -5,6 +5,7 @@
 	import ControlsPanel from './controls/ControlsPanel.svelte'
 	import DragConnector from './connectors/DragConnector.svelte'
 	import PresetPanel from './presets/PresetPanel.svelte'
+	import { uiHidden } from '$lib/stores/UiStore'
 
 	let controlPanel: HTMLDivElement
 	const { controls } = getVisualizerContext()
@@ -12,7 +13,7 @@
 	$: if (controlPanel) controls.controlPanelRef.set(controlPanel)
 </script>
 
-<div class="wrapper">
+<div class="wrapper" class:hidden={$uiHidden}>
 	<div class="controlPanel">
 		<div
 			class="controls"
@@ -33,6 +34,11 @@
 
 <style>
 	.wrapper {
+		visibility: visible;
+	}
+
+	.hidden {
+		visibility: hidden;
 	}
 
 	.controlPanel {

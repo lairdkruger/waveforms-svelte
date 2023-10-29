@@ -10,6 +10,7 @@
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import InputNode from '../../connectors/InputNode.svelte'
 	import MidiSignalButton from '../../midi/MidiSignalButton.svelte'
+	import { uiHidden } from '$lib/stores/UiStore'
 
 	export let controlId: ControlId
 
@@ -84,7 +85,7 @@
 			<div
 				class="handleWrapper"
 				style="
-					visibility: {hasActiveSignal ? 'hidden' : 'visible'}
+					visibility: {!hasActiveSignal && !$uiHidden ? 'visible' : 'hidden'}
 				"
 			>
 				<div

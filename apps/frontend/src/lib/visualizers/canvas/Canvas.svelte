@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte'
 	import { createWebglContext } from '../contexts/webgl'
 	import Stage from './Stage.svelte'
+	import { fullScreen, uiHidden } from '../../stores/UiStore'
 
 	// References
 	let canvas: HTMLCanvasElement
@@ -17,7 +18,18 @@
 	})
 </script>
 
-<canvas class="canvas" bind:this={canvas} />
+<canvas
+	class="canvas"
+	bind:this={canvas}
+	on:click={() => uiHidden.update((value) => !value)}
+	on:dblclick={() => {
+		if (!$fullScreen) {
+			fullScreen.enterFullScreenMode()
+		} else {
+			fullScreen.exitFullScreenMode()
+		}
+	}}
+/>
 
 {#if !started}
 	<button

@@ -49,7 +49,7 @@ export default class Persistance {
 
 		this.uniforms = {
 			source: { value: this.pingpong.write.texture },
-			amount: { value: 0.8 },
+			amount: { value: 0 },
 			uvTransformMatrix: { value: new Matrix3() }
 		}
 
