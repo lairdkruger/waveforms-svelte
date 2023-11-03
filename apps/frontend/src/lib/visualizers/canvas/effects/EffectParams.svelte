@@ -18,7 +18,7 @@
 	let uvTransformMatrix = new Matrix3()
 
 	const persistanceAmount = controls.createNumberControl(
-		'persistance',
+		'persistanceAmount',
 		{ label: 'Persistance', group: persistanceGroup },
 		{
 			defaultValue: 1,
@@ -44,8 +44,8 @@
 		}
 	)
 
-	const scaleX = controls.createNumberControl(
-		'scaleX',
+	const persistanceScaleX = controls.createNumberControl(
+		'persistanceScaleX',
 		{ label: 'Scale X', group: persistanceGroup },
 		{
 			defaultValue: 0,
@@ -53,8 +53,8 @@
 		}
 	)
 
-	const scaleY = controls.createNumberControl(
-		'scaleY',
+	const persistanceScaleY = controls.createNumberControl(
+		'persistanceScaleY',
 		{ label: 'Scale Y', group: persistanceGroup },
 		{
 			defaultValue: 0,
@@ -62,8 +62,8 @@
 		}
 	)
 
-	const rotation = controls.createNumberControl(
-		'rotation',
+	const persistanceRotation = controls.createNumberControl(
+		'persistanceRotation',
 		{ label: 'Rotation', group: persistanceGroup },
 		{
 			defaultValue: 0,
@@ -71,8 +71,8 @@
 		}
 	)
 
-	const targetRadius = controls.createNumberControl(
-		'targetRadius',
+	const persistanceTargetRadius = controls.createNumberControl(
+		'persistanceTargetRadius',
 		{ label: 'Target Radius', group: persistanceGroup },
 		{
 			defaultValue: 0,
@@ -81,8 +81,8 @@
 		{ transformer: (value) => value / 1000 }
 	)
 
-	const targetAngle = controls.createNumberControl(
-		'targetAngle',
+	const persistanceTargetAngle = controls.createNumberControl(
+		'persistanceTargetAngle',
 		{ label: 'Target Angle', group: persistanceGroup },
 		{
 			defaultValue: 0,
@@ -107,10 +107,10 @@
 	)
 
 	const kaleidoscopeSegments = controls.createNumberControl(
-		'segments',
+		'kaleidoscopeSegments',
 		{ label: 'Segments', group: kaleidoscopeGroup },
 		{
-			defaultValue: 4,
+			defaultValue: 0,
 			range: [0, 24]
 		},
 		{
@@ -122,7 +122,7 @@
 		'kaleidoscopeLoops',
 		{ label: 'Loops', group: kaleidoscopeGroup },
 		{
-			defaultValue: 2,
+			defaultValue: 0,
 			range: [1, 4]
 		}
 	)
@@ -172,12 +172,12 @@
 		if ($persistance) {
 			$persistance.uniforms.amount.value = $persistanceAmount()
 
-			const uvScaleX = 1 + $scaleX() / 1000
-			const uvScaleY = 1 + $scaleY() / 1000
-			const uvRotation = $rotation() / 100
+			const uvScaleX = 1 + $persistanceScaleX() / 1000
+			const uvScaleY = 1 + $persistanceScaleY() / 1000
+			const uvRotation = $persistanceRotation() / 100
 
-			const targetX = Math.cos($targetAngle()) * $targetRadius()
-			const targetY = Math.sin($targetAngle()) * $targetRadius()
+			const targetX = Math.cos($persistanceTargetAngle()) * $persistanceTargetRadius()
+			const targetY = Math.sin($persistanceTargetAngle()) * $persistanceTargetRadius()
 
 			uvTransformMatrix.setUvTransform(
 				targetX,

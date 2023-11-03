@@ -1,6 +1,6 @@
 <script>
 	import Canvas from '$lib/visualizers/canvas/Canvas.svelte'
-	import Betaform from '$lib/visualizers/canvas/visualizers/Betaform.svelte'
+	import Betaform from '$lib/visualizers/canvas/visualizers/betaform/Betaform.svelte'
 	import Primitive from '$lib/visualizers/canvas/visualizers/Primitive.svelte'
 
 	export let data

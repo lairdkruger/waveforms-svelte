@@ -70,6 +70,8 @@ export default class ColorControl extends ControlBase {
 			return color
 		}
 
+		console.log(outputFunction())
+
 		// Call mix function once
 		return () => outputFunction()
 	}
