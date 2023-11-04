@@ -51,6 +51,17 @@
 		grid-template-areas: 'logo . . . . . nav-1 nav-1 nav-2 nav-2 nav-3 nav-3';
 		justify-items: end;
 		align-items: start;
+
+		@media (max-width: 768px) {
+			position: fixed;
+			top: 0;
+			right: 0;
+
+			display: flex;
+			flex-direction: column;
+
+			align-items: flex-end;
+		}
 	}
 
 	.logo {
@@ -84,7 +95,7 @@
 		}
 
 		.visualizers {
-			margin-top: 3rem;
+			margin-top: 1rem;
 		}
 	}
 </style>

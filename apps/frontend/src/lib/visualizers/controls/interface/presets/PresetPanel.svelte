@@ -10,16 +10,22 @@
 		<PresetSelector />
 		<!-- <MidiPresetButton /> -->
 	</div>
-	<div class="align-end">
+	<div class="preset-savers">
 		<PresetSaver />
 		<PresetDeleter />
 	</div>
-	<PresetCreator />
+	<div class="preset-creator">
+		<PresetCreator />
+	</div>
 </div>
 
 <style>
 	.wrapper {
 		width: 174px;
+
+		@media (max-width: 768px) {
+			width: auto;
+		}
 	}
 
 	.preset {
@@ -29,12 +35,22 @@
 		justify-content: space-between;
 	}
 
-	.align-end {
+	.preset-savers {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-end;
 		flex-wrap: wrap;
 		column-gap: var(--cpSpacing4);
 		justify-content: space-between;
+
+		@media (max-width: 768px) {
+			display: none;
+		}
+	}
+
+	.preset-creator {
+		@media (max-width: 768px) {
+			display: none;
+		}
 	}
 </style>

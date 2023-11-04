@@ -54,11 +54,37 @@
 
 		user-select: none;
 		-webkit-user-select: none;
+
+		@media (max-width: 768px) {
+			width: auto;
+			height: auto;
+
+			bottom: var(--spacing16);
+			right: var(--margin);
+		}
+	}
+
+	.controls {
+		@media (max-width: 768px) {
+			display: none;
+		}
+	}
+
+	.signals {
+		@media (max-width: 768px) {
+			display: none;
+		}
 	}
 
 	.presets {
 		position: absolute;
 		left: var(--cpSpacing24);
 		top: var(--cpSpacing8);
+
+		@media (max-width: 768px) {
+			position: relative;
+			left: auto;
+			top: auto;
+		}
 	}
 </style>

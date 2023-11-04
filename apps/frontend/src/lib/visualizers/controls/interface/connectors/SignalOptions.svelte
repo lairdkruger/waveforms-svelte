@@ -36,7 +36,7 @@
 
 	$: opacity.set(expanded ? 1 : 0)
 	$: width.set(expanded ? 139 : 16)
-	$: height.set(expanded ? 162 : 16)
+	$: height.set(expanded ? 173 : 16)
 </script>
 
 <div class="signalOptions">
