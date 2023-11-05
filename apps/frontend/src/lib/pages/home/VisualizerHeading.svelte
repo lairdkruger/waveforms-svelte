@@ -13,7 +13,7 @@
 	<div
 		class="wrapper"
 		style="
-		transform: translateX({active ? -arrowWidth : 0}px);
+		transform: translate3D({active ? -arrowWidth : 0}px, 0, 0);
 		color: {active ? '#ffffff' : '#000000'};
 		mixBlendMode: {active ? 'difference' : 'normal'}
 	"
@@ -50,8 +50,9 @@
 		display: flex;
 		flex-direction: row-reverse;
 		margin-bottom: 0;
-		color: var(--white);
 		transition: transform var(--motionDefault);
+
+		backface-visibility: visible;
 
 		mix-blend-mode: var(--mixBlendMode);
 	}
