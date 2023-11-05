@@ -8,8 +8,8 @@
 	$: disabled = formData?.success
 	$: issues = extractZodIssues(formData)
 
-	$: submitButtonText = formData.success ? 'Password Updated!' : 'Update Password'
-	$: if (formData.success) {
+	$: submitButtonText = formData?.success ? 'Password Updated!' : 'Update Password'
+	$: if (formData?.success) {
 		setTimeout(() => {
 			goto('/')
 		}, 1500)
