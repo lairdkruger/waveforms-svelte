@@ -1,13 +1,12 @@
 import { fail } from '@sveltejs/kit'
 import { z } from 'zod'
-import { error as SvelteError } from '@sveltejs/kit'
 
 const updatePasswordSchema = z.object({
 	password: z.string()
 })
 
 export const actions = {
-	updatePassword: async ({ request, locals: { supabase, getSession } }) => {
+	updatePassword: async ({ request, locals: { supabase } }) => {
 		let actionReturn: App.FormActionReturn = { id: 'updatePassword' }
 
 		// Construct data
