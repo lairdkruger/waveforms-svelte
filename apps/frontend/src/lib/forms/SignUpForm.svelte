@@ -4,9 +4,8 @@
 	import extractZodIssues from './utils/extractZodIssues'
 
 	const formData = $page.form
-	const disabled = formData?.success
-
-	const issues = extractZodIssues(formData)
+	$: disabled = formData?.success
+	$: issues = extractZodIssues(formData)
 </script>
 
 <div class="terms">

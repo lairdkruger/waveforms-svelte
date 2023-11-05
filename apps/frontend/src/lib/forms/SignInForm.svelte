@@ -10,11 +10,18 @@
 	$: issues = extractZodIssues(formData)
 
 	let submitted = false
-	$: buttonText = formData?.success ? 'Success!' : submitted ? 'Signing In...' : 'Sign In'
+	$: buttonText = formData?.success ? 'Success!' : submitted ? 'Signing In...' : 'Enter'
+
+	let forgotPasswordSubmitted = false
+	$: forgotPasswordButtonText = formData?.success
+		? 'Reset Link Sent'
+		: forgotPasswordSubmitted
+		? 'Sending Reset Link...'
+		: 'Forgot Password?'
 
 	// On success, pause for a moment then redirect to the home page
 	$: {
-		if (browser && formData?.success) {
+		if (browser && submitted && formData?.success) {
 			setTimeout(() => {
 				goto('/')
 			}, 1500)
@@ -22,7 +29,19 @@
 	}
 </script>
 
-<form method="POST" action="?/signin" novalidate on:submit={() => (submitted = true)}>
+<form
+	method="POST"
+	action="?/signin"
+	novalidate
+	on:submit={(e) => {
+		// Handle different submit cases
+		if (e.submitter?.id === 'submit') {
+			submitted = true
+		} else if (e.submitter?.id === 'forgotPassword') {
+			forgotPasswordSubmitted = true
+		}
+	}}
+>
 	<TextInput
 		name="email"
 		type="email"
@@ -42,11 +61,27 @@
 		<p>{formData?.message}</p>
 	{/if}
 
-	<button type="submit" {disabled}>{buttonText}</button>
+	<div class="buttons">
+		<button id="submit" type="submit" {disabled}>{buttonText}</button>
+		<button id="forgotPassword" class="forgotPasswordButton" formaction="?/forgotPassword"
+			>{forgotPasswordButtonText}</button
+		>
+	</div>
 </form>
 
 <style>
 	form {
 		width: 100%;
+	}
+
+	.buttons {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
+
+	.forgotPasswordButton {
+		align-self: flex-end;
 	}
 </style>

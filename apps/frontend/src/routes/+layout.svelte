@@ -12,6 +12,7 @@
 	// Supabase Auth
 	import { invalidate } from '$app/navigation'
 	import { onMount } from 'svelte'
+	import { redirect } from '@sveltejs/kit'
 
 	export let data
 
@@ -21,7 +22,11 @@
 	onMount(() => {
 		const {
 			data: { subscription }
-		} = supabase.auth.onAuthStateChange((_, _session) => {
+		} = supabase.auth.onAuthStateChange((event, _session) => {
+			if (event === 'PASSWORD_RECOVERY') {
+				throw redirect(302, `/account/reset-password?token${session?.access_token}`)
+			}
+
 			if (_session?.expires_at !== session?.expires_at) {
 				invalidate('supabase:auth')
 			}
