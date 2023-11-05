@@ -21,7 +21,7 @@
 
 	// On success, pause for a moment then redirect to the home page
 	$: {
-		if (browser && submitted && formData?.success) {
+		if (browser && formData?.success) {
 			setTimeout(() => {
 				goto('/')
 			}, 1500)

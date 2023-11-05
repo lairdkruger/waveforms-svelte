@@ -12,8 +12,6 @@ const forgotPasswordSchema = z.object({
 
 export const actions = {
 	signin: async ({ request, locals: { supabase } }) => {
-		console.log('signin')
-
 		let actionReturn: App.FormActionReturn = { id: 'signin' }
 
 		// Construct data
@@ -97,8 +95,6 @@ export const actions = {
 	},
 
 	forgotPassword: async ({ request, locals: { supabase } }) => {
-		console.log('forgotPassword')
-
 		let actionReturn: App.FormActionReturn = { id: 'forgotPassword' }
 
 		// Construct data

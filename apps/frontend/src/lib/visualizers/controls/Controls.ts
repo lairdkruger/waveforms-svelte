@@ -377,7 +377,7 @@ export default class Controls {
 				preset.id,
 				{ label: preset.name },
 				presetConfigs,
-				null
+				preset.midi_binding
 			)
 			return updatedPresets
 		})

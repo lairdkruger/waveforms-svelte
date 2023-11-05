@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { browser } from '$app/environment'
 	import DropdownIcon from '$lib/svgs/DropdownIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { get } from 'svelte/store'
 	import type { PresetId } from '../../types/presets'
 
 	const { controls } = getVisualizerContext()
@@ -14,6 +16,23 @@
 		const presetId = element.value as PresetId
 		// Update controls state
 		controls.changePreset(presetId)
+	}
+
+	// Listen for midi events as these can also be used to select presets
+	$: if (browser) {
+		window.addEventListener('midiMessage', (event: Event) => {
+			// @ts-ignore
+			const { midiSignalId, value } = event.detail
+			if (value !== 1) return
+
+			// Search the presets objects for a preset that has a midi binding currently matching the midiControlId
+			// If so, change to that preset
+			for (const [presetId, preset] of Object.entries($presets)) {
+				if (get(preset.midiBinding) === midiSignalId) {
+					controls.changePreset(presetId)
+				}
+			}
+		})
 	}
 </script>
 

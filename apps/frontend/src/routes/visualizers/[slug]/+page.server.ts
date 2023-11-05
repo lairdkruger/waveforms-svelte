@@ -175,7 +175,7 @@ export const actions = {
 			supabaseClient: supabase,
 			id: data.presetId,
 			schema: data.controlsSchema,
-			midiBinding: data.presetMidiBinding
+			midiBinding: data.presetMidiBinding !== '' ? data.presetMidiBinding : null
 		})
 
 		// Action errors

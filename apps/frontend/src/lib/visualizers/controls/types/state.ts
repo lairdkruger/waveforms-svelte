@@ -1,4 +1,3 @@
-import type { MidiControlId } from '$lib/visualizers/controls/library/midi/Midi'
 import type { Ease } from '$lib/visualizers/utils/CubicBezier'
 import type { Writable } from 'svelte/store'
 import type {
@@ -17,6 +16,7 @@ import type { SignalBehaviour, SignalConfig } from './signals'
 import type { Preset as PresetDb } from 'supabase'
 import type Preset from '../library/presets/Preset'
 import type Signal from '../library/signals/Signal'
+import type { MidiControlId } from '$lib/visualizers/midi/Midi'
 
 export interface ControlsInternals {
 	_clientStateReady: boolean

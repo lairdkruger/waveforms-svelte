@@ -1,6 +1,5 @@
 import type { ControlConfig, SerializedControlConfig } from './configs'
 import type { ControlId } from './controllers'
-import type { SignalConfig } from './signals'
 
 export type PresetId = string
 

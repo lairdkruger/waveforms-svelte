@@ -1,16 +1,18 @@
+import { writable, type Writable } from 'svelte/store'
 import type { PresetConfigs, PresetId, PresetOptions } from '../../types/presets'
+import type { MidiControlId } from '$lib/visualizers/midi/Midi'
 
 export default class Preset {
 	id
 	options
 	configs: PresetConfigs
-	midiBinding: string | null
+	midiBinding: Writable<MidiControlId | null>
 
 	constructor(
 		id: PresetId,
 		options: Partial<PresetOptions>,
 		configs: PresetConfigs,
-		midiBinding?: string | null
+		midiBinding?: MidiControlId | null
 	) {
 		this.id = id
 
@@ -19,7 +21,7 @@ export default class Preset {
 
 		this.configs = configs
 
-		this.midiBinding = midiBinding ?? null
+		this.midiBinding = writable(midiBinding)
 	}
 
 	populateOptions(options: Partial<PresetOptions>) {
@@ -29,42 +31,4 @@ export default class Preset {
 
 		return { ...defaultOptions, ...options }
 	}
-
-	// populateConfigs(defaultConfigs: Record<ControlId, ControlConfig>, presetConfigs: PresetConfigs) {
-	// 	let configs: Record<ControlId, ControlConfig> = {}
-
-	// 	// Loop through all controls
-	// 	for (const [controlId, controlConfig] of Object.entries(defaultConfigs)) {
-	// 		// Fetch corresponding preset config
-	// 		const presetConfig = presetConfigs[controlId]
-
-	// 		// Merge control config with preset config
-	// 		const mergedConfig = { ...controlConfig, ...presetConfig }
-
-	// 		// Add the merged config to the configs object
-	// 		configs[controlId] = mergedConfig
-	// 	}
-
-	// 	return configs
-
-	// Create a new control with the merged config
-	// if (control.type === 'boolean') {
-	// 	let configStore = control.config as Writable<BooleanControlConfig>
-	// 	let config = get(configStore) as BooleanControlConfig
-
-	// 	// If specified, merge the control's config with the preset's config
-	// 	if (Object.keys(configs).includes(controlId)) {
-	// 		const presetConfig = configs[controlId] as BooleanControlConfig
-	// 		config = { ...config, ...presetConfig }
-	// 	}
-
-	// 	const booleanControl = new BooleanControl(controlId, control.options, config)
-	// 	controls[controlId] = booleanControl
-	// }
-
-	// 	controls[controlId] = control
-	// }
-
-	// return controls
-	// }
 }

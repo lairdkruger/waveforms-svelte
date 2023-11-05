@@ -3,11 +3,13 @@
 	import { invalidateAll } from '$app/navigation'
 	import { page } from '$app/stores'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { get } from 'svelte/store'
 
 	const { controls } = getVisualizerContext()
 	const presetId = controls.presets.preset
 	const presets = controls.presets.presets
-	const presetMidiBinding = $presets[$presetId].midiBinding
+
+	$: presetMidiBinding = $presets[$presetId].midiBinding
 
 	$: formData = $page.form?.id === 'presetSaver' ? $page.form : undefined
 	$: disabled = formData?.success
@@ -32,7 +34,7 @@
 			const controlConfigsString = JSON.stringify(controlConfigs)
 			formData.append('controlsSchema', controlConfigsString)
 
-			formData.append('presetMidiBinding', presetMidiBinding ?? '')
+			formData.append('presetMidiBinding', get(presetMidiBinding) ?? '')
 
 			return async ({ update }) => {
 				await update()

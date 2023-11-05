@@ -6,6 +6,7 @@
 	export let value: string = ''
 	export let issue: string | undefined
 	export let disabled = false
+	export let placeholder = name
 
 	let currentValue = value
 	let focused = false
@@ -21,7 +22,7 @@
 
 <div class="wrapper">
 	{#if showPlaceholder}
-		<label for={name}>{capitalize(name)}</label>
+		<label for={name}>{capitalize(placeholder)}</label>
 	{/if}
 	<input
 		{type}

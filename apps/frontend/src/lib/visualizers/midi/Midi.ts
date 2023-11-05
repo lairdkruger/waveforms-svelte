@@ -1,6 +1,7 @@
 import { camelcase } from '$lib/visualizers/utils/Strings'
 import { writable } from 'svelte/store'
 import Signal from '../controls/library/signals/Signal'
+import { browser } from '$app/environment'
 
 export type MidiDeviceId = string // Format midiDeviceName
 export type MidiControlId = string // Format [midiControlNumber]-[SignalType]_[Midi-Device-Name]
@@ -143,6 +144,17 @@ export default class Midi {
 		if (midiControlId in this.primitives) {
 			this.primitives[midiControlId] = value
 		}
+
+		// Emit custom event that the preset selector can listen to
+		const midiMessageCustomEvent = new CustomEvent('midiMessage', {
+			detail: {
+				midiControlId: midiControlId,
+				midiSignalId: this.createMidiSignalId(midiControlId),
+				value: value
+			}
+		})
+
+		if (browser) window.dispatchEvent(midiMessageCustomEvent)
 
 		// Set helper state: activeInput
 		if (value === 1) {
