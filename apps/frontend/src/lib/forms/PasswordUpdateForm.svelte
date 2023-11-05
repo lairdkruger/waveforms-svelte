@@ -8,12 +8,7 @@
 	$: disabled = formData?.success
 	$: issues = extractZodIssues(formData)
 
-	const { url } = $page
-	const { searchParams } = url
-
-	const token = searchParams.get('token')
-
-	$: submitButtonText = formData.success ? 'Password Reset!' : 'Reset Password'
+	$: submitButtonText = formData.success ? 'Password Updated!' : 'Update Password'
 	$: if (formData.success) {
 		setTimeout(() => {
 			goto('/')
@@ -21,7 +16,7 @@
 	}
 </script>
 
-<form method="POST" action="?/resetPassword" novalidate>
+<form method="POST" action="?/updatePassword" novalidate>
 	<TextInput
 		name="password"
 		type="password"
@@ -29,8 +24,6 @@
 		value={formData?.data?.['password']}
 		{disabled}
 	/>
-
-	<input type="hidden" name="token" value={token} />
 
 	{#if formData?.message}
 		<p>{formData?.message}</p>

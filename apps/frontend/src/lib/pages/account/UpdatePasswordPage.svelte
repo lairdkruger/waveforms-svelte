@@ -4,8 +4,8 @@
 </script>
 
 <GridLayout>
-	<div class="password-reset">
-		<h2>Reset Password</h2>
+	<div class="password-update">
+		<h2>Update Password</h2>
 		<PasswordResetForm />
 	</div>
 </GridLayout>
@@ -15,7 +15,7 @@
 		width: 100%;
 	}
 
-	.password-reset {
+	.password-update {
 		grid-area: block-2;
 	}
 

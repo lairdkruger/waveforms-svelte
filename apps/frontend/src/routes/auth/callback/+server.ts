@@ -7,5 +7,10 @@ export const GET: RequestHandler = async ({ url, locals: { supabase } }) => {
 		await supabase.auth.exchangeCodeForSession(code)
 	}
 
+	const next = url.searchParams.get('next')
+	if (next) {
+		throw redirect(303, next)
+	}
+
 	throw redirect(303, '/')
 }

@@ -2,30 +2,22 @@ import { fail } from '@sveltejs/kit'
 import { z } from 'zod'
 import { error as SvelteError } from '@sveltejs/kit'
 
-const resetPasswordSchema = z.object({
-	password: z.string(),
-	token: z.string()
+const updatePasswordSchema = z.object({
+	password: z.string()
 })
 
 export const actions = {
-	resetPassword: async ({ request, locals: { supabase, getSession } }) => {
-		let actionReturn: App.FormActionReturn = { id: 'resetPassword' }
-
-		const session = await getSession()
-
-		if (!session) {
-			throw SvelteError(401, { message: 'not authorized' })
-		}
+	updatePassword: async ({ request, locals: { supabase, getSession } }) => {
+		let actionReturn: App.FormActionReturn = { id: 'updatePassword' }
 
 		// Construct data
 		const formData = await request.formData()
 		const data = {
-			password: formData.get('password') as string | undefined,
-			token: formData.get('token') as string | undefined
+			password: formData.get('password') as string | undefined
 		}
 
 		// Validate data
-		const safeParse = resetPasswordSchema.safeParse(data)
+		const safeParse = updatePasswordSchema.safeParse(data)
 
 		if (!safeParse.success) {
 			actionReturn = {
