@@ -1,12 +1,12 @@
 <script lang="ts">
-	import PasswordResetForm from '$lib/forms/PasswordResetForm.svelte'
+	import PasswordUpdateForm from '$lib/forms/PasswordUpdateForm.svelte'
 	import GridLayout from '$lib/layouts/GridLayout.svelte'
 </script>
 
 <GridLayout>
 	<div class="password-update">
 		<h2>Update Password</h2>
-		<PasswordResetForm />
+		<PasswordUpdateForm />
 	</div>
 </GridLayout>
 
