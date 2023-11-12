@@ -2,6 +2,7 @@
 	import Canvas from '$lib/visualizers/canvas/Canvas.svelte'
 	import Betaform from '$lib/visualizers/canvas/visualizers/betaform/Betaform.svelte'
 	import Primitive from '$lib/visualizers/canvas/visualizers/Primitive.svelte'
+	import Storm from '$lib/visualizers/canvas/visualizers/storm/Storm.svelte'
 
 	export let data
 
@@ -13,5 +14,7 @@
 		<Primitive />
 	{:else if visualizerSlug === 'betaform'}
 		<Betaform />
+	{:else if visualizerSlug === 'storm'}
+		<Storm />
 	{/if}
 </Canvas>
