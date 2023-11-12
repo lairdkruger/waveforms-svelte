@@ -1,10 +1,12 @@
 import { getContext, setContext } from 'svelte'
 import { get, writable, type Writable } from 'svelte/store'
-import { WebGLRenderer, PerspectiveCamera, Scene, Vector2 } from 'three'
+import { WebGLRenderer, PerspectiveCamera, Scene, Vector2, Clock } from 'three'
 import Persistance from '../canvas/primitives/Persistance'
 import RenderTarget from '../canvas/primitives/RenderTarget'
 import Screen from '../canvas/primitives/Screen'
 import PostEffect from '../canvas/primitives/PostEffect'
+
+type WebglFrameCallback = ({ elapsedTime }: { elapsedTime: number }) => void
 
 interface WebglContext {
 	scene: Writable<Scene | null>
@@ -14,7 +16,7 @@ interface WebglContext {
 	persistance: Writable<Persistance | null>
 	postEffect: Writable<PostEffect | null>
 	initWebgl: (canvas: HTMLCanvasElement) => void
-	onFrame: (callback: () => void) => void
+	onFrame: (callback: WebglFrameCallback) => void
 }
 
 export function createWebglContext(key?: any) {
@@ -30,7 +32,8 @@ export function createWebglContext(key?: any) {
 	let postEffectCurrent: Writable<PostEffect | null> = writable(null)
 	let screenCurrent: Writable<Screen | null> = writable(null)
 
-	let callbacks: (() => void)[] = []
+	let callbacks: WebglFrameCallback[] = []
+	const clock = new Clock()
 
 	function onResize() {
 		const camera = get(cameraCurrent)
@@ -85,7 +88,7 @@ export function createWebglContext(key?: any) {
 		loop()
 	}
 
-	function onFrame(callback: () => void) {
+	function onFrame(callback: WebglFrameCallback) {
 		callbacks.push(callback)
 	}
 
@@ -127,7 +130,9 @@ export function createWebglContext(key?: any) {
 	}
 
 	function loop() {
-		callbacks.forEach((callback) => callback())
+		let elapsedTime = clock.getElapsedTime()
+
+		callbacks.forEach((callback) => callback({ elapsedTime }))
 		render()
 		requestAnimationFrame(loop)
 	}

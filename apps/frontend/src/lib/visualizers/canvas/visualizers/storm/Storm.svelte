@@ -6,15 +6,17 @@
 	import EffectParams from '../../effects/EffectParams.svelte'
 	import Background from '../../objects/Background.svelte'
 	import CameraMovement from '../../camera/CameraMovement.svelte'
-	import BetaformPresets from './StormPresets.svelte'
+	import NoiseSphere from '../../objects/NoiseSphere.svelte'
+	import StormPresets from './StormPresets.svelte'
 
 	const { audioAnalyzer } = getVisualizerContext()
+	audioAnalyzer.changeSmoothing(0.96)
 
 	setContext('stormVisualizer', { audioAnalyzer: audioAnalyzer })
 
 	const { scene, onFrame } = getWebglContext()
 
-	const waveformGroup = new Group()
+	const stormGroup = new Group()
 
 	onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
@@ -22,18 +24,19 @@
 	})
 
 	$: if ($scene) {
-		$scene.add(waveformGroup)
+		$scene.add(stormGroup)
 	}
 
 	onDestroy(() => {
 		if ($scene) {
-			$scene.remove(waveformGroup)
+			$scene.remove(stormGroup)
 		}
 	})
 </script>
 
+<NoiseSphere parent={stormGroup} />
 <Background initialColor={new Color(0xffffff)} />
 <EffectParams />
 <CameraMovement />
 
-<BetaformPresets />
+<StormPresets />
