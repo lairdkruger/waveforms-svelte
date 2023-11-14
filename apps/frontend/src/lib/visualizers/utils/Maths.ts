@@ -97,3 +97,38 @@ export function inRange(value: number, min: number, max: number) {
 
 	return value >= minimum && value <= maximum
 }
+
+export function findMostCommonValue(arr: any[] | Uint8Array) {
+	let counts: Record<any, number> = {}
+	let maxCount = 0
+	let mostFrequent = null
+
+	for (const item of arr) {
+		if (item) {
+			counts[item] = (counts[item] || 0) + 1
+			if (counts[item] > maxCount) {
+				maxCount = counts[item]
+				mostFrequent = item
+			}
+		}
+	}
+
+	return mostFrequent
+}
+
+// Given a number and range, find the closest multiple of that number within the range
+export function findMultipleInRange(value: number, min: number, max: number) {
+	let multiple = value
+
+	if (multiple < min) {
+		while (!(multiple >= max) && multiple < min) {
+			multiple += value
+		}
+	} else {
+		while (!(multiple <= min) && multiple > max) {
+			multiple -= value
+		}
+	}
+
+	return multiple
+}

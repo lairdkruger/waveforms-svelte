@@ -22,6 +22,8 @@
 	onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
 		audioAnalyzer.analyzeWaveform()
+
+		// console.log(audioAnalyzer.primitives.tempo)
 	})
 
 	$: if ($scene) {
