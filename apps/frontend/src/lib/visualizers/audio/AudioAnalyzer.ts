@@ -1,5 +1,5 @@
 import Signal from '../controls/library/signals/Signal'
-import { findMostCommonValue, findMultipleInRange, map } from '../utils/Maths'
+import { map } from '../utils/Maths'
 
 export type AudioInput = 'microphone' | 'browser'
 
@@ -30,16 +30,6 @@ export default class AudioAnalyzer {
 	midsFrequencyRange = [Math.floor((this.fft / 2) * 0.13), Math.ceil((this.fft / 2) * 0.2)]
 	highsFrequencyRange = [Math.floor((this.fft / 2) * 0.7), Math.ceil((this.fft / 2) * 0.8)]
 
-	// Beats
-	minTempo = 60
-	maxTempo = 180
-	beatArrayLength = 32 // Number of beats to track
-	beatDipped = false // Track if the current beat is finished
-	currentIndex = 0 //  Rolling index from 0 -> beatArrayLength
-	previousTime = performance.now()
-	currentTime = performance.now()
-	timeBetweenBeats = new Uint8Array(16) // Rolling array holding info of the previous time between beats
-
 	// Signals
 	primitives = {
 		volume: 0,
@@ -56,9 +46,7 @@ export default class AudioAnalyzer {
 
 		highsVolume: 0,
 		peakHighsVolume: 0,
-		highsPeaked: 0,
-
-		tempo: 90
+		highsPeaked: 0
 	}
 	signalFunctions: { [key: string]: () => number } = {} // [signalFunctionId]: getPrimitive
 	signals: { [key: string]: () => Signal } = {} // [signalId]: Signal constructor (each signal needs to be a unique object per control and signals (unlike signalFunctions) must not be shared
@@ -87,9 +75,7 @@ export default class AudioAnalyzer {
 
 			getHighsVolume: () => this.primitives['highsVolume'],
 			getPeakHighsVolume: () => this.primitives['peakHighsVolume'],
-			getHighsPeaked: () => this.primitives['highsPeaked'],
-
-			getTempo: () => this.primitives['tempo']
+			getHighsPeaked: () => this.primitives['highsPeaked']
 		}
 
 		this.signals = {
@@ -292,7 +278,7 @@ export default class AudioAnalyzer {
 				: this.primitives['peakHighsVolume']
 
 		// Constantly decrease peak volumes to keep things fresh
-		// Mapping a slower fall in quieter moments (customised to characteristics of each range eg: snares rms typically quieter)
+		// Mapping a slower fall in quieter moments (customised to characteristics of each range eg: snares rms typically quiter)
 		this.primitives['peakVolume'] =
 			this.primitives['peakVolume'] - map(this.primitives['volume'], 0, 150, 0.005, 0.04)
 		this.primitives['peakBassVolume'] =
@@ -302,42 +288,6 @@ export default class AudioAnalyzer {
 		this.primitives['peakHighsVolume'] =
 			this.primitives['peakHighsVolume'] -
 			map(this.primitives['highsVolume'], 0, 150, 0.005, 0.04)
-
-		// Beat analysis
-		if (this.primitives['bassPeaked']) {
-			if (this.beatDipped) {
-				this.beatDipped = false // Reset beat dipped
-				this.currentTime = performance.now()
-
-				// Only count beat if its within the tempo range
-				const milliSecondsBetweenBeat = this.currentTime - this.previousTime
-				if (!milliSecondsBetweenBeat) return
-
-				const secondsBetweenBeat = milliSecondsBetweenBeat / 1000
-				const tempoRaw = Math.round(60 / secondsBetweenBeat)
-
-				if (tempoRaw < this.minTempo / 2 || tempoRaw > this.maxTempo * 4) {
-					this.previousTime = this.currentTime
-				} else {
-					const tempo = findMultipleInRange(tempoRaw, this.minTempo, this.maxTempo)
-
-					// if (tempo > this.minTempo && tempo < this.maxTempo) {
-					this.timeBetweenBeats[this.currentIndex] = tempo
-
-					// Tempo will be one minute divded by the most common time between beats and then rounded to nearest integer
-					const averageModeTempo = findMostCommonValue(this.timeBetweenBeats)
-					this.primitives['tempo'] = averageModeTempo
-
-					this.currentIndex =
-						this.currentIndex >= this.beatArrayLength ? 0 : this.currentIndex + 1
-
-					this.previousTime = this.currentTime
-					console.log(this.primitives['tempo'])
-				}
-			}
-		} else {
-			this.beatDipped = true
-		}
 	}
 
 	analyzeSpectrum(volumeAccuracy: number) {
