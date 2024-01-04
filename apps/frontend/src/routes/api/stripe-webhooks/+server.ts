@@ -5,24 +5,8 @@ import {
 } from 'supabase/admin'
 import { stripe } from 'stripe/instance'
 import type { RequestHandler } from '@sveltejs/kit'
-import type { Readable } from 'node:stream'
 import type Stripe from 'stripe'
-
-// Stripe requires the raw body to construct the event.
-export const config = {
-	api: {
-		bodyParser: false
-	}
-}
-
-async function buffer(readable: Readable) {
-	const chunks = []
-	for await (const chunk of readable) {
-		// @ts-ignore
-		chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk)
-	}
-	return Buffer.concat(chunks)
-}
+import { env } from '$env/dynamic/private'
 
 const relevantEvents = new Set([
 	'product.created',
@@ -39,17 +23,17 @@ export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const body = await request.text()
 		const signature = request.headers.get('stripe-signature') || ''
-		const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string
+		const webhookSecret = env.STRIPE_WEBHOOK_SECRET as string
 		let event: Stripe.Event
 
 		try {
-			if (signature && webhookSecret)
-				return new Response(`Webhook Error: Signature or Secret missing`, { status: 400 })
 			event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
 		} catch (err: any) {
 			console.log(`❌ Error message: ${err.message}`)
 			return new Response(`Webhook Error: ${err.message}`, { status: 400 })
 		}
+
+		console.log('got to here:', event.data.object)
 
 		if (relevantEvents.has(event.type)) {
 			try {
