@@ -2,15 +2,21 @@
 	import type { Visualizer } from 'supabase'
 	import VisualizerHeading from './VisualizerHeading.svelte'
 	import VisualizerVideo from './VisualizerVideo.svelte'
+	import { dev } from '$app/environment'
 
 	export let visualizersData: Visualizer[]
+
+	// Exclude primitive from product build
+	const filteredVisualizersData = visualizersData.filter((visualizer) =>
+		dev ? true : visualizer.slug !== 'primitive'
+	)
 
 	let activeIndex: number | null = null
 </script>
 
 <div class="wrapper">
 	<div class="list">
-		{#each visualizersData as visualizer, index}
+		{#each filteredVisualizersData as visualizer, index}
 			<div
 				class="item"
 				on:pointerenter={() => {

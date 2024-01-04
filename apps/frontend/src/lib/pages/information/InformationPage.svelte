@@ -15,7 +15,7 @@
 <GridLayout>
 	<div class="project">
 		<h2>Project</h2>
-		<p>WAVEFORMS is a collection of customisable real-time web audio visualizers</p>
+		<p>WAVEFORMS is a growing collection of customisable real-time web audio visualizers</p>
 		<br />
 		<p>
 			Check out my other work at
@@ -26,12 +26,17 @@
 	<div class="tech">
 		<h2>Technologies</h2>
 		<p>
-			Any Chromium browser
-			<br />
-			Audio input source
+			WAVEFORMS runs in any Chromium browser
 			<br />
 			<br />
-			Also Recommended: <br />
+			Device inputs (microphones) are used as default audio inputs
+			<br />
+			<br />
+			To use Spotify, Youtube, Soundcloud etc: open them in another tab and then select BROWSER as
+			the audio input in the visualizer control panel
+			<br />
+			<br />
+			For direct output to input:<br />
 			<a href="https://github.com/ExistentialAudio/BlackHole" target="_blank" rel="noreferrer">
 				Blackhole
 			</a>
@@ -43,9 +48,10 @@
 	<div class="pricing">
 		<h2>Pricing</h2>
 		<p>All users have access to visualizers and control panels</p>
+		<br />
 		<p>
-			To save your custom visualizer settings as presets in your account - a WAVEFORMS Supporter
-			Plan is required
+			To save custom visualizer settings as presets in your account - a WAVEFORMS Supporter Plan
+			is required
 		</p>
 		<br />
 		<p>

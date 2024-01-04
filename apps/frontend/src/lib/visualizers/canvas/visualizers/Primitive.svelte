@@ -7,6 +7,7 @@
 	import CameraMovement from '../camera/CameraMovement.svelte'
 	import WaveLine from '../objects/WaveLine.svelte'
 	import Background from '../objects/Background.svelte'
+	import AudioLine from '../objects/AudioLine.svelte'
 
 	const { audioAnalyzer } = getVisualizerContext()
 
@@ -37,13 +38,14 @@
 	})
 </script>
 
-<WaveLine parent={waveformGroup} label="Top Line" />
+<AudioLine parent={waveformGroup} />
+<!-- <WaveLine parent={waveformGroup} label="Top Line" /> -->
 
-<TestBox parent={boxGroup} range="bass" />
-<TestBox parent={boxGroup} range="mids" />
-<TestBox parent={boxGroup} range="highs" />
-<TestBox parent={boxGroup} range="" />
+<!-- <TestBox parent={boxGroup} range="bass" /> -->
+<!-- <TestBox parent={boxGroup} range="mids" /> -->
+<!-- <TestBox parent={boxGroup} range="highs" /> -->
+<!-- <TestBox parent={boxGroup} range="" /> -->
 
 <Background />
 
-<CameraMovement enabledByDefault={true} />
+<CameraMovement enabledByDefault={false} />

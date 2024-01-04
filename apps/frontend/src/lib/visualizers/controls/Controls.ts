@@ -57,7 +57,7 @@ export default class Controls {
 	presets: Presets = {
 		preset: writable('default'),
 		presets: writable({
-			default: new Preset('default', { label: 'Default' }, {}, null)
+			default: new Preset('default', { label: 'Default Preset' }, {}, null)
 		})
 	}
 

@@ -2,7 +2,7 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
 	import { onDestroy } from 'svelte'
-	import { Group } from 'three'
+	import { AmbientLight, Group, PointLight } from 'three'
 
 	export let enabledByDefault: boolean = false
 
@@ -59,14 +59,22 @@
 		}
 	})
 
+	const light = new PointLight(0xffffff, 1)
+	const ambientLight = new AmbientLight(0xffffff, 0.2)
+	light.intensity = 40
+	light.position.set(0, 2, 0)
+
 	$: if ($scene) {
 		$scene.add(boom)
+		$scene.add(ambientLight)
 	}
 
 	$: if ($camera) {
 		boom.add($camera)
-		$camera.position.set(0, 0, 5)
+		$camera.position.set(0, 0, -5)
 		$camera.lookAt(0, 0, 0)
+
+		$camera.add(light)
 	}
 
 	onDestroy(() => {
