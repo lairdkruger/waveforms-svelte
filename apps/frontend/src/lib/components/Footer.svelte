@@ -5,7 +5,7 @@
 </script>
 
 <footer class:hidden={$uiHidden}>
-	<span class="copyright">{`Waveforms © ${currentYear} : VER:BETA.1.1`}</span>
+	<span class="copyright">{`Waveforms © ${currentYear} : VERSION:BETA.1.1`}</span>
 </footer>
 
 <style>
