@@ -33,8 +33,6 @@ export const POST: RequestHandler = async ({ request }) => {
 			return new Response(`Webhook Error: ${err.message}`, { status: 400 })
 		}
 
-		console.log('got to here:', event.data.object)
-
 		if (relevantEvents.has(event.type)) {
 			try {
 				switch (event.type) {

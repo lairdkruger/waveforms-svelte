@@ -1,6 +1,7 @@
 import { createOrRetrieveCustomer } from 'supabase/admin'
 import { stripe } from 'stripe/instance'
 import type { RequestHandler } from '@sveltejs/kit'
+import { env } from '$env/dynamic/public'
 
 export const POST: RequestHandler = async ({ url, locals: { getSession } }) => {
 	try {
@@ -14,7 +15,7 @@ export const POST: RequestHandler = async ({ url, locals: { getSession } }) => {
 
 		const portalSession = await stripe.billingPortal.sessions.create({
 			customer,
-			return_url: `${url}/account`
+			return_url: `${env.PUBLIC_SITE_URL}/account`
 		})
 
 		return new Response(JSON.stringify({ url: portalSession.url }))
