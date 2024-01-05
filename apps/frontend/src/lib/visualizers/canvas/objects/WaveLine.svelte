@@ -5,6 +5,8 @@
 	import { type Group, Color } from 'three'
 	import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshline'
 	import { distributeAngles, map, radians } from '$lib/visualizers/utils/Maths'
+	import WaveLineClone from './WaveLineClone.svelte'
+	import type { Color as ColorType } from '$lib/visualizers/controls/types'
 
 	// Type declarations
 	type Point = {
@@ -54,7 +56,7 @@
 			label: 'Intensity',
 			group: group
 		},
-		{ defaultValue: 12, range: [0, 20] }
+		{ defaultValue: 1, range: [0, 20] }
 	)
 
 	const lineSize = controls.createNumberControl(
@@ -176,6 +178,50 @@
 		}
 	)
 
+	const maxClones = 32
+	const clones = controls.createNumberControl(
+		'clones',
+		{
+			label: 'Clones',
+			group: group
+		},
+		{
+			defaultValue: maxClones,
+			range: [0, maxClones]
+		},
+		{ transformer: (value) => Math.round(value), rangeReadOnly: true }
+	)
+
+	const cloneSpacing = controls.createNumberControl(
+		'cloneSpacing',
+		{
+			label: 'Clone Spacing',
+			group: group
+		},
+		{
+			defaultValue: 0.02,
+			range: [0, 1]
+		}
+	)
+
+	const flowShape = controls.createBooleanControl(
+		'flowShape',
+		{
+			label: 'Flow Shape',
+			group: group
+		},
+		{ defaultValue: 1 }
+	)
+
+	const flowColors = controls.createBooleanControl(
+		'flowColors',
+		{
+			label: 'Flow Colors',
+			group: group
+		},
+		{ defaultValue: 1 }
+	)
+
 	// Components
 	const geometry = new MeshLineGeometry()
 	const materialColor = new Color(initialColor)
@@ -195,6 +241,9 @@
 
 	const points: Point[] = new Array(numPoints)
 	const pointPositions: number[][] = []
+	let pointsArray: number[] = new Array(numPoints * 3).fill(0)
+	const pointsArrayHistory: number[][] = new Array(maxClones + 1).fill(null)
+	const colorHistory: ColorType[] = new Array(maxClones + 1).fill(materialColor)
 
 	function createLine() {
 		const size = $lineSize()
@@ -221,8 +270,6 @@
 	}
 
 	createLine() // Call once on mount
-
-	meshline.geometry.setPoints(pointPositions.flat())
 
 	// Update line graphic to use current line data
 	function updateLinePoints() {
@@ -367,12 +414,31 @@
 			}
 		}
 
-		meshline.geometry.setPoints(pointPositions.flat())
+		pointsArray = pointPositions.flat()
+		meshline.geometry.setPoints(pointsArray)
+
+		// Shuffle points history
+		if ($flowShape()) {
+			for (let i = maxClones; i > 0; i--) {
+				pointsArrayHistory[i] = pointsArrayHistory[i - 1]
+			}
+		}
+
+		pointsArrayHistory[0] = pointsArray
 	}
 
 	function updateLineProperties() {
 		meshline.material.uniforms.lineWidth.value = $lineThickness()
 		materialColor.set(...$lineColor())
+
+		// Shuffle color history
+		if ($flowColors()) {
+			for (let i = maxClones; i > 0; i--) {
+				colorHistory[i] = colorHistory[i - 1]
+			}
+		}
+		colorHistory[0] = $lineColor()
+
 		meshline.material.uniforms.color.value = materialColor
 
 		meshline.material.uniformsNeedUpdate = true
@@ -385,6 +451,9 @@
 		updateLineProperties()
 	})
 
+	// Clones
+	const clonesArray = new Array(maxClones).fill(null)
+
 	$: if (parent) {
 		parent.add(meshline)
 	}
@@ -393,3 +462,20 @@
 		parent.remove(meshline)
 	})
 </script>
+
+{#each clonesArray as _, index}
+	<WaveLineClone
+		{parent}
+		{index}
+		{clones}
+		{cloneSpacing}
+		{pointsArrayHistory}
+		{colorHistory}
+		{flowShape}
+		{flowColors}
+		{lineShape}
+		{lineThickness}
+		{linePositionX}
+		{linePositionY}
+	/>
+{/each}

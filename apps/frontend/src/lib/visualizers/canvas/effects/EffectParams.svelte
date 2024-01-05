@@ -21,23 +21,23 @@
 		'persistanceAmount',
 		{ label: 'Persistance', group: persistanceGroup },
 		{
-			defaultValue: 1,
-			range: [0.7, 0.95],
-			signal: new Signal(
-				'audio',
-				'getHighsVolume',
-				audioAnalyzer.signalFunctions['getHighsVolume'],
-				[() => 0, audioAnalyzer.signalFunctions['getPeakHighsVolume']],
-				{
-					ease: 'in',
-					booster: new Signal(
-						'audio',
-						'getVolumePeaked',
-						audioAnalyzer.signalFunctions['getVolumePeaked'],
-						[() => 0, () => 1]
-					)
-				}
-			)
+			defaultValue: 0,
+			range: [0.7, 0.95]
+			// signal: new Signal(
+			// 	'audio',
+			// 	'getHighsVolume',
+			// 	audioAnalyzer.signalFunctions['getHighsVolume'],
+			// 	[() => 0, audioAnalyzer.signalFunctions['getPeakHighsVolume']],
+			// 	{
+			// 		ease: 'in',
+			// 		booster: new Signal(
+			// 			'audio',
+			// 			'getVolumePeaked',
+			// 			audioAnalyzer.signalFunctions['getVolumePeaked'],
+			// 			[() => 0, () => 1]
+			// 		)
+			// 	}
+			// )
 		},
 		{
 			transformer: (value) => clamp(value, 0, 1)

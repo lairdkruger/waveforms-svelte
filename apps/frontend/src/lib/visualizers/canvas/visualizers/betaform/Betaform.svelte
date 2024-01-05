@@ -13,13 +13,14 @@
 
 	setContext('betaformVisualizer', { audioAnalyzer: audioAnalyzer })
 
-	const { scene, onFrame } = getWebglContext()
+	const { scene, onFrame, renderer } = getWebglContext()
 
 	const waveformGroup = new Group()
 
 	onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
 		audioAnalyzer.analyzeWaveform()
+		// console.log($renderer?.info.memory)
 	})
 
 	$: if ($scene) {
@@ -35,6 +36,7 @@
 
 <WaveLine parent={waveformGroup} label="Main Line" initialColor={new Color(0x000000)} />
 <Background initialColor={new Color(0xffffff)} />
+
 <EffectParams />
 <CameraMovement />
 

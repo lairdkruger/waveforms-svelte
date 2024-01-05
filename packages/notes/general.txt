@@ -1,3 +1,5 @@
 TODO:
 
 1. Clean up imports
+
+2. Prevent range validation when range is read only
