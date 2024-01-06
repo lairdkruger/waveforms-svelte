@@ -31,7 +31,7 @@
 
 	// Controls
 	const lineShape = controls.createSelectControl(
-		'lineShape',
+		'wavelineShape',
 		{
 			label: 'Shape',
 			group: group
@@ -41,7 +41,7 @@
 	)
 
 	const lineType = controls.createSelectControl(
-		'lineType',
+		'wavelineType',
 		{
 			label: 'Type',
 			group: group
@@ -51,7 +51,7 @@
 	)
 
 	const lineIntensity = controls.createNumberControl(
-		'lineIntensity',
+		'wavelineIntensity',
 		{
 			label: 'Intensity',
 			group: group
@@ -60,7 +60,7 @@
 	)
 
 	const lineSize = controls.createNumberControl(
-		'lineSize',
+		'wavelineSize',
 		{
 			label: 'Size',
 			group: group
@@ -72,7 +72,7 @@
 	)
 
 	const linePositionX = controls.createNumberControl(
-		'linePositionX',
+		'wavelinePositionX',
 		{
 			label: 'Position X',
 			group: group
@@ -84,7 +84,7 @@
 	)
 
 	const linePositionY = controls.createNumberControl(
-		'linePositionY',
+		'wavelinePositionY',
 		{
 			label: 'Position Y',
 			group: group
@@ -96,7 +96,7 @@
 	)
 
 	const linePositionZ = controls.createNumberControl(
-		'linePositionZ',
+		'wavelinePositionZ',
 		{
 			label: 'Position Z',
 			group: group
@@ -108,7 +108,7 @@
 	)
 
 	const rotationX = controls.createNumberControl(
-		'rotationX',
+		'wavelineRotationX',
 		{
 			label: 'Rotation X',
 			group: group
@@ -121,7 +121,7 @@
 	)
 
 	const rotationY = controls.createNumberControl(
-		'rotationY',
+		'wavelineRotationY',
 		{
 			label: 'Rotation Y',
 			group: group
@@ -134,7 +134,7 @@
 	)
 
 	const rotationZ = controls.createNumberControl(
-		'rotationZ',
+		'wavelineRotationZ',
 		{
 			label: 'Rotation Z',
 			group: group
@@ -147,7 +147,7 @@
 	)
 
 	const lineDirection = controls.createSelectControl(
-		'lineDirection',
+		'wavelineDirection',
 		{
 			label: 'Direction',
 			group: group
@@ -161,7 +161,7 @@
 	}
 
 	const lineResolution = controls.createNumberControl(
-		'lineResolution',
+		'wavelineResolution',
 		{
 			label: 'Resolution',
 			group: group
@@ -180,7 +180,7 @@
 	}
 
 	const lineSymmetry = controls.createNumberControl(
-		'lineSymmetry',
+		'wavelineSymmetry',
 		{
 			label: 'Symmetry',
 			group: group
@@ -193,20 +193,20 @@
 	)
 
 	const lineThickness = controls.createNumberControl(
-		'lineThickness',
+		'wavelineThickness',
 		{
 			label: 'Thickness',
 			group: group
 		},
 		{
-			defaultValue: 0.5,
+			defaultValue: 1,
 			range: [0, 10]
 		},
 		{ transformer: (value) => value / 100 }
 	)
 
 	const lineColor = controls.createColorControl(
-		'lineColor',
+		'wavelineColor',
 		{
 			label: 'Color',
 			group: group
@@ -229,22 +229,22 @@
 		}
 	)
 
-	const maxClones = 32
+	const maxClones = 120
 	const clones = controls.createNumberControl(
-		'clones',
+		'wavelineClones',
 		{
 			label: 'Clones',
 			group: group
 		},
 		{
-			defaultValue: maxClones,
+			defaultValue: 0,
 			range: [0, maxClones]
 		},
 		{ transformer: (value) => Math.round(value), rangeReadOnly: true }
 	)
 
 	const cloneSpacing = controls.createNumberControl(
-		'cloneSpacing',
+		'wavelineCloneSpacing',
 		{
 			label: 'Clone Spacing',
 			group: group
@@ -256,7 +256,7 @@
 	)
 
 	const flowShape = controls.createBooleanControl(
-		'flowShape',
+		'wavelineFlowShape',
 		{
 			label: 'Flow Shape',
 			group: group
@@ -265,7 +265,7 @@
 	)
 
 	const flowColors = controls.createBooleanControl(
-		'flowColors',
+		'wavelineFlowColors',
 		{
 			label: 'Flow Colors',
 			group: group

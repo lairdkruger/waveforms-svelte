@@ -37,5 +37,6 @@ export const triagFragmentShader = /* glsl */ `
 		vec4 fragColor = mix(background, scene, scene.a);
 
 		gl_FragColor = fragColor;
+		// gl_FragColor = scene;
 	}
 `

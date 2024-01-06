@@ -20,19 +20,19 @@
 	const group = controls.createGroup('movement', { label: 'Movement', folder: folder })
 
 	const orbit = controls.createBooleanControl(
-		'orbit',
+		'cameraOrbit',
 		{ label: 'Orbit', group: group },
 		{ defaultValue: enabledByDefault ? 1 : 0 }
 	)
 
 	const orbitSpeed = controls.createNumberControl(
-		'orbitSpeed',
+		'cameraOrbitSpeed',
 		{ label: 'Orbit Speed', group: group },
 		{ defaultValue: 1, range: [0, 10] }
 	)
 
 	const fov = controls.createNumberControl(
-		'fov',
+		'cameraFov',
 		{ label: 'FOV', group: group },
 		{ defaultValue: 0.75, range: [0.5, 0.75] },
 		{
@@ -41,37 +41,37 @@
 	)
 
 	const positionX = controls.createNumberControl(
-		'positionX',
+		'cameraPositionX',
 		{ label: 'Position X', group: group },
 		{ defaultValue: 0, range: [-10, 10] }
 	)
 
 	const positionY = controls.createNumberControl(
-		'positionY',
+		'cameraPositionY',
 		{ label: 'Position Y', group: group },
 		{ defaultValue: 0, range: [-10, 10] }
 	)
 
 	const positionZ = controls.createNumberControl(
-		'positionZ',
+		'cameraPositionZ',
 		{ label: 'Position Z', group: group },
 		{ defaultValue: 5, range: [-10, 10] }
 	)
 
 	const targetX = controls.createNumberControl(
-		'targetX',
+		'cameraTargetX',
 		{ label: 'Target X', group: group },
 		{ defaultValue: 0, range: [-10, 10] }
 	)
 
 	const targetY = controls.createNumberControl(
-		'targetY',
+		'cameraTargetY',
 		{ label: 'Target Y', group: group },
 		{ defaultValue: 0, range: [-10, 10] }
 	)
 
 	const targetZ = controls.createNumberControl(
-		'targetZ',
+		'cameraTargetZ',
 		{ label: 'Target Z', group: group },
 		{ defaultValue: 0, range: [-10, 10] }
 	)

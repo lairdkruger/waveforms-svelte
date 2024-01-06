@@ -47,9 +47,10 @@ export const persistanceFragmentShader = /* glsl */ `
 		vec4 fragColor = mix(sceneTexture, inputTexture, mixAmount);
 
 		// finally paint the fresh scene over the feedback texture
-		fragColor = fragColor + sceneTexture;
+		// vec4 compositeOutput = fragColor + sceneTexture; // This used to blend to white a lot
+		vec4 compositeOutput = mix(fragColor, sceneTexture, sceneTexture.a);
 		
 		// blend the source texture over the feedback texture
-		gl_FragColor = fragColor;
+		gl_FragColor = compositeOutput;
 	}
 `
