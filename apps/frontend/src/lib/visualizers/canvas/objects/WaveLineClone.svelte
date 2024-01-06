@@ -20,8 +20,6 @@
 	export let flowColors: Readable<NumberOutput>
 	export let lineShape: Readable<SelectOutput>
 	export let lineThickness: Readable<NumberOutput>
-	export let linePositionX: Readable<NumberOutput>
-	export let linePositionY: Readable<NumberOutput>
 
 	const { onFrame } = getWebglContext()
 
@@ -36,7 +34,7 @@
 	const material = new MeshLineMaterial({
 		color: materialColor,
 		lineWidth: $lineThickness(),
-		sizeAttenuation: false
+		sizeAttenuation: true
 	})
 	const mesh = new MeshLine(geometry, material)
 
@@ -73,7 +71,7 @@
 		}
 
 		mesh.scale.set(scale, scale, scale)
-		mesh.position.set($linePositionX(), $linePositionY() + offset, 0)
+		mesh.position.set(0, offset, 0)
 	}
 
 	onFrame(() => {

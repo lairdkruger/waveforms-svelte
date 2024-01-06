@@ -95,6 +95,57 @@
 		}
 	)
 
+	const linePositionZ = controls.createNumberControl(
+		'linePositionZ',
+		{
+			label: 'Position Z',
+			group: group
+		},
+		{
+			defaultValue: 0,
+			range: [-5, 5]
+		}
+	)
+
+	const rotationX = controls.createNumberControl(
+		'rotationX',
+		{
+			label: 'Rotation X',
+			group: group
+		},
+		{
+			defaultValue: 0,
+			range: [-1, 1]
+		},
+		{ transformer: (value) => value * Math.PI }
+	)
+
+	const rotationY = controls.createNumberControl(
+		'rotationY',
+		{
+			label: 'Rotation Y',
+			group: group
+		},
+		{
+			defaultValue: 0,
+			range: [-1, 1]
+		},
+		{ transformer: (value) => value * Math.PI }
+	)
+
+	const rotationZ = controls.createNumberControl(
+		'rotationZ',
+		{
+			label: 'Rotation Z',
+			group: group
+		},
+		{
+			defaultValue: 0,
+			range: [-1, 1]
+		},
+		{ transformer: (value) => value * Math.PI }
+	)
+
 	const lineDirection = controls.createSelectControl(
 		'lineDirection',
 		{
@@ -229,7 +280,7 @@
 	const material = new MeshLineMaterial({
 		color: materialColor,
 		lineWidth: $lineThickness(),
-		sizeAttenuation: false
+		sizeAttenuation: true
 	})
 	const meshline = new MeshLine(geometry, material)
 
@@ -442,13 +493,17 @@
 		meshline.material.uniforms.color.value = materialColor
 
 		meshline.material.uniformsNeedUpdate = true
+	}
 
-		meshline.position.set($linePositionX(), $linePositionY(), 0)
+	function updateGroup() {
+		parent.position.set($linePositionX(), $linePositionY(), $linePositionZ())
+		parent.rotation.set($rotationX(), $rotationY(), $rotationZ())
 	}
 
 	onFrame(() => {
 		updateLinePoints()
 		updateLineProperties()
+		updateGroup()
 	})
 
 	// Clones
@@ -475,7 +530,5 @@
 		{flowColors}
 		{lineShape}
 		{lineThickness}
-		{linePositionX}
-		{linePositionY}
 	/>
 {/each}
