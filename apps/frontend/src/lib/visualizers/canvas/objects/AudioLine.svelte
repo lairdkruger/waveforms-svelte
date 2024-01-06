@@ -139,8 +139,6 @@ float snoise(vec4 v){
 
 	createSphere()
 
-	console.log(vertices, normals)
-
 	// const indices = [0, 1, 2, 2, 3, 0]
 	// geometry.setIndex(indices)
 	geometry.setAttribute('position', new BufferAttribute(vertices, 3))
@@ -189,8 +187,6 @@ float snoise(vec4 v){
 
 	// const material = new PointsMaterial({ depthWrite: false, color: 0xff0000, size: 0.1 })
 	const mesh = new Mesh(geometry, material)
-
-	console.log('material', material)
 
 	onFrame(({ elapsedTime }) => {
 		if (material.userData.shader) {

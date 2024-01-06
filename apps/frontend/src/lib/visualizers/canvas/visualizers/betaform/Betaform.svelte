@@ -20,7 +20,6 @@
 	onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
 		audioAnalyzer.analyzeWaveform()
-		// console.log($renderer?.info.memory)
 	})
 
 	$: if ($scene) {
