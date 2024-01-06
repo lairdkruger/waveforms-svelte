@@ -2,40 +2,33 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
 	import { onDestroy } from 'svelte'
-	import { AmbientLight, Group, PointLight } from 'three'
+	import { AmbientLight, Group, PerspectiveCamera, PointLight, Vector3 } from 'three'
+	// @ts-ignore
+	import { OrbitControls } from 'three/addons/controls/OrbitControls'
 
 	export let enabledByDefault: boolean = false
 
 	const { controls } = getVisualizerContext()
-	const { camera, onFrame, scene } = getWebglContext()
+	const { camera, onFrame, scene, renderer } = getWebglContext()
 
 	const boom = new Group()
+	const orbitControls = new OrbitControls($camera, $renderer?.domElement)
+	orbitControls.enableDamping = true
+	orbitControls.enabled = false
 
 	const folder = controls.createFolder('camera', { label: 'Camera' })
 	const group = controls.createGroup('movement', { label: 'Movement', folder: folder })
 
 	const orbit = controls.createBooleanControl(
 		'orbit',
-		{ label: 'Enabled', group: group },
+		{ label: 'Orbit', group: group },
 		{ defaultValue: enabledByDefault ? 1 : 0 }
 	)
 
-	const verticalSpeed = controls.createNumberControl(
-		'verticalSpeed',
-		{ label: 'Speed Vertical', group: group },
-		{ defaultValue: 0, range: [0, 10] },
-		{
-			transformer: (value) => value / 1000
-		}
-	)
-
-	const horizontalSpeed = controls.createNumberControl(
-		'horizontalSpeed',
-		{ label: 'Speed Horizontal', group: group },
-		{ defaultValue: 1, range: [0, 10] },
-		{
-			transformer: (value) => value / 1000
-		}
+	const orbitSpeed = controls.createNumberControl(
+		'orbitSpeed',
+		{ label: 'Orbit Speed', group: group },
+		{ defaultValue: 1, range: [0, 10] }
 	)
 
 	const fov = controls.createNumberControl(
@@ -47,15 +40,60 @@
 		}
 	)
 
+	const positionX = controls.createNumberControl(
+		'positionX',
+		{ label: 'Position X', group: group },
+		{ defaultValue: 0, range: [-10, 10] }
+	)
+
+	const positionY = controls.createNumberControl(
+		'positionY',
+		{ label: 'Position Y', group: group },
+		{ defaultValue: 0, range: [-10, 10] }
+	)
+
+	const positionZ = controls.createNumberControl(
+		'positionZ',
+		{ label: 'Position Z', group: group },
+		{ defaultValue: 5, range: [-10, 10] }
+	)
+
+	const targetX = controls.createNumberControl(
+		'targetX',
+		{ label: 'Target X', group: group },
+		{ defaultValue: 0, range: [-10, 10] }
+	)
+
+	const targetY = controls.createNumberControl(
+		'targetY',
+		{ label: 'Target Y', group: group },
+		{ defaultValue: 0, range: [-10, 10] }
+	)
+
+	const targetZ = controls.createNumberControl(
+		'targetZ',
+		{ label: 'Target Z', group: group },
+		{ defaultValue: 0, range: [-10, 10] }
+	)
+
 	onFrame(() => {
 		if ($camera) {
-			if ($orbit()) {
-				boom.rotateY($horizontalSpeed())
-				boom.rotateX($verticalSpeed())
+			// Have to target the camera used by OrbitControls
+			const camera = orbitControls.object as PerspectiveCamera
 
-				$camera.fov = $fov()
-				$camera.updateProjectionMatrix()
+			if ($orbit()) {
+				orbitControls.autoRotate = true
+				orbitControls.autoRotateSpeed = $orbitSpeed()
+			} else {
+				orbitControls.autoRotate = false
+				camera.position.set($positionX(), $positionY(), $positionZ())
+				orbitControls.target = new Vector3($targetX(), $targetY(), $targetZ())
 			}
+
+			camera.fov = $fov()
+			camera.updateProjectionMatrix()
+
+			orbitControls.update()
 		}
 	})
 
