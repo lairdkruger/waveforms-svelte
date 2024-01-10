@@ -3,6 +3,7 @@
 	import VisualizerHeading from './VisualizerHeading.svelte'
 	import VisualizerVideo from './VisualizerVideo.svelte'
 	import { dev } from '$app/environment'
+	import { MeshNormalMaterial } from 'three'
 
 	export let visualizersData: Visualizer[]
 
@@ -11,7 +12,7 @@
 		dev ? true : visualizer.slug !== 'primitive'
 	)
 
-	let activeIndex: number | null = null
+	let activeIndex: number | null | 'coming-soon' = null
 </script>
 
 <div class="wrapper">
@@ -27,7 +28,9 @@
 				}}
 			>
 				<VisualizerHeading
-					{visualizer}
+					slug={visualizer.slug}
+					name={visualizer.name}
+					description={visualizer.description}
 					active={index === activeIndex}
 					inactive={index !== activeIndex && activeIndex !== -1}
 				/>
@@ -37,6 +40,23 @@
 				{/if}
 			</div>
 		{/each}
+
+		<div
+			class="item"
+			on:pointerenter={() => {
+				activeIndex = 'coming-soon'
+			}}
+			on:pointerleave={() => {
+				activeIndex = null
+			}}
+		>
+			<VisualizerHeading
+				name="More Soon"
+				description="Read about how you can support the project here"
+				active={activeIndex === 'coming-soon'}
+				inactive={activeIndex !== 'coming-soon' && activeIndex !== -1}
+			/>
+		</div>
 	</div>
 </div>
 

@@ -1,15 +1,20 @@
 <script lang="ts">
 	import ArrowIcon from '$lib/svgs/ArrowIcon.svelte'
-	import type { Visualizer } from 'supabase'
 
-	export let visualizer: Visualizer
+	export let slug: string | undefined = undefined
+	export let name: string
+	export let description: string | null
+
 	export let active: boolean
 	export let inactive: boolean
+
+	const href = slug ? `/visualizers/${slug}` : '/information'
+	const infoHeading = slug ? 'Realtime Audio Visualizer' : 'Working on it...'
 
 	let arrowWidth = 72
 </script>
 
-<a href="/visualizers/{visualizer.slug}" data-sveltekit-preload-data="off">
+<a {href} data-sveltekit-preload-data="off">
 	<div
 		class="wrapper"
 		style="
@@ -26,16 +31,16 @@
 
 		<div class="heading-wrapper">
 			<h2 class="heading-large" style="opacity: {inactive ? 0 : 1}">
-				{visualizer.name}
+				{name}
 			</h2>
 			<h2 class="heading-large outlined" style=" opacity: {inactive ? 1 : 0} ">
-				{visualizer.name}
+				{name}
 			</h2>
 		</div>
 
 		<div class="info">
-			<h3 class="infoHeading">Realtime Audio Visualizer</h3>
-			<p>{visualizer.description}</p>
+			<h3 class="infoHeading">{infoHeading}</h3>
+			<p>{description}</p>
 		</div>
 	</div>
 </a>

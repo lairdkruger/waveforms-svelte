@@ -33,10 +33,10 @@
 			<br />
 			<br />
 			To use Spotify, Youtube, Soundcloud etc: open them in another tab and then select BROWSER as
-			the audio input in the visualizer control panel
+			the audio input from the bottom left of the visualizer control panel
 			<br />
 			<br />
-			For direct output to input:<br />
+			Recommended for direct device output to input:<br />
 			<a href="https://github.com/ExistentialAudio/BlackHole" target="_blank" rel="noreferrer">
 				Blackhole
 			</a>
