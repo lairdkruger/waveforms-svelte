@@ -3,7 +3,6 @@
 	import VisualizerHeading from './VisualizerHeading.svelte'
 	import VisualizerVideo from './VisualizerVideo.svelte'
 	import { dev } from '$app/environment'
-	import { MeshNormalMaterial } from 'three'
 
 	export let visualizersData: Visualizer[]
 
