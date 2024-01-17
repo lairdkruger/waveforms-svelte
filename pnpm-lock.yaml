@@ -47,6 +47,9 @@ importers:
       postmark:
         specifier: ^3.0.19
         version: 3.0.19
+      rusty:
+        specifier: workspace:rusty
+        version: link:../../packages/rusty
       stripe:
         specifier: workspace:stripe
         version: link:../../packages/stripe
@@ -108,6 +111,8 @@ importers:
       eslint-plugin-svelte3:
         specifier: ^4.0.0
         version: 4.0.0(eslint@8.46.0)(svelte@3.59.2)
+
+  packages/rusty: {}
 
   packages/stripe:
     dependencies:

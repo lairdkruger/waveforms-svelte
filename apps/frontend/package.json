@@ -20,7 +20,8 @@
 		"stripe": "workspace:stripe",
 		"supabase": "workspace:supabase",
 		"three": "^0.155.0",
-		"zod": "^3.21.4"
+		"zod": "^3.21.4",
+		"rusty": "workspace:rusty"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-vercel": "^3.0.2",

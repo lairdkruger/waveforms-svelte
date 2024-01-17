@@ -1,0 +1,10 @@
+{
+	"name": "rusty",
+	"version": "0.0.0",
+	"private": true,
+	"main": "./pkg/wasm.js",
+	"types": "./pkg/wasm.d.ts",
+	"scripts": {
+		"build": "npx wasm-pack build --target web --out-name wasm --out-dir ./pkg"
+	}
+}
