@@ -1,0 +1,62 @@
+:root {
+	/* Viewport Units (updated by useTrueViewDimensions) */
+	/* View Heights */
+	--svh: 1vh; /* small view height (mobile address bar fully collapsed) */
+	--lvh: 1vh; /* large view height (mobile address bar fully expanded) */
+	--dvh: 1vh; /* dynamic view height (tracks real viewport height) */
+
+	/* View Widths */
+	--vw: 1vw;
+	--scrollbar: 0px;
+
+	/* Spacing Variables */
+	--spacing4: 4px;
+	--spacing8: 8px;
+	--spacing16: 16px;
+	--spacing24: 24px;
+	--spacing32: 32px;
+	--spacing40: 40px;
+	--spacing64: 64px;
+	--spacing80: 80px;
+	--spacing120: 120px;
+	--spacing200: 200px;
+	--spacing300: 300px;
+
+	/* Grid Variables */
+	--numberOfColumns: 12;
+	--margin: 16px;
+	--gutter: 0px;
+	--column: calc(
+		(1 / var(--numberOfColumns)) *
+			(
+				(100 * var(--vw)) - (var(--margin) * 2) -
+					((var(--numberOfColumns) - 1) * (var(--gutter)))
+			)
+	);
+	--row: 250px;
+}
+
+@media (max-width: 900px) {
+	:root {
+		--spacing80: 64px;
+		--spacing120: 80px;
+		--spacing200: 120px;
+
+		--numberOfColumns: 12;
+	}
+}
+
+@media (max-width: 480px) {
+	:root {
+		--spacing16: 8px;
+		--spacing24: 16px;
+		--spacing32: 24px;
+		--spacing40: 32px;
+		--spacing64: 40px;
+		--spacing80: 64px;
+		--spacing120: 80px;
+		--spacing200: 120px;
+
+		--numberOfColumns: 12;
+	}
+}

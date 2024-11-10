@@ -1,3 +1,0 @@
-Changes:
-
-- Output function made anonymouse so it can access thet this keyword
