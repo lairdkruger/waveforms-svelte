@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
-	import { onDestroy, setContext } from 'svelte'
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
+	import { onDestroy, onMount, setContext } from 'svelte'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import { Color, Group } from 'three'
 	import EffectParams from '../../effects/EffectParams.svelte'
 	import WaveLine from '../../objects/WaveLine.svelte'
@@ -13,23 +13,25 @@
 
 	setContext('betaformVisualizer', { audioAnalyzer: audioAnalyzer })
 
-	const { scene, onFrame, renderer } = getWebglContext()
+	const webglContext = getWebglContext()
 
 	const waveformGroup = new Group()
 
-	onFrame(() => {
+	webglContext.onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
 		audioAnalyzer.analyzeWaveform()
 	})
 
-	$: if ($scene) {
-		$scene.add(waveformGroup)
-	}
+	onMount(() => {
+		if (!webglContext.scene) return
+
+		webglContext.scene.add(waveformGroup)
+	})
 
 	onDestroy(() => {
-		if ($scene) {
-			$scene.remove(waveformGroup)
-		}
+		if (!webglContext.scene) return
+
+		webglContext.scene.remove(waveformGroup)
 	})
 </script>
 

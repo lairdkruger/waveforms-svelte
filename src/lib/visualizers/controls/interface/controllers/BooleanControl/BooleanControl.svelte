@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import type { ControlId, BooleanControlConfig } from '$lib/visualizers/controls/types'
 	import type { Writable } from 'svelte/store'
 	import InputNode from '../../connectors/InputNode.svelte'

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
-	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
+	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
 	import { onDestroy } from 'svelte'
 	import { BoxGeometry, MeshBasicMaterial, type Group, Mesh, Color } from 'three'
 

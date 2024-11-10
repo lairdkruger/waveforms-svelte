@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
-	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
-	import { onDestroy } from 'svelte'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
+	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
+	import { onDestroy, onMount } from 'svelte'
 	import { BoxGeometry, MeshBasicMaterial, Mesh, Color, BackSide } from 'three'
 
 	export let initialColor = new Color(0x000000)
 
 	const { controls } = getVisualizerContext()
-	const { onFrame, backgroundScene } = getWebglContext()
+	const webglContext = getWebglContext()
 
 	const geometry = new BoxGeometry(1, 1, 1)
 	const materialColor = new Color(initialColor)
@@ -44,16 +44,20 @@
 		}
 	)
 
-	onFrame(() => {
+	webglContext.onFrame(() => {
 		materialColor.setRGB(...$color())
 		mesh.material.color.set(materialColor)
 	})
 
-	$: if ($backgroundScene) {
-		$backgroundScene.add(mesh)
-	}
+	onMount(() => {
+		if (!webglContext.backgroundScene) return
+
+		webglContext.backgroundScene.add(mesh)
+	})
 
 	onDestroy(() => {
-		if ($backgroundScene) $backgroundScene.remove(mesh)
+		if (!webglContext.backgroundScene) return
+
+		webglContext.backgroundScene.remove(mesh)
 	})
 </script>

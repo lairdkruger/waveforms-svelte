@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import AudioInputSelector from './AudioInputSelector.svelte'
 	import Signal from './Signal.svelte'
 

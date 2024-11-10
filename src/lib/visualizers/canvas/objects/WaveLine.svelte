@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
-	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
-	import { onDestroy } from 'svelte'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
+	import { onDestroy, onMount } from 'svelte'
 	import { type Group, Color } from 'three'
 	import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshline'
 	import { distributeAngles, map, radians } from '$lib/visualizers/utils/Maths'
 	import WaveLineClone from './WaveLineClone.svelte'
 	import type { Color as ColorType } from '$lib/visualizers/controls/types'
+	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
 
 	// Type declarations
 	type Point = {
@@ -21,7 +21,7 @@
 	export let initialColor = new Color(0xffffff)
 
 	const { controls, audioAnalyzer } = getVisualizerContext()
-	const { onFrame } = getWebglContext()
+	const webglContext = getWebglContext()
 
 	const folder = controls.createFolder(label, { label: label })
 	const group = controls.createGroup(label, {
@@ -500,7 +500,7 @@
 		parent.rotation.set($rotationX(), $rotationY(), $rotationZ())
 	}
 
-	onFrame(() => {
+	webglContext.onFrame(() => {
 		updateLinePoints()
 		updateLineProperties()
 		updateGroup()
@@ -509,9 +509,10 @@
 	// Clones
 	const clonesArray = new Array(maxClones).fill(null)
 
-	$: if (parent) {
+	onMount(() => {
+		if (!parent) return
 		parent.add(meshline)
-	}
+	})
 
 	onDestroy(() => {
 		parent.remove(meshline)

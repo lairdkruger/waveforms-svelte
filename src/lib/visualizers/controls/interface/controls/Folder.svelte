@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ExpandIcon from '$lib/svgs/ExpandIcon.svelte'
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import { slide } from 'svelte/transition'
 	import Group from './Group.svelte'
 

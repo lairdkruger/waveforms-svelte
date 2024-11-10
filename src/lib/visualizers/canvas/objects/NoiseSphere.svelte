@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
-	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
+	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
 	import { smokeFragmentShader, smokeVertexShader } from '$lib/visualizers/materials/smokeMaterial'
 	import { onDestroy } from 'svelte'
 	import { type Group, Mesh, IcosahedronGeometry, ShaderMaterial, MeshBasicMaterial } from 'three'
@@ -8,7 +8,7 @@
 	export let parent: Group
 
 	const { controls, audioAnalyzer } = getVisualizerContext()
-	const { onFrame } = getWebglContext()
+	const webglContext = getWebglContext()
 
 	const radius = 1
 	const detail = 5
@@ -35,7 +35,7 @@
 		label: 'Noise Sphere'
 	})
 
-	onFrame(({ elapsedTime }) => {
+	webglContext.onFrame(({ elapsedTime }) => {
 		smokeMesh.material.uniforms.time.value = elapsedTime * 0.5
 
 		smokeMesh.material.uniforms.lowFreqAmp.value =

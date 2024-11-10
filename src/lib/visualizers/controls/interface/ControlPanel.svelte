@@ -1,6 +1,6 @@
 <script lang="ts">
 	import './controls.css'
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import SignalsPanel from './signals/SignalsPanel.svelte'
 	import ControlsPanel from './controls/ControlsPanel.svelte'
 	import DragConnector from './connectors/DragConnector.svelte'

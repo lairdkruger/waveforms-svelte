@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
-	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
-	import { onDestroy } from 'svelte'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
+	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
+	import { onDestroy, onMount } from 'svelte'
 	import { AmbientLight, Group, PerspectiveCamera, PointLight, Vector3 } from 'three'
 	// @ts-ignore
 	import { OrbitControls } from 'three/addons/controls/OrbitControls'
@@ -9,10 +9,10 @@
 	export let enabledByDefault: boolean = false
 
 	const { controls } = getVisualizerContext()
-	const { camera, onFrame, scene, renderer } = getWebglContext()
+	const webglContext = getWebglContext()
 
 	const boom = new Group()
-	const orbitControls = new OrbitControls($camera, $renderer?.domElement)
+	const orbitControls = new OrbitControls(webglContext.camera, webglContext.renderer?.domElement)
 	orbitControls.enableDamping = true
 	orbitControls.enabled = false
 
@@ -76,25 +76,25 @@
 		{ defaultValue: 0, range: [-10, 10] }
 	)
 
-	onFrame(() => {
-		if ($camera) {
-			// Have to target the camera used by OrbitControls
-			const camera = orbitControls.object as PerspectiveCamera
+	webglContext.onFrame(() => {
+		if (!webglContext.camera) return
 
-			if ($orbit()) {
-				orbitControls.autoRotate = true
-				orbitControls.autoRotateSpeed = $orbitSpeed()
-			} else {
-				orbitControls.autoRotate = false
-				camera.position.set($positionX(), $positionY(), $positionZ())
-				orbitControls.target = new Vector3($targetX(), $targetY(), $targetZ())
-			}
+		// Have to target the camera used by OrbitControls
+		const camera = orbitControls.object as PerspectiveCamera
 
-			camera.fov = $fov()
-			camera.updateProjectionMatrix()
-
-			orbitControls.update()
+		if ($orbit()) {
+			orbitControls.autoRotate = true
+			orbitControls.autoRotateSpeed = $orbitSpeed()
+		} else {
+			orbitControls.autoRotate = false
+			camera.position.set($positionX(), $positionY(), $positionZ())
+			orbitControls.target = new Vector3($targetX(), $targetY(), $targetZ())
 		}
+
+		camera.fov = $fov()
+		camera.updateProjectionMatrix()
+
+		orbitControls.update()
 	})
 
 	const light = new PointLight(0xffffff, 1)
@@ -102,20 +102,23 @@
 	light.intensity = 40
 	light.position.set(0, 2, 0)
 
-	$: if ($scene) {
-		$scene.add(boom)
-		$scene.add(ambientLight)
-	}
+	onMount(() => {
+		if (!webglContext.scene) return
 
-	$: if ($camera) {
-		boom.add($camera)
-		$camera.position.set(0, 0, -5)
-		$camera.lookAt(0, 0, 0)
+		webglContext.scene.add(boom)
+		webglContext.scene.add(ambientLight)
 
-		$camera.add(light)
-	}
+		if (!webglContext.camera) return
+
+		boom.add(webglContext.camera)
+		webglContext.camera.position.set(0, 0, -5)
+		webglContext.camera.lookAt(0, 0, 0)
+		webglContext.camera.add(light)
+	})
 
 	onDestroy(() => {
-		$scene?.remove(boom)
+		if (!webglContext.scene) return
+
+		webglContext.scene.remove(boom)
 	})
 </script>

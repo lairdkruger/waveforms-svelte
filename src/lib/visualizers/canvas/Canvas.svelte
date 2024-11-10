@@ -1,9 +1,9 @@
 <!-- @migration-task Error while migrating Svelte code: `$fullScreen` is an illegal variable name. To reference a global variable called `$fullScreen`, use `globalThis.$fullScreen` -->
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte'
-	import { createWebglContext } from '../contexts/webgl'
 	import Stage from './Stage.svelte'
 	import { getUiContext } from '$lib/contexts/ui.svelte'
+	import { createWebglContext } from '../contexts/webgl.svelte'
 
 	interface Props {
 		children: Snippet

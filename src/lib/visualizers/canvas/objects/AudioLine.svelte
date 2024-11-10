@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
-	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
+	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
 	import { map } from '$lib/visualizers/utils/Maths'
 	import { onDestroy } from 'svelte'
 	import {
@@ -19,8 +18,7 @@
 		PointsMaterial,
 		IcosahedronGeometry,
 		Color,
-		MeshPhysicalMaterial,
-		type Shader
+		MeshPhysicalMaterial
 	} from 'three'
 
 	const noise = `
@@ -147,7 +145,7 @@ float snoise(vec4 v){
 	const material = new MeshPhysicalMaterial({ color: 0xff0000, roughness: 0.5, metalness: 0.5 })
 	// Extend the Physical Material component (https://github.com/mrdoob/three.js/blob/dev/src/renderers/shaders/ShaderLib/meshphysical.glsl.js)
 	// Swap in uniforms, and swap lines of the shaders before GPU compilation
-	const onBeforeCompile = (shader: Shader) => {
+	const onBeforeCompile = (shader: any) => {
 		// Uniforms
 		shader.uniforms.mixAmount = { value: 1.0 }
 

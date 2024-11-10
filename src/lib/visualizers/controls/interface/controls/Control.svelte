@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import Connector from '../connectors/Connector.svelte'
 	import BooleanControl from '../controllers/BooleanControl/BooleanControl.svelte'
 	import ColorControl from '../controllers/ColorControl/ColorControl.svelte'

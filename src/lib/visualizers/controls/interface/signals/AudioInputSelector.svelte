@@ -1,7 +1,7 @@
 <script lang="ts">
 	import DropdownIcon from '$lib/svgs/DropdownIcon.svelte'
 	import type { AudioInput } from '$lib/visualizers/audio/AudioAnalyzer'
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 
 	const { audioAnalyzer } = getVisualizerContext()
 	let value: AudioInput

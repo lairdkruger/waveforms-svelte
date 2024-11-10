@@ -1,7 +1,7 @@
 <script lang="ts">
 	import BooleanInputIcon from '$lib/svgs/BooleanInputIcon.svelte'
 	import InputIcon from '$lib/svgs/InputIcon.svelte'
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 
 	export let controlId: string
 	export let boolean: boolean = false

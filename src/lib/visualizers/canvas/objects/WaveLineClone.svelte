@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
-	import { onDestroy } from 'svelte'
+	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
+	import { onDestroy, onMount } from 'svelte'
 	import { type Group, Color } from 'three'
 	import { MeshLine, MeshLineGeometry, MeshLineMaterial } from '@lume/three-meshline'
 	import type { Readable } from 'svelte/store'
@@ -10,21 +10,36 @@
 		Color as ColorType
 	} from '$lib/visualizers/controls/types'
 
-	export let parent: Group
-	export let index: number
-	export let clones: Readable<NumberOutput>
-	export let cloneSpacing: Readable<NumberOutput>
-	export let pointsArrayHistory: number[][]
-	export let colorHistory: ColorType[]
-	export let flowShape: Readable<NumberOutput>
-	export let flowColors: Readable<NumberOutput>
-	export let lineShape: Readable<SelectOutput>
-	export let lineThickness: Readable<NumberOutput>
+	interface Props {
+		parent: Group
+		index: number
+		clones: Readable<NumberOutput>
+		cloneSpacing: Readable<NumberOutput>
+		pointsArrayHistory: number[][]
+		colorHistory: ColorType[]
+		flowShape: Readable<NumberOutput>
+		flowColors: Readable<NumberOutput>
+		lineShape: Readable<SelectOutput>
+		lineThickness: Readable<NumberOutput>
+	}
 
-	const { onFrame } = getWebglContext()
+	let {
+		parent,
+		index,
+		clones,
+		cloneSpacing,
+		pointsArrayHistory,
+		colorHistory,
+		flowShape,
+		flowColors,
+		lineShape,
+		lineThickness
+	}: Props = $props()
+
+	const webglContext = getWebglContext()
 
 	// Derived
-	$: isVisible = index < $clones()
+	let isVisible = $derived(index < $clones())
 	const cloneIndex = index + 1
 
 	// Components
@@ -74,16 +89,18 @@
 		mesh.position.set(0, offset, 0)
 	}
 
-	onFrame(() => {
+	webglContext.onFrame(() => {
 		if (!isVisible) return
 		updateLinePoints()
 		updateLineProperties()
 	})
 
 	// Scene and memory
-	$: if (parent && isVisible) {
-		if (!parent.children.includes(mesh)) parent.add(mesh)
-	}
+	$effect(() => {
+		if (parent && isVisible) {
+			if (!parent.children.includes(mesh)) parent.add(mesh)
+		}
+	})
 
 	function destroyClone() {
 		parent.remove(mesh)
@@ -93,9 +110,11 @@
 		material.dispose()
 	}
 
-	$: if (parent && !isVisible) {
-		if (parent.children.includes(mesh)) destroyClone()
-	}
+	$effect(() => {
+		if (parent && !isVisible) {
+			if (parent.children.includes(mesh)) destroyClone()
+		}
+	})
 
 	onDestroy(() => {
 		destroyClone()

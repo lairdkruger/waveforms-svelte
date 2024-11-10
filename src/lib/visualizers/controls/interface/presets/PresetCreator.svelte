@@ -3,7 +3,7 @@
 	import { invalidateAll } from '$app/navigation'
 	import { page } from '$app/stores'
 	import TextInput from '$lib/forms/inputs/TextInput.svelte'
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 
 	const visualizerSlug = $page.params.slug
 

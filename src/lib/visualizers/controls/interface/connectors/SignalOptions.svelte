@@ -6,7 +6,7 @@
 	import OptionsLoopIcon from '$lib/svgs/OptionsLoopIcon.svelte'
 	import OptionsPingPongIcon from '$lib/svgs/OptionsPingPongIcon.svelte'
 	import OptionsStraightIcon from '$lib/svgs/OptionsStraightIcon.svelte'
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import { spring } from 'svelte/motion'
 
 	export let controlId: string

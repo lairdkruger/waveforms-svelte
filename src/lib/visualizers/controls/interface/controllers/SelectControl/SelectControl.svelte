@@ -1,6 +1,6 @@
 <script lang="ts">
 	import DropdownIcon from '$lib/svgs/DropdownIcon.svelte'
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import type { ControlId, SelectControlConfig } from '$lib/visualizers/controls/types'
 	import type { Writable } from 'svelte/store'
 	import InputNode from '../../connectors/InputNode.svelte'

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
-	import { onDestroy, setContext } from 'svelte'
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
+	import { onDestroy, onMount, setContext } from 'svelte'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import { Color, Group } from 'three'
 	import EffectParams from '../../effects/EffectParams.svelte'
 	import Background from '../../objects/Background.svelte'
@@ -14,23 +14,23 @@
 
 	setContext('stormVisualizer', { audioAnalyzer: audioAnalyzer })
 
-	const { scene, onFrame } = getWebglContext()
+	const webglContext = getWebglContext()
 
 	const stormGroup = new Group()
 
-	onFrame(() => {
+	webglContext.onFrame(() => {
 		audioAnalyzer.analyzeSpectrum(1)
 		audioAnalyzer.analyzeWaveform()
 	})
 
-	$: if ($scene) {
-		$scene.add(stormGroup)
-	}
+	onMount(() => {
+		if (!webglContext.scene) return
+		webglContext.scene.add(stormGroup)
+	})
 
 	onDestroy(() => {
-		if ($scene) {
-			$scene.remove(stormGroup)
-		}
+		if (!webglContext.scene) return
+		webglContext.scene.remove(stormGroup)
 	})
 </script>
 

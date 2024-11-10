@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment'
 	import DropdownIcon from '$lib/svgs/DropdownIcon.svelte'
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import { get } from 'svelte/store'
 	import type { PresetId } from '../../types/presets'
 

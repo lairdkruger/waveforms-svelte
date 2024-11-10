@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import { onDestroy } from 'svelte'
 
 	const { controls } = getVisualizerContext()

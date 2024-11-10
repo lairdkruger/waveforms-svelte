@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SignalIconBoolean from '$lib/svgs/SignalIconBoolean.svelte'
 	import SignalIconNumber from '$lib/svgs/SignalIconNumber.svelte'
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import type Signal from '../../library/signals/Signal'
 	import type { SignalType } from '../../types'
 

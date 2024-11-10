@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
-	import { getWebglContext } from '$lib/visualizers/contexts/webgl'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
+	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
 	import Signal from '$lib/visualizers/controls/library/signals/Signal'
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { Matrix3 } from 'three'
 
-	const { persistance, postEffect, onFrame } = getWebglContext()
+	const webglContext = getWebglContext()
 	const { controls, audioAnalyzer } = getVisualizerContext()
 
 	// Kaleidoscope
@@ -168,37 +168,29 @@
 		}
 	)
 
-	onFrame(() => {
-		if ($persistance) {
-			$persistance.uniforms.amount.value = $persistanceAmount()
+	webglContext.onFrame(() => {
+		if (!webglContext.persistance) return
 
-			const uvScaleX = 1 + $persistanceScaleX() / 1000
-			const uvScaleY = 1 + $persistanceScaleY() / 1000
-			const uvRotation = $persistanceRotation() / 100
+		webglContext.persistance.uniforms.amount.value = $persistanceAmount()
 
-			const targetX = Math.cos($persistanceTargetAngle()) * $persistanceTargetRadius()
-			const targetY = Math.sin($persistanceTargetAngle()) * $persistanceTargetRadius()
+		const uvScaleX = 1 + $persistanceScaleX() / 1000
+		const uvScaleY = 1 + $persistanceScaleY() / 1000
+		const uvRotation = $persistanceRotation() / 100
 
-			uvTransformMatrix.setUvTransform(
-				targetX,
-				targetY,
-				uvScaleX,
-				uvScaleY,
-				uvRotation,
-				0.5,
-				0.5
-			)
+		const targetX = Math.cos($persistanceTargetAngle()) * $persistanceTargetRadius()
+		const targetY = Math.sin($persistanceTargetAngle()) * $persistanceTargetRadius()
 
-			$persistance.uniforms.uvTransformMatrix.value = uvTransformMatrix
-		}
+		uvTransformMatrix.setUvTransform(targetX, targetY, uvScaleX, uvScaleY, uvRotation, 0.5, 0.5)
 
-		if ($postEffect) {
-			$postEffect.uniforms.squeeze.value = $kaleidoscopeSqueeze()
-			$postEffect.uniforms.segments.value = $kaleidoscopeSegments()
-			$postEffect.uniforms.loops.value = $kaleidoscopeLoops()
-			$postEffect.uniforms.movement.value = $kaleidoscopeMovement()
-			$postEffect.uniforms.radius.value = $kaleidoscopeRadius()
-			$postEffect.uniforms.rotation.value = $kaleidoscopeRotation()
-		}
+		webglContext.persistance.uniforms.uvTransformMatrix.value = uvTransformMatrix
+
+		if (!webglContext.postEffect) return
+
+		webglContext.postEffect.uniforms.squeeze.value = $kaleidoscopeSqueeze()
+		webglContext.postEffect.uniforms.segments.value = $kaleidoscopeSegments()
+		webglContext.postEffect.uniforms.loops.value = $kaleidoscopeLoops()
+		webglContext.postEffect.uniforms.movement.value = $kaleidoscopeMovement()
+		webglContext.postEffect.uniforms.radius.value = $kaleidoscopeRadius()
+		webglContext.postEffect.uniforms.rotation.value = $kaleidoscopeRotation()
 	})
 </script>

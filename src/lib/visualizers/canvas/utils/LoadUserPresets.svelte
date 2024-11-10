@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
-	import { getVisualizerContext } from '../../contexts/visualizer'
+	import { getVisualizerContext } from '../../contexts/visualizer.svelte'
 	import type { CurrentControlConfigs } from '../../controls/types/presets'
 	import Signal from '../../controls/library/signals/Signal'
 	import type { ControlConfig, ControlId, SignalConfig } from '../../controls/types'

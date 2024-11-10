@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer'
+	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import type ColorControl from '$lib/visualizers/controls/library/controls/ColorControl'
 	import type { ColorControlConfig, ControlId } from '$lib/visualizers/controls/types'
 	import { denormalizeRgb } from '$lib/visualizers/utils/ColorFunctions'
