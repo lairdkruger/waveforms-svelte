@@ -9,11 +9,11 @@
 
 	let { groupId, folderExpanded }: Props = $props()
 
-	const { controls } = getVisualizerContext()
+	let visualizerContext = getVisualizerContext()
 
-	const group = controls.controls.groups[groupId]
-	const controlsIds = Object.keys(controls.controls.controls)
-	const relevantControlsIds = controls.getControlsInGroup(controlsIds, group.id)
+	let group = visualizerContext.controls.controls.groups[groupId]
+	let controlsIds = Object.keys(visualizerContext.controls.controls.controls)
+	let relevantControlsIds = visualizerContext.controls.getControlsInGroup(controlsIds, group.id)
 </script>
 
 <div class="group">

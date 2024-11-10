@@ -13,8 +13,8 @@
 
 	let { controlId, folderExpanded }: Props = $props()
 
-	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId)
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId)
 </script>
 
 <div id={control.id} class="wrapper">

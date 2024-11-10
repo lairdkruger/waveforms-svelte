@@ -36,22 +36,22 @@
 		lineThickness
 	}: Props = $props()
 
-	const webglContext = getWebglContext()
+	let webglContext = getWebglContext()
 
 	// Derived
 	let isVisible = $derived(index < clones())
-	const cloneIndex = index + 1
+	let cloneIndex = index + 1
 
 	// Components
-	const geometry = new MeshLineGeometry()
-	const materialColor = new Color(...colorHistory[0])
+	let geometry = new MeshLineGeometry()
+	let materialColor = new Color(...colorHistory[0])
 	// @ts-ignore
-	const material = new MeshLineMaterial({
+	let material = new MeshLineMaterial({
 		color: materialColor,
 		lineWidth: lineThickness(),
 		sizeAttenuation: true
 	})
-	const mesh = new MeshLine(geometry, material)
+	let mesh = new MeshLine(geometry, material)
 
 	function updateLinePoints() {
 		if (flowShape()) {

@@ -21,36 +21,37 @@
 
 	let { controlId, colorStopId }: Props = $props()
 
-	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId) as ColorControl
-	const config = control.config as ColorControlConfig
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId) as ColorControl
 
 	let initialHue = $state(
-		rgbToHsv(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)[0]
+		rgbToHsv(control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)[0]
 	)
 
 	let cssColor = $state(
-		denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+		denormalizeRgb(
+			control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
+		)
 	)
 
 	// Dimensions
-	const width = 80
-	const handleWidth = 8
+	let width = 80
+	let handleWidth = 8
 
-	const trackWidth = width - handleWidth
+	let trackWidth = width - handleWidth
 
-	const position = spring(map(initialHue, 0, 360, 0, trackWidth))
+	let position = spring(map(initialHue, 0, 360, 0, trackWidth))
 	position.subscribe((value) => updateControl(value))
 
 	function updateControl(value: number) {
-		const colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
+		let colorStop = control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!
 
-		const hue = clamp(map(value, 0, trackWidth, 0, 360), 0, 360)
-		const saturation = rgbToHsv(denormalizeRgb(colorStop.color))[1]
-		const lightness = rgbToHsv(denormalizeRgb(colorStop.color))[2]
+		let hue = clamp(map(value, 0, trackWidth, 0, 360), 0, 360)
+		let saturation = rgbToHsv(denormalizeRgb(colorStop.color))[1]
+		let lightness = rgbToHsv(denormalizeRgb(colorStop.color))[2]
 
-		const rgb = hsvToRgb([hue, saturation, lightness])
-		const normalizedRgb = normalizeRgb(rgb)
+		let rgb = hsvToRgb([hue, saturation, lightness])
+		let normalizedRgb = normalizeRgb(rgb)
 
 		colorStop.color = normalizedRgb
 
@@ -58,12 +59,12 @@
 		cssColor = denormalizeRgb(colorStop.color)
 	}
 
-	const handlePointerDown = (event: MouseEvent) => {
-		const target = event.target as HTMLDivElement
-		const { width, left } = target.getBoundingClientRect()
+	let handlePointerDown = (event: MouseEvent) => {
+		let target = event.target as HTMLDivElement
+		let { width, left } = target.getBoundingClientRect()
 
-		const x = clamp(event.clientX - left, handleWidth / 2, width - handleWidth / 2)
-		const coord = x - handleWidth / 2
+		let x = clamp(event.clientX - left, handleWidth / 2, width - handleWidth / 2)
+		let coord = x - handleWidth / 2
 
 		position.set(coord)
 	}

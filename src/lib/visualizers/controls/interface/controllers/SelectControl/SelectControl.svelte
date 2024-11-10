@@ -14,14 +14,11 @@
 
 	const visualizerContext = getVisualizerContext()
 	let control = visualizerContext.controls.getControl(controlId) as SelectControl
-	let config = control.config
-	let hasSignalInput = $derived(config.signal !== undefined)
+	let hasSignalInput = $derived(control.config.signal !== undefined)
 
 	const handleChange = (event: Event) => {
 		const target = event.target as HTMLSelectElement
-		config.defaultValue = target.value
-
-		console.log('SelectControl handleChange', config.defaultValue)
+		control.config.defaultValue = target.value
 	}
 </script>
 
@@ -38,14 +35,14 @@
 
 	<div class="g-controller">
 		<div class="select">
-			<span class="cpHeading">{config.defaultValue}</span>
+			<span class="cpHeading">{control.config.defaultValue}</span>
 			<div class="dropdownIcon">
 				<DropdownIcon />
 			</div>
 
 			<select
 				class="selectInput"
-				value={config.defaultValue}
+				value={control.config.defaultValue}
 				onchange={handleChange}
 				disabled={hasSignalInput}
 			>

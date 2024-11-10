@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 
-	const { controls, audioAnalyzer } = getVisualizerContext()
+	let visualizerContext = getVisualizerContext()
 
-	controls.createPreset(
+	visualizerContext.controls.createPreset(
 		'preset1',
 		{
 			label: 'Preset 1'

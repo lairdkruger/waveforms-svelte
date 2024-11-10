@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 
-	const { controls, midi } = getVisualizerContext()
-	const midiListening = midi.listening
-	const preset = controls.presets.preset
-	const presets = controls.presets.presets
+	let visualizerContext = getVisualizerContext()
+	let midiListening = visualizerContext.midi.listening
+	let preset = visualizerContext.controls.presets.preset
+	let presets = visualizerContext.controls.presets.presets
 	let presetConfig = presets[preset]
 	let midiBinding = presetConfig.midiBinding
 
@@ -28,13 +28,13 @@
 	onclick={async () => {
 		// Toggle listening off if already listening
 		if (midiListening) {
-			midi.cancelListenForMidiInput()
+			visualizerContext.midi.cancelListenForMidiInput()
 			return
 		}
 
-		const midiSignalId = await midi.listenForMidiInput()
+		let midiSignalId = await visualizerContext.midi.listenForMidiInput()
 		if (!midiSignalId) return null
-		if (!midi.signals[midiSignalId]) return null
+		if (!visualizerContext.midi.signals[midiSignalId]) return null
 
 		midiBinding = midiSignalId
 	}}

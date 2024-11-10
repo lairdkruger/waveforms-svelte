@@ -9,17 +9,17 @@
 	import CameraMovement from '../../camera/CameraMovement.svelte'
 	import BetaformPresets from './BetaformPresets.svelte'
 
-	const { audioAnalyzer } = getVisualizerContext()
+	let visualizerContext = getVisualizerContext()
 
-	setContext('betaformVisualizer', { audioAnalyzer: audioAnalyzer })
+	setContext('betaformVisualizer', { audioAnalyzer: visualizerContext.audioAnalyzer })
 
-	const webglContext = getWebglContext()
+	let webglContext = getWebglContext()
 
-	const waveformGroup = new Group()
+	let waveformGroup = new Group()
 
 	webglContext.onFrame(() => {
-		audioAnalyzer.analyzeSpectrum(1)
-		audioAnalyzer.analyzeWaveform()
+		visualizerContext.audioAnalyzer.analyzeSpectrum(1)
+		visualizerContext.audioAnalyzer.analyzeWaveform()
 	})
 
 	onMount(() => {

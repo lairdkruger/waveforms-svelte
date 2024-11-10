@@ -10,13 +10,13 @@
 
 	let { folderId }: Props = $props()
 
-	const { controls } = getVisualizerContext()
-	const folder = controls.controls.folders[folderId]
-	const groups = controls.controls.groups
-	const relevantGroups = Object.entries(groups).filter(([, group]) => group.folder === folder.id)
+	let visualizerContext = getVisualizerContext()
+	let folder = visualizerContext.controls.controls.folders[folderId]
+	let groups = visualizerContext.controls.controls.groups
+	let relevantGroups = Object.entries(groups).filter(([, group]) => group.folder === folder.id)
 
 	// Only expand the first folder by default
-	let expanded = $state(folder.id === Object.keys(controls.controls.folders)[0])
+	let expanded = $state(folder.id === Object.keys(visualizerContext.controls.controls.folders)[0])
 </script>
 
 <div class="folder">

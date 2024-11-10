@@ -1,29 +1,29 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
-	import { onDestroy } from 'svelte'
+	import { onDestroy, onMount } from 'svelte'
 	import { BoxGeometry, MeshBasicMaterial, type Group, Mesh, Color } from 'three'
 
 	export let parent: Group
 	export let range: '' | 'bass' | 'mids' | 'highs'
 
-	const { controls, audioAnalyzer } = getVisualizerContext()
-	const { onFrame } = getWebglContext()
-	const title = range.charAt(0).toUpperCase() + range.slice(1)
+	let visualizerContext = getVisualizerContext()
+	let { onFrame } = getWebglContext()
+	let title = range.charAt(0).toUpperCase() + range.slice(1)
 
-	const geometry = new BoxGeometry(1, 1, 1)
-	const materialColor = new Color(0x000000)
-	const material = new MeshBasicMaterial({ color: materialColor, transparent: true })
-	const mesh = new Mesh(geometry, material)
+	let geometry = new BoxGeometry(1, 1, 1)
+	let materialColor = new Color(0x000000)
+	let material = new MeshBasicMaterial({ color: materialColor, transparent: true })
+	let mesh = new Mesh(geometry, material)
 
-	const positionX = {
+	let positionX = {
 		'': 0,
 		bass: -2,
 		mids: 0,
 		highs: 1.75
 	}
 
-	const scaleX = {
+	let scaleX = {
 		'': 5,
 		bass: 1.5,
 		mids: 1,
@@ -33,15 +33,15 @@
 	mesh.position.set(positionX[range], 0, 0)
 	mesh.scale.set(scaleX[range], 1, 1)
 
-	const folder = controls.createFolder(`${range}BoxFolder`, {
+	let folder = visualizerContext.controls.createFolder(`${range}BoxFolder`, {
 		label: `${title === '' ? 'Volume' : title} Box`
 	})
-	const group = controls.createGroup(`${range}BoxGroup`, {
+	let group = visualizerContext.controls.createGroup(`${range}BoxGroup`, {
 		folder: folder,
 		label: `${title === '' ? 'Volume' : title} Box`
 	})
 
-	const enabled = controls.createBooleanControl(
+	let enabled = visualizerContext.controls.createBooleanControl(
 		`${range}BoxEnabled`,
 		{
 			label: 'Enabled',
@@ -50,27 +50,28 @@
 		{ defaultValue: 1 }
 	)
 
-	const size = controls.createNumberControl(
+	let size = visualizerContext.controls.createNumberControl(
 		`${range}BoxSize`,
 		{ label: 'Size', group: group },
 		{
 			defaultValue: 2,
 			range: [1, 2],
-			signal: audioAnalyzer.signals[`get${title}Volume`]()
+			signal: visualizerContext.audioAnalyzer.signals[`get${title}Volume`]()
 		}
 	)
 
-	const opacity = controls.createNumberControl(
+	let opacity = visualizerContext.controls.createNumberControl(
 		`${range}BoxOpacity`,
 		{ label: 'Opacity', group: group },
 		{
 			defaultValue: 0.25,
 			range: [0.25, 0.5],
-			signal: audioAnalyzer.signals[`get${title === '' ? 'Volume' : title}Peaked`]()
+			signal:
+				visualizerContext.audioAnalyzer.signals[`get${title === '' ? 'Volume' : title}Peaked`]()
 		}
 	)
 
-	const color = controls.createColorControl(
+	let color = visualizerContext.controls.createColorControl(
 		`${range}BoxColor`,
 		{ label: 'Color', group: group },
 		{
@@ -79,22 +80,24 @@
 				{ id: '1', coord: 1, color: [1, 1, 1] }
 			],
 			defaultValue: 0.5,
-			signal: audioAnalyzer.signals[`get${title}Volume`]()
+			signal: visualizerContext.audioAnalyzer.signals[`get${title}Volume`]()
 		}
 	)
 
 	onFrame(() => {
-		if ($enabled()) {
-			mesh.scale.set(scaleX[range], $size(), 1)
-			mesh.material.opacity = $opacity()
-			materialColor.setRGB(...$color())
+		if (enabled()) {
+			mesh.scale.set(scaleX[range], size(), 1)
+			mesh.material.opacity = opacity()
+			materialColor.setRGB(...color())
 			mesh.material.color.set(materialColor)
 		}
 	})
 
-	$: if (parent) {
-		parent.add(mesh)
-	}
+	onMount(() => {
+		if (parent) {
+			parent.add(mesh)
+		}
+	})
 
 	onDestroy(() => {
 		parent.remove(mesh)

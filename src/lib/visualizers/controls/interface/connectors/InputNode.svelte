@@ -12,10 +12,8 @@
 
 	let visualizerContext = getVisualizerContext()
 	let control = visualizerContext.controls.getControl(controlId)
-	let config = control.config
 
-	let draggedSignal = visualizerContext.controls.draggedSignal
-	let hasSignalInput = $derived(config.signal ? true : false)
+	let hasSignalInput = $derived(control.config.signal ? true : false)
 </script>
 
 <div
@@ -32,11 +30,11 @@
 	}}
 	onpointerup={() => {
 		// Set controller input to signal function
-		config.signal = visualizerContext.controls.draggedSignal ?? undefined
+		control.config.signal = visualizerContext.controls.draggedSignal ?? undefined
 	}}
 	onpointerdown={() => {
 		if (hasSignalInput) {
-			config.signal = undefined
+			control.config.signal = undefined
 		}
 	}}
 >

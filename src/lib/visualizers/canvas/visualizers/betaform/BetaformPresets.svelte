@@ -2,10 +2,10 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import Signal from '$lib/visualizers/controls/library/signals/Signal.svelte'
 
-	const { controls, audioAnalyzer } = getVisualizerContext()
+	let visualizerContext = getVisualizerContext()
 
 	// Zen
-	controls.createPreset(
+	visualizerContext.controls.createPreset(
 		'zen',
 		{
 			label: 'Zen'
@@ -32,8 +32,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'in',
 						behaviour: 'straight'
@@ -62,7 +62,7 @@
 	)
 
 	// Woofer
-	controls.createPreset(
+	visualizerContext.controls.createPreset(
 		'woofer',
 		{
 			label: 'Woofer'
@@ -84,7 +84,7 @@
 				signal: new Signal(
 					'audio',
 					'getVolumePeaked',
-					audioAnalyzer.signalFunctions['getVolumePeaked'],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolumePeaked'],
 					[() => 0, () => 1]
 				)
 			},
@@ -101,8 +101,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'in',
 						behaviour: 'straight'
@@ -126,8 +126,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'in',
 						behaviour: 'straight'
@@ -140,8 +140,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'in',
 						behaviour: 'straight'
@@ -154,8 +154,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'in',
 						behaviour: 'straight'
@@ -178,8 +178,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'out',
 						behaviour: 'straight'
@@ -193,7 +193,7 @@
 	)
 
 	// Kaleido
-	controls.createPreset(
+	visualizerContext.controls.createPreset(
 		'kaleido',
 		{
 			label: 'Kaleido'
@@ -207,8 +207,8 @@
 				signal: new Signal(
 					'audio',
 					'getBassVolume',
-					audioAnalyzer.signalFunctions['getBassVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakBassVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getBassVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakBassVolume']],
 					{
 						ease: 'in',
 						behaviour: 'straight'
@@ -228,8 +228,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'in',
 						behaviour: 'straight'
@@ -250,8 +250,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'in',
 						behaviour: 'straight'
@@ -264,8 +264,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'linear',
 						behaviour: 'straight'
@@ -278,8 +278,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'linear',
 						behaviour: 'straight'
@@ -292,8 +292,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'linear',
 						behaviour: 'straight'
@@ -316,8 +316,8 @@
 				signal: new Signal(
 					'audio',
 					'getBassVolume',
-					audioAnalyzer.signalFunctions['getBassVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakBassVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getBassVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakBassVolume']],
 					{
 						ease: 'linear',
 						behaviour: 'straight'
@@ -330,8 +330,8 @@
 				signal: new Signal(
 					'audio',
 					'getVolume',
-					audioAnalyzer.signalFunctions['getVolume'],
-					[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+					visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+					[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 					{
 						ease: 'out',
 						behaviour: 'loop'

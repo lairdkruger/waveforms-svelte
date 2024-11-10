@@ -5,17 +5,14 @@
 	import type { PresetId } from '../../types/presets'
 	import { onMount } from 'svelte'
 
-	const { controls } = getVisualizerContext()
+	let visualizerContext = getVisualizerContext()
 
-	const presets = controls.presets.presets
-	const currentPresetId = controls.presets.preset
-
-	const handleChange = (event: Event) => {
+	let handleChange = (event: Event) => {
 		// Casts required
-		const element = event.target as HTMLSelectElement
-		const presetId = element.value as PresetId
+		let element = event.target as HTMLSelectElement
+		let presetId = element.value as PresetId
 		// Update controls state
-		controls.changePreset(presetId)
+		visualizerContext.controls.changePreset(presetId)
 	}
 
 	// Listen for midi events as these can also be used to select presets
@@ -24,14 +21,16 @@
 
 		window.addEventListener('midiMessage', (event: Event) => {
 			// @ts-ignore
-			const { midiSignalId, value } = event.detail
+			let { midiSignalId, value } = event.detail
 			if (value !== 1) return
 
 			// Search the presets objects for a preset that has a midi binding currently matching the midiControlId
 			// If so, change to that preset
-			for (const [presetId, preset] of Object.entries(presets)) {
+			for (let [presetId, preset] of Object.entries(
+				visualizerContext.controls.presets.presets
+			)) {
 				if (preset.midiBinding === midiSignalId) {
-					controls.changePreset(presetId)
+					visualizerContext.controls.changePreset(presetId)
 				}
 			}
 		})
@@ -41,14 +40,23 @@
 <div class="wrapper">
 	<div class="selector">
 		<div class="dropdown">
-			<span class="cpHeading">{presets[currentPresetId].options.label}</span>
+			<span class="cpHeading"
+				>{visualizerContext.controls.presets.presets[visualizerContext.controls.presets.preset]
+					.options.label}</span
+			>
 			<div class="dropdownIcon">
 				<DropdownIcon />
 			</div>
 		</div>
 
-		<select class="select" value={presets[currentPresetId].id} on:change={handleChange}>
-			{#each Object.entries(presets) as [presetId, preset] (presetId)}
+		<select
+			class="select"
+			value={visualizerContext.controls.presets.presets[
+				visualizerContext.controls.presets.preset
+			].id}
+			onchange={handleChange}
+		>
+			{#each Object.entries(visualizerContext.controls.presets.presets) as [presetId, preset] (presetId)}
 				<option value={preset.id}>
 					{preset.options?.label}
 				</option>

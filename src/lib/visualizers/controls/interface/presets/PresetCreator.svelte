@@ -5,9 +5,9 @@
 	import TextInput from '$lib/forms/inputs/TextInput.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 
-	const visualizerSlug = $page.params.slug
+	let visualizerSlug = $page.params.slug
 
-	const { controls } = getVisualizerContext()
+	let visualizerContext = getVisualizerContext()
 
 	$: formData = $page.form?.id === 'presetCreator' ? $page.form : undefined
 	$: disabled = formData?.success
@@ -29,8 +29,8 @@
 			formData.append('visualizerSlug', visualizerSlug)
 
 			// Format controls schema into DB friendly format
-			const controlConfigs = controls.extractCurrentControlConfigs()
-			const controlConfigsString = JSON.stringify(controlConfigs)
+			let controlConfigs = visualizerContext.controls.extractCurrentControlConfigs()
+			let controlConfigsString = JSON.stringify(controlConfigs)
 			formData.append('controlsSchema', controlConfigsString)
 
 			return async ({ update }) => {

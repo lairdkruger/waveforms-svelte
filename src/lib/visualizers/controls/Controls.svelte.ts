@@ -293,11 +293,11 @@ export default class Controls {
 
 	// Handle changing of presets
 	changePreset(presetId: PresetId) {
-		const presets = this.presets.presets
-		const preset = presets[presetId]
+		let presets = this.presets.presets
+		let preset = presets[presetId]
 
 		// Loop through controls
-		for (const [controlId, control] of Object.entries(this.controls.controls)) {
+		for (let [controlId, control] of Object.entries(this.controls.controls)) {
 			// Fetch corresponding preset config
 			const presetConfig = preset?.configs[controlId]
 

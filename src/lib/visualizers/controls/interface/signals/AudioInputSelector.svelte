@@ -3,7 +3,7 @@
 	import type { AudioInput } from '$lib/visualizers/audio/AudioAnalyzer.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 
-	const visualizerContext = getVisualizerContext()
+	let visualizerContext = getVisualizerContext()
 	let value: AudioInput
 
 	const handleChange = () => {
@@ -23,7 +23,7 @@
 			</div>
 		</div>
 
-		<select id="audioSelect" class="select" bind:value on:change={handleChange}>
+		<select id="audioSelect" class="select" bind:value onchange={handleChange}>
 			<option value="microphone">Microphone</option>
 			<option value="browser">Browser</option>
 		</select>

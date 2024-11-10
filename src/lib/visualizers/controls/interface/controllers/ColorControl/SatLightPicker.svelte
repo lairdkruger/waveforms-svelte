@@ -21,48 +21,55 @@
 
 	let { controlId, colorStopId }: Props = $props()
 
-	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId) as ColorControl
-	const config = control.config as ColorControlConfig
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId) as ColorControl
 
 	let initialSat = $state(
 		rgbToHsv(
-			denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+			denormalizeRgb(
+				control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
+			)
 		)[1]
 	)
 	let initialLight = $state(
 		rgbToHsv(
-			denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+			denormalizeRgb(
+				control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
+			)
 		)[2]
 	)
 
 	let cssColor = $state(
-		denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+		denormalizeRgb(
+			control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
+		)
 	)
 
 	let hsl = $state(
 		rgbToHsv(
-			denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+			denormalizeRgb(
+				control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
+			)
 		)
 	)
 
 	// Dimensions
-	const width = 80
-	const height = 80
-	const handleWidth = 8
-	const handleHeight = 8
+	let width = 80
+	let height = 80
+	let handleWidth = 8
+	let handleHeight = 8
 
-	const trackWidth = width - handleWidth
-	const trackHeight = height - handleHeight
+	let trackWidth = width - handleWidth
+	let trackHeight = height - handleHeight
 
 	function updateControl(sat: number, light: number) {
-		const saturation = map(sat, 0, trackWidth, 0, 100)
-		const lightness = 100 - map(light, 0, trackHeight, 0, 100)
+		let saturation = map(sat, 0, trackWidth, 0, 100)
+		let lightness = 100 - map(light, 0, trackHeight, 0, 100)
 
-		const rgb = hsvToRgb([hsl[0], saturation, lightness])
-		const normalizedRgb = normalizeRgb(rgb)
+		let rgb = hsvToRgb([hsl[0], saturation, lightness])
+		let normalizedRgb = normalizeRgb(rgb)
 
-		const colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
+		let colorStop = control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!
 		colorStop.color = normalizedRgb
 
 		// Sync local states
@@ -70,21 +77,20 @@
 		hsl = rgbToHsv(denormalizeRgb(colorStop.color))
 	}
 
-	const positionSat = spring(map(initialSat, 0, 100, 0, trackWidth))
-	const positionLight = spring(map(initialLight, 0, 100, trackHeight, 0))
+	let positionSat = spring(map(initialSat, 0, 100, 0, trackWidth))
+	let positionLight = spring(map(initialLight, 0, 100, trackHeight, 0))
 
-	// TODO: might bug
 	positionSat.subscribe((value) => updateControl(value, get(positionLight)))
 	positionLight.subscribe((value) => updateControl(get(positionSat), value))
 
-	const handlePointerDown = (event: MouseEvent) => {
-		const target = event.target as HTMLDivElement
-		const { width, height, left, top } = target.getBoundingClientRect()
+	let handlePointerDown = (event: MouseEvent) => {
+		let target = event.target as HTMLDivElement
+		let { width, height, left, top } = target.getBoundingClientRect()
 
-		const x = clamp(event.clientX - left, handleWidth / 2, width - handleWidth / 2)
-		const y = clamp(event.clientY - top, handleWidth / 2, height - handleHeight / 2)
+		let x = clamp(event.clientX - left, handleWidth / 2, width - handleWidth / 2)
+		let y = clamp(event.clientY - top, handleWidth / 2, height - handleHeight / 2)
 
-		const coord = {
+		let coord = {
 			x: x - handleWidth / 2,
 			y: y - handleHeight / 2
 		}

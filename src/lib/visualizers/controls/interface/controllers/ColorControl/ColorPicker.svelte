@@ -11,10 +11,10 @@
 	export let controlId: ControlId
 	export let colorStopId: string
 
-	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId) as ColorControl
-	const config = control.config as ColorControlConfig
-	const colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId) as ColorControl
+	let config = control.config as ColorControlConfig
+	let colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
 
 	function removeColor() {
 		// Remove color from gradient (unless it's the last one)
@@ -32,7 +32,7 @@
 
 		<button
 			class="remove"
-			on:click={() => {
+			onclick={() => {
 				removeColor()
 			}}
 		>

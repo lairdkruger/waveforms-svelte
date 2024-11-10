@@ -4,8 +4,8 @@
 	import { page } from '$app/stores'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 
-	const { controls } = getVisualizerContext()
-	const presetId = controls.presets.preset
+	let visualizerContext = getVisualizerContext()
+	let presetId = visualizerContext.controls.presets.preset
 
 	$: formData = $page.form?.id === 'presetDeleter' ? $page.form : undefined
 	$: disabled = formData?.success
@@ -24,7 +24,7 @@
 			submitted = true
 
 			// Append additional form data
-			formData.append('presetId', $presetId)
+			formData.append('presetId', presetId)
 
 			return async ({ update }) => {
 				await update()

@@ -2,8 +2,8 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import Folder from './Folder.svelte'
 
-	const { controls } = getVisualizerContext()
-	const folders = controls.controls.folders
+	let visualizerContext = getVisualizerContext()
+	let folders = visualizerContext.controls.controls.folders
 </script>
 
 <div class="panel">

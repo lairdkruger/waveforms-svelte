@@ -9,18 +9,18 @@
 	import NoiseSphere from '../../objects/NoiseSphere.svelte'
 	import StormPresets from './StormPresets.svelte'
 
-	const { audioAnalyzer } = getVisualizerContext()
-	audioAnalyzer.changeSmoothing(0.96)
+	let visualizerContext = getVisualizerContext()
+	visualizerContext.audioAnalyzer.changeSmoothing(0.96)
 
-	setContext('stormVisualizer', { audioAnalyzer: audioAnalyzer })
+	setContext('stormVisualizer', { audioAnalyzer: visualizerContext.audioAnalyzer })
 
-	const webglContext = getWebglContext()
+	let webglContext = getWebglContext()
 
-	const stormGroup = new Group()
+	let stormGroup = new Group()
 
 	webglContext.onFrame(() => {
-		audioAnalyzer.analyzeSpectrum(1)
-		audioAnalyzer.analyzeWaveform()
+		visualizerContext.audioAnalyzer.analyzeSpectrum(1)
+		visualizerContext.audioAnalyzer.analyzeWaveform()
 	})
 
 	onMount(() => {

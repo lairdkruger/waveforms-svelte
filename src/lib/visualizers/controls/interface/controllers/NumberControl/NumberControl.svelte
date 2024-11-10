@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
-	import type { ControlId, NumberControlConfig } from '$lib/visualizers/controls/types'
-	import { get, type Writable } from 'svelte/store'
+	import type { ControlId } from '$lib/visualizers/controls/types'
+	import { get } from 'svelte/store'
 	import ValidNumberInput from './ValidNumberInput.svelte'
 	import type NumberControl from '$lib/visualizers/controls/library/controls/NumberControl.svelte'
 	import { onDestroy, onMount } from 'svelte'
@@ -20,13 +20,11 @@
 
 	const uiContext = getUiContext()
 
-	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId) as NumberControl
-	const config = control.config as NumberControlConfig
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId) as NumberControl
 
-	let hasActiveSignal = $derived(config.signal !== undefined)
-
-	let initialValue = config.defaultValue
+	let hasActiveSignal = $derived(control.config.signal !== undefined)
+	let initialValue = control.config.defaultValue
 
 	// Dimensions
 	const width = 72
@@ -37,14 +35,26 @@
 
 	// Tie defaultValue to position (instant preset changes)
 	$effect(() => {
-		let valueMapped = map(config.defaultValue, config.range[0], config.range[1], 0, trackWidth)
+		let valueMapped = map(
+			control.config.defaultValue,
+			control.config.range[0],
+			control.config.range[1],
+			0,
+			trackWidth
+		)
 		position.set(valueMapped, { hard: true })
 	})
 
 	// Tie position to control defaultValue
 	$effect(() => {
-		let valueMapped = map($position, 0, trackWidth, config.range[0], config.range[1])
-		let valueClamped = clamp(valueMapped, config.range[0], config.range[1])
+		let valueMapped = map(
+			$position,
+			0,
+			trackWidth,
+			control.config.range[0],
+			control.config.range[1]
+		)
+		let valueClamped = clamp(valueMapped, control.config.range[0], control.config.range[1])
 
 		control.setDefaultValue(valueClamped)
 	})
@@ -84,7 +94,7 @@
 
 	<div class="controller">
 		<ValidNumberInput
-			controlValue={config.range[0]}
+			controlValue={control.config.range[0]}
 			onValidated={(value) => control.setLowerRange(value)}
 			disabled={control.settings?.rangeReadOnly}
 		/>
@@ -107,14 +117,14 @@
 					<div class="handleBar"></div>
 					<ValidNumberInput
 						isHandle={true}
-						controlValue={config.defaultValue}
+						controlValue={control.config.defaultValue}
 						onValidated={(value) => control.setDefaultValue(value)}
 					/>
 				</div>
 			</div>
 		</div>
 		<ValidNumberInput
-			controlValue={config.range[1]}
+			controlValue={control.config.range[1]}
 			onValidated={(value) => control.setUpperRange(value)}
 			disabled={control.settings?.rangeReadOnly}
 		/>

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
-	import type { ControlId, BooleanControlConfig } from '$lib/visualizers/controls/types'
-	import type { Writable } from 'svelte/store'
+	import type { ControlId } from '$lib/visualizers/controls/types'
 	import InputNode from '../../connectors/InputNode.svelte'
 	import MidiSignalButton from '../../midi/MidiSignalButton.svelte'
 
@@ -11,11 +10,10 @@
 
 	let { controlId }: Props = $props()
 
-	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId)
-	const config = control.config as BooleanControlConfig
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId)
 
-	let hasActiveSignal = $derived(config.signal !== undefined)
+	let hasActiveSignal = $derived(control.config.signal !== undefined)
 </script>
 
 <div class="g-control">
@@ -36,11 +34,11 @@
 					visibility: {hasActiveSignal ? 'hidden' : 'visible'}
 				"
 			onclick={() => {
-				const value = config.defaultValue === 1 ? 0 : 1
-				config.defaultValue = value
+				let value = control.config.defaultValue === 1 ? 0 : 1
+				control.config.defaultValue = value
 			}}
 		>
-			{#if config.defaultValue === 1}
+			{#if control.config.defaultValue === 1}
 				<div class="checkboxInner"></div>
 			{/if}
 		</button>

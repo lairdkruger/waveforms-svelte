@@ -8,10 +8,10 @@
 	import { getUiContext } from '$lib/contexts/ui.svelte'
 	import { onMount } from 'svelte'
 
-	const uiContext = getUiContext()
+	let uiContext = getUiContext()
 
 	let controlPanel: HTMLDivElement | null = $state(null)
-	const visualizerContext = getVisualizerContext()
+	let visualizerContext = getVisualizerContext()
 
 	onMount(() => {
 		visualizerContext.controls.controlPanelRef = controlPanel

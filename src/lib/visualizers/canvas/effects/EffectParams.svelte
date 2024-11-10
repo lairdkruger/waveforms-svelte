@@ -5,19 +5,21 @@
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { Matrix3 } from 'three'
 
-	const webglContext = getWebglContext()
-	const { controls, audioAnalyzer } = getVisualizerContext()
+	let webglContext = getWebglContext()
+	let visualizerContext = getVisualizerContext()
 
 	// Kaleidoscope
-	const persistanceFolder = controls.createFolder('persistance', { label: 'Persistance' })
-	const persistanceGroup = controls.createGroup('frames', {
+	let persistanceFolder = visualizerContext.controls.createFolder('persistance', {
+		label: 'Persistance'
+	})
+	let persistanceGroup = visualizerContext.controls.createGroup('frames', {
 		label: 'Frames',
 		folder: persistanceFolder
 	})
 
 	let uvTransformMatrix = new Matrix3()
 
-	const persistanceAmount = controls.createNumberControl(
+	let persistanceAmount = visualizerContext.controls.createNumberControl(
 		'persistanceAmount',
 		{ label: 'Persistance', group: persistanceGroup },
 		{
@@ -44,7 +46,7 @@
 		}
 	)
 
-	const persistanceScaleX = controls.createNumberControl(
+	let persistanceScaleX = visualizerContext.controls.createNumberControl(
 		'persistanceScaleX',
 		{ label: 'Scale X', group: persistanceGroup },
 		{
@@ -53,7 +55,7 @@
 		}
 	)
 
-	const persistanceScaleY = controls.createNumberControl(
+	let persistanceScaleY = visualizerContext.controls.createNumberControl(
 		'persistanceScaleY',
 		{ label: 'Scale Y', group: persistanceGroup },
 		{
@@ -62,7 +64,7 @@
 		}
 	)
 
-	const persistanceRotation = controls.createNumberControl(
+	let persistanceRotation = visualizerContext.controls.createNumberControl(
 		'persistanceRotation',
 		{ label: 'Rotation', group: persistanceGroup },
 		{
@@ -71,7 +73,7 @@
 		}
 	)
 
-	const persistanceTargetRadius = controls.createNumberControl(
+	let persistanceTargetRadius = visualizerContext.controls.createNumberControl(
 		'persistanceTargetRadius',
 		{ label: 'Target Radius', group: persistanceGroup },
 		{
@@ -81,7 +83,7 @@
 		{ transformer: (value) => value / 1000 }
 	)
 
-	const persistanceTargetAngle = controls.createNumberControl(
+	let persistanceTargetAngle = visualizerContext.controls.createNumberControl(
 		'persistanceTargetAngle',
 		{ label: 'Target Angle', group: persistanceGroup },
 		{
@@ -92,13 +94,15 @@
 	)
 
 	// Kaleidoscope
-	const kaleidoscopeFolder = controls.createFolder('kaleidoscope', { label: 'Kaleidoscope' })
-	const kaleidoscopeGroup = controls.createGroup('kaleidoscope', {
+	let kaleidoscopeFolder = visualizerContext.controls.createFolder('kaleidoscope', {
+		label: 'Kaleidoscope'
+	})
+	let kaleidoscopeGroup = visualizerContext.controls.createGroup('kaleidoscope', {
 		label: 'Kaleidoscope',
 		folder: kaleidoscopeFolder
 	})
 
-	const kaleidoscopeSqueeze = controls.createBooleanControl(
+	let kaleidoscopeSqueeze = visualizerContext.controls.createBooleanControl(
 		'kaleidoscopeSqueeze',
 		{ label: 'Squeeze', group: kaleidoscopeGroup },
 		{
@@ -106,7 +110,7 @@
 		}
 	)
 
-	const kaleidoscopeSegments = controls.createNumberControl(
+	let kaleidoscopeSegments = visualizerContext.controls.createNumberControl(
 		'kaleidoscopeSegments',
 		{ label: 'Segments', group: kaleidoscopeGroup },
 		{
@@ -118,7 +122,7 @@
 		}
 	)
 
-	const kaleidoscopeLoops = controls.createNumberControl(
+	let kaleidoscopeLoops = visualizerContext.controls.createNumberControl(
 		'kaleidoscopeLoops',
 		{ label: 'Loops', group: kaleidoscopeGroup },
 		{
@@ -127,7 +131,7 @@
 		}
 	)
 
-	const kaleidoscopeMovement = controls.createNumberControl(
+	let kaleidoscopeMovement = visualizerContext.controls.createNumberControl(
 		'kaleidoscopeMovement',
 		{ label: 'Movement', group: kaleidoscopeGroup },
 		{
@@ -136,8 +140,8 @@
 			signal: new Signal(
 				'audio',
 				'getVolume',
-				audioAnalyzer.signalFunctions['getVolume'],
-				[() => 0, audioAnalyzer.signalFunctions['getPeakVolume']],
+				visualizerContext.audioAnalyzer.signalFunctions['getVolume'],
+				[() => 0, visualizerContext.audioAnalyzer.signalFunctions['getPeakVolume']],
 				{
 					ease: 'in',
 					behaviour: 'loop'
@@ -147,7 +151,7 @@
 		{ transformer: (value) => value * (2 * Math.PI) }
 	)
 
-	const kaleidoscopeRadius = controls.createNumberControl(
+	let kaleidoscopeRadius = visualizerContext.controls.createNumberControl(
 		'kaleidoscopeRadius',
 		{ label: 'Radius', group: kaleidoscopeGroup },
 		{
@@ -156,7 +160,7 @@
 		}
 	)
 
-	const kaleidoscopeRotation = controls.createNumberControl(
+	let kaleidoscopeRotation = visualizerContext.controls.createNumberControl(
 		'kaleidoscopeRotation',
 		{ label: 'Rotation', group: kaleidoscopeGroup },
 		{
@@ -173,12 +177,12 @@
 
 		webglContext.persistance.uniforms.amount.value = persistanceAmount()
 
-		const uvScaleX = 1 + persistanceScaleX() / 1000
-		const uvScaleY = 1 + persistanceScaleY() / 1000
-		const uvRotation = persistanceRotation() / 100
+		let uvScaleX = 1 + persistanceScaleX() / 1000
+		let uvScaleY = 1 + persistanceScaleY() / 1000
+		let uvRotation = persistanceRotation() / 100
 
-		const targetX = Math.cos(persistanceTargetAngle()) * persistanceTargetRadius()
-		const targetY = Math.sin(persistanceTargetAngle()) * persistanceTargetRadius()
+		let targetX = Math.cos(persistanceTargetAngle()) * persistanceTargetRadius()
+		let targetY = Math.sin(persistanceTargetAngle()) * persistanceTargetRadius()
 
 		uvTransformMatrix.setUvTransform(targetX, targetY, uvScaleX, uvScaleY, uvRotation, 0.5, 0.5)
 

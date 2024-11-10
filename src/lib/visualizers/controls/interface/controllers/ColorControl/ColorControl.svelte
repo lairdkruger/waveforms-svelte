@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import type ColorControl from '$lib/visualizers/controls/library/controls/ColorControl.svelte'
-	import type {
-		ColorControlConfig,
-		ControlId,
-		ColorStop as ColorStopType
-	} from '$lib/visualizers/controls/types'
+	import type { ControlId, ColorStop as ColorStopType } from '$lib/visualizers/controls/types'
 	import { get } from 'svelte/store'
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { DragGesture } from '@use-gesture/vanilla'
@@ -26,8 +22,8 @@
 
 	const uiContext = getUiContext()
 
-	let { controls } = getVisualizerContext()
-	let control = controls.getControl(controlId) as ColorControl
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId) as ColorControl
 	let config = control.config
 
 	let hasActiveSignal = $derived(config.signal !== undefined)

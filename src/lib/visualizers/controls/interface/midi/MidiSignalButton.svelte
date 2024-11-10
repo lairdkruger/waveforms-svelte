@@ -7,18 +7,17 @@
 
 	let { controlId }: Props = $props()
 
-	const { controls, midi } = getVisualizerContext()
-	const control = controls.getControl(controlId)
-	const controlConfig = control.config
-	const midiListening = midi.listening
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId)
+	let midiListening = visualizerContext.midi.listening
 
-	let midiActive = $derived(controlConfig.signal?.context === 'midi')
+	let midiActive = $derived(control.config.signal?.context === 'midi')
 	let midiLabel = $derived.by(() => {
 		if (midiListening) {
 			return 'Key?'
 		} else if (midiActive) {
 			// First four characters of midi function id, without the get_
-			return controlConfig.signal?.id.slice(3, 7)
+			return control.config.signal?.id.slice(3, 7)
 		} else {
 			return 'MIDI'
 		}
@@ -26,24 +25,25 @@
 
 	// Midi events should be cancelled if signal is removed
 	$effect(() => {
-		if (!controlConfig.signal) midi.cancelListenForMidiInput()
+		if (!control.config.signal) visualizerContext.midi.cancelListenForMidiInput()
 	})
 </script>
 
 <button
 	class="wrapper"
-	class:active={controlConfig.signal?.context === 'midi'}
+	class:active={control.config.signal?.context === 'midi'}
 	onclick={async () => {
 		// Toggle listening off if already listening
 		if (midiListening) {
-			midi.cancelListenForMidiInput()
+			visualizerContext.midi.cancelListenForMidiInput()
 			return
 		}
 
-		const midiSignalId = await midi.listenForMidiInput()
+		let midiSignalId = await visualizerContext.midi.listenForMidiInput()
 		if (!midiSignalId) return null
 
-		if (midi.signals[midiSignalId]) controlConfig.signal = midi.signals[midiSignalId]
+		if (visualizerContext.midi.signals[midiSignalId])
+			control.config.signal = visualizerContext.midi.signals[midiSignalId]
 	}}
 >
 	<span class="cpLabel">{midiLabel}</span>

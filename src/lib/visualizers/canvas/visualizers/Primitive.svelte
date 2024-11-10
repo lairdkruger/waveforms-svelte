@@ -7,20 +7,20 @@
 	import AudioLine from '../objects/AudioLine.svelte'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
 
-	const { audioAnalyzer } = getVisualizerContext()
+	let visualizerContext = getVisualizerContext()
 
-	setContext('primitiveVisualizer', { audioAnalyzer: audioAnalyzer })
+	setContext('primitiveVisualizer', { audioAnalyzer: visualizerContext.audioAnalyzer })
 
-	const webglContext = getWebglContext()
+	let webglContext = getWebglContext()
 
-	const boxGroup = new Group()
-	const waveformGroup = new Group()
+	let boxGroup = new Group()
+	let waveformGroup = new Group()
 
 	waveformGroup.rotateY(Math.PI / 2)
 
 	webglContext.onFrame(() => {
-		audioAnalyzer.analyzeSpectrum(1)
-		audioAnalyzer.analyzeWaveform()
+		visualizerContext.audioAnalyzer.analyzeSpectrum(1)
+		visualizerContext.audioAnalyzer.analyzeWaveform()
 	})
 
 	onMount(() => {

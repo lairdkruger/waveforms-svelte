@@ -6,24 +6,24 @@
 
 	export let initialColor = new Color(0x000000)
 
-	const { controls } = getVisualizerContext()
-	const webglContext = getWebglContext()
+	let visualizerContext = getVisualizerContext()
+	let webglContext = getWebglContext()
 
-	const geometry = new BoxGeometry(1, 1, 1)
-	const materialColor = new Color(initialColor)
-	const material = new MeshBasicMaterial({ color: materialColor, side: BackSide })
-	const mesh = new Mesh(geometry, material)
+	let geometry = new BoxGeometry(1, 1, 1)
+	let materialColor = new Color(initialColor)
+	let material = new MeshBasicMaterial({ color: materialColor, side: BackSide })
+	let mesh = new Mesh(geometry, material)
 
 	mesh.position.set(0, 0, 0)
 	mesh.scale.set(10, 10, 10)
 
-	const folder = controls.createFolder('background', { label: 'Background' })
-	const group = controls.createGroup('background', {
+	let folder = visualizerContext.controls.createFolder('background', { label: 'Background' })
+	let group = visualizerContext.controls.createGroup('background', {
 		folder: folder,
 		label: 'Background'
 	})
 
-	const color = controls.createColorControl(
+	let color = visualizerContext.controls.createColorControl(
 		'backgroundColor',
 		{ label: 'Background Color', group: group },
 		{

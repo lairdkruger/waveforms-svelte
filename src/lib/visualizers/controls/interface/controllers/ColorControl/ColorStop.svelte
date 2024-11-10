@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import type ColorControl from '$lib/visualizers/controls/library/controls/ColorControl.svelte'
-	import type { ColorControlConfig, ControlId } from '$lib/visualizers/controls/types'
+	import type { ControlId } from '$lib/visualizers/controls/types'
 	import { denormalizeRgb } from '$lib/visualizers/utils/ColorFunctions'
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { DragGesture } from '@use-gesture/vanilla'
@@ -18,15 +18,16 @@
 
 	let { controlId, colorStopId, trackWidth }: Props = $props()
 
-	let { controls } = getVisualizerContext()
-	let control = controls.getControl(controlId) as ColorControl
-	let config = control.config
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId) as ColorControl
 
 	let initialCoord = $state(
-		config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord
+		control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord
 	)
 	let cssColor = $derived(
-		denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+		denormalizeRgb(
+			control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
+		)
 	)
 
 	let colorPickerActive = $state(false)
@@ -41,7 +42,7 @@
 	// Tie defaultValue to position (instant preset changes)
 	$effect(() => {
 		let valueMapped = map(
-			config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord,
+			control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord,
 			0,
 			1,
 			0,
@@ -55,7 +56,7 @@
 		let valueMapped = map($position, 0, width, 0, 1)
 		let valueClamped = clamp(valueMapped, 0, 1)
 
-		let colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
+		let colorStop = control.config.gradient.find((colorStop) => colorStop.id === colorStopId)!
 		colorStop.coord = valueClamped
 	})
 

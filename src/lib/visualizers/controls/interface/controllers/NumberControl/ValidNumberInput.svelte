@@ -36,8 +36,8 @@
 	{disabled}
 	step={0.1}
 	value={showCurrentValue ? controlValue : inputValue}
-	on:change={validateInput}
-	on:mousemove={cancelEvent}
-	on:focus={() => (showCurrentValue = false)}
-	on:blur={handleBlur}
+	onchange={validateInput}
+	onmousemove={cancelEvent}
+	onfocus={() => (showCurrentValue = false)}
+	onblur={handleBlur}
 />

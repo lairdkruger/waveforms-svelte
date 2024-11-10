@@ -3,11 +3,10 @@
 	import { invalidateAll } from '$app/navigation'
 	import { page } from '$app/stores'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
-	import { get } from 'svelte/store'
 
-	const { controls } = getVisualizerContext()
-	const presetId = controls.presets.preset
-	const presets = controls.presets.presets
+	let visualizerContext = getVisualizerContext()
+	let presetId = visualizerContext.controls.presets.preset
+	let presets = visualizerContext.controls.presets.presets
 
 	let presetMidiBinding = presets[presetId].midiBinding
 
@@ -28,13 +27,13 @@
 			submitted = true
 
 			// Append additional form data
-			formData.append('presetId', $presetId)
+			formData.append('presetId', presetId)
 
-			const controlConfigs = controls.extractCurrentControlConfigs()
-			const controlConfigsString = JSON.stringify(controlConfigs)
+			let controlConfigs = visualizerContext.controls.extractCurrentControlConfigs()
+			let controlConfigsString = JSON.stringify(controlConfigs)
 			formData.append('controlsSchema', controlConfigsString)
 
-			formData.append('presetMidiBinding', get(presetMidiBinding) ?? '')
+			formData.append('presetMidiBinding', presetMidiBinding ?? '')
 
 			return async ({ update }) => {
 				await update()

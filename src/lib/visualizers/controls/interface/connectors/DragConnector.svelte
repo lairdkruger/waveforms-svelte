@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
-	import { onDestroy, onMount } from 'svelte'
+	import { onDestroy } from 'svelte'
 
 	let visualizerContext = getVisualizerContext()
 

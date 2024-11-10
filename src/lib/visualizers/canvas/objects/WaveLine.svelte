@@ -16,21 +16,25 @@
 		angle: number
 	}
 
-	export let parent: Group
-	export let label: string
-	export let initialColor = new Color(0xffffff)
+	interface Props {
+		parent: Group
+		label: string
+		initialColor: Color
+	}
 
-	const { controls, audioAnalyzer } = getVisualizerContext()
-	const webglContext = getWebglContext()
+	let { parent, label, initialColor }: Props = $props()
 
-	const folder = controls.createFolder(label, { label: label })
-	const group = controls.createGroup(label, {
+	let visualizerContext = getVisualizerContext()
+	let webglContext = getWebglContext()
+
+	let folder = visualizerContext.controls.createFolder(label, { label: label })
+	let group = visualizerContext.controls.createGroup(label, {
 		folder: folder,
 		label: label
 	})
 
 	// Controls
-	const lineShape = controls.createSelectControl(
+	let lineShape = visualizerContext.controls.createSelectControl(
 		'wavelineShape',
 		{
 			label: 'Shape',
@@ -40,7 +44,7 @@
 		{ defaultValue: 'Circle' }
 	)
 
-	const lineType = controls.createSelectControl(
+	let lineType = visualizerContext.controls.createSelectControl(
 		'wavelineType',
 		{
 			label: 'Type',
@@ -50,7 +54,7 @@
 		{ defaultValue: 'Waveform' }
 	)
 
-	const lineIntensity = controls.createNumberControl(
+	let lineIntensity = visualizerContext.controls.createNumberControl(
 		'wavelineIntensity',
 		{
 			label: 'Intensity',
@@ -59,7 +63,7 @@
 		{ defaultValue: 1, range: [0, 20] }
 	)
 
-	const lineSize = controls.createNumberControl(
+	let lineSize = visualizerContext.controls.createNumberControl(
 		'wavelineSize',
 		{
 			label: 'Size',
@@ -71,7 +75,7 @@
 		}
 	)
 
-	const linePositionX = controls.createNumberControl(
+	let linePositionX = visualizerContext.controls.createNumberControl(
 		'wavelinePositionX',
 		{
 			label: 'Position X',
@@ -83,7 +87,7 @@
 		}
 	)
 
-	const linePositionY = controls.createNumberControl(
+	let linePositionY = visualizerContext.controls.createNumberControl(
 		'wavelinePositionY',
 		{
 			label: 'Position Y',
@@ -95,7 +99,7 @@
 		}
 	)
 
-	const linePositionZ = controls.createNumberControl(
+	let linePositionZ = visualizerContext.controls.createNumberControl(
 		'wavelinePositionZ',
 		{
 			label: 'Position Z',
@@ -107,7 +111,7 @@
 		}
 	)
 
-	const rotationX = controls.createNumberControl(
+	let rotationX = visualizerContext.controls.createNumberControl(
 		'wavelineRotationX',
 		{
 			label: 'Rotation X',
@@ -120,7 +124,7 @@
 		{ transformer: (value) => value * Math.PI }
 	)
 
-	const rotationY = controls.createNumberControl(
+	let rotationY = visualizerContext.controls.createNumberControl(
 		'wavelineRotationY',
 		{
 			label: 'Rotation Y',
@@ -133,7 +137,7 @@
 		{ transformer: (value) => value * Math.PI }
 	)
 
-	const rotationZ = controls.createNumberControl(
+	let rotationZ = visualizerContext.controls.createNumberControl(
 		'wavelineRotationZ',
 		{
 			label: 'Rotation Z',
@@ -146,7 +150,7 @@
 		{ transformer: (value) => value * Math.PI }
 	)
 
-	const lineDirection = controls.createSelectControl(
+	let lineDirection = visualizerContext.controls.createSelectControl(
 		'wavelineDirection',
 		{
 			label: 'Direction',
@@ -160,7 +164,7 @@
 		return value < 2 ? 1 : 2 ** Math.round(value)
 	}
 
-	const lineResolution = controls.createNumberControl(
+	let lineResolution = visualizerContext.controls.createNumberControl(
 		'wavelineResolution',
 		{
 			label: 'Resolution',
@@ -175,11 +179,11 @@
 	)
 
 	function audioSymmetryTransformer(value: number) {
-		const symmetries = [1, 2, 4, 6, 8, 12, 16, 32]
+		let symmetries = [1, 2, 4, 6, 8, 12, 16, 32]
 		return symmetries[Math.round(value) - 1]
 	}
 
-	const lineSymmetry = controls.createNumberControl(
+	let lineSymmetry = visualizerContext.controls.createNumberControl(
 		'wavelineSymmetry',
 		{
 			label: 'Symmetry',
@@ -192,7 +196,7 @@
 		}
 	)
 
-	const lineThickness = controls.createNumberControl(
+	let lineThickness = visualizerContext.controls.createNumberControl(
 		'wavelineThickness',
 		{
 			label: 'Thickness',
@@ -205,7 +209,7 @@
 		{ transformer: (value) => value / 100 }
 	)
 
-	const lineColor = controls.createColorControl(
+	let lineColor = visualizerContext.controls.createColorControl(
 		'wavelineColor',
 		{
 			label: 'Color',
@@ -229,8 +233,8 @@
 		}
 	)
 
-	const maxClones = 120
-	const clones = controls.createNumberControl(
+	let maxClones = 120
+	let clones = visualizerContext.controls.createNumberControl(
 		'wavelineClones',
 		{
 			label: 'Clones',
@@ -243,7 +247,7 @@
 		{ transformer: (value) => Math.round(value), rangeReadOnly: true }
 	)
 
-	const cloneSpacing = controls.createNumberControl(
+	let cloneSpacing = visualizerContext.controls.createNumberControl(
 		'wavelineCloneSpacing',
 		{
 			label: 'Clone Spacing',
@@ -255,7 +259,7 @@
 		}
 	)
 
-	const flowShape = controls.createBooleanControl(
+	let flowShape = visualizerContext.controls.createBooleanControl(
 		'wavelineFlowShape',
 		{
 			label: 'Flow Shape',
@@ -264,7 +268,7 @@
 		{ defaultValue: 1 }
 	)
 
-	const flowColors = controls.createBooleanControl(
+	let flowColors = visualizerContext.controls.createBooleanControl(
 		'wavelineFlowColors',
 		{
 			label: 'Flow Colors',
@@ -274,38 +278,38 @@
 	)
 
 	// Components
-	const geometry = new MeshLineGeometry()
-	const materialColor = new Color(initialColor)
+	let geometry = new MeshLineGeometry()
+	let materialColor = new Color(initialColor)
 	// @ts-ignore
-	const material = new MeshLineMaterial({
+	let material = new MeshLineMaterial({
 		color: materialColor,
 		lineWidth: lineThickness(),
 		sizeAttenuation: true
 	})
-	const meshline = new MeshLine(geometry, material)
+	let meshline = new MeshLine(geometry, material)
 
 	// Points
-	const audioResolution = Math.round(Math.log(audioAnalyzer.fft) / Math.log(2))
+	let audioResolution = Math.round(Math.log(visualizerContext.audioAnalyzer.fft) / Math.log(2))
 
 	let numPoints = 16
 	numPoints = Math.pow(2, audioResolution) / 2 / 2
 
-	const points: Point[] = new Array(numPoints)
-	const pointPositions: number[][] = []
+	let points: Point[] = new Array(numPoints)
+	let pointPositions: number[][] = []
 	let pointsArray: number[] = new Array(numPoints * 3).fill(0)
-	const pointsArrayHistory: number[][] = new Array(maxClones + 1).fill(null)
-	const colorHistory: ColorType[] = new Array(maxClones + 1).fill(materialColor)
+	let pointsArrayHistory: number[][] = new Array(maxClones + 1).fill(null)
+	let colorHistory: ColorType[] = new Array(maxClones + 1).fill(materialColor)
 
 	function createLine() {
-		const size = lineSize()
-		const shape = lineShape()
+		let size = lineSize()
+		let shape = lineShape()
 
 		// Populate line array with points
 		// Extra loop iteration to close the line
 		for (let i = 0; i < numPoints; i++) {
-			const angle = radians(distributeAngles(i, numPoints)) + Math.PI / 2
+			let angle = radians(distributeAngles(i, numPoints)) + Math.PI / 2
 
-			const particle: Point = {
+			let particle: Point = {
 				x:
 					shape === 'Circle'
 						? Math.cos(angle) * size
@@ -324,19 +328,19 @@
 
 	// Update line graphic to use current line data
 	function updateLinePoints() {
-		const symmetry = lineSymmetry()
+		let symmetry = lineSymmetry()
 
 		// Shorten line resolution as symmetry increases and segments become shorter
-		const lineSegmentShortener = Math.max(symmetry / 2, 1)
+		let lineSegmentShortener = Math.max(symmetry / 2, 1)
 
 		// Construct sorted array of indexes indicating where the symmetry segments begin and end
-		const symmetrySegments: [number, number][] = []
-		const symmetrySegmentLength = Math.round(numPoints / symmetry)
+		let symmetrySegments: [number, number][] = []
+		let symmetrySegmentLength = Math.round(numPoints / symmetry)
 		for (let s = 0; s < symmetry; s++) {
 			symmetrySegments.push([symmetrySegmentLength * s, symmetrySegmentLength * (s + 1) - 1])
 		}
 
-		const resolution = lineResolution()
+		let resolution = lineResolution()
 
 		// Loop through point while maintaining linear sequence, but apply mirrored line data based on symmetry array
 		for (let i = 0; i < symmetrySegments.length; i++) {
@@ -347,14 +351,14 @@
 				if (i % 2 === 0) {
 					if (lineType() === 'Spectrum') {
 						audioValue =
-							audioAnalyzer.mapSpectrum(
+							visualizerContext.audioAnalyzer.mapSpectrum(
 								j,
 								symmetrySegments[i][0],
 								symmetrySegments[i][1],
 								lineSegmentShortener
-							) * audioAnalyzer.spectrumMultiplier
+							) * visualizerContext.audioAnalyzer.spectrumMultiplier
 					} else if (lineType() === 'Waveform') {
-						audioValue = audioAnalyzer.mapWaveform(
+						audioValue = visualizerContext.audioAnalyzer.mapWaveform(
 							j,
 							symmetrySegments[i][0],
 							symmetrySegments[i][1],
@@ -362,14 +366,14 @@
 						)
 					} else if (lineType() === 'Wavetrum') {
 						audioValue =
-							audioAnalyzer.mapSpectrum(
+							visualizerContext.audioAnalyzer.mapSpectrum(
 								j,
 								symmetrySegments[i][0],
 								symmetrySegments[i][1],
 								lineSegmentShortener
 							) *
-								audioAnalyzer.spectrumMultiplier +
-							audioAnalyzer.mapWaveform(
+								visualizerContext.audioAnalyzer.spectrumMultiplier +
+							visualizerContext.audioAnalyzer.mapWaveform(
 								j,
 								symmetrySegments[i][0],
 								symmetrySegments[i][1],
@@ -379,14 +383,14 @@
 				} else {
 					if (lineType() === 'Spectrum') {
 						audioValue =
-							audioAnalyzer.mapSpectrum(
+							visualizerContext.audioAnalyzer.mapSpectrum(
 								j,
 								symmetrySegments[i][1],
 								symmetrySegments[i][0],
 								lineSegmentShortener
-							) * audioAnalyzer.spectrumMultiplier
+							) * visualizerContext.audioAnalyzer.spectrumMultiplier
 					} else if (lineType() === 'Waveform') {
-						audioValue = audioAnalyzer.mapWaveform(
+						audioValue = visualizerContext.audioAnalyzer.mapWaveform(
 							j,
 							symmetrySegments[i][1],
 							symmetrySegments[i][0],
@@ -394,14 +398,14 @@
 						)
 					} else if (lineType() === 'Wavetrum') {
 						audioValue =
-							audioAnalyzer.mapSpectrum(
+							visualizerContext.audioAnalyzer.mapSpectrum(
 								j,
 								symmetrySegments[i][1],
 								symmetrySegments[i][0],
 								lineSegmentShortener
 							) *
-								audioAnalyzer.spectrumMultiplier +
-							audioAnalyzer.mapWaveform(
+								visualizerContext.audioAnalyzer.spectrumMultiplier +
+							visualizerContext.audioAnalyzer.mapWaveform(
 								j,
 								symmetrySegments[i][1],
 								symmetrySegments[i][0],
@@ -413,7 +417,7 @@
 				// Loop by resolution, and apply audio value accordingly (ie: into groups of vertices)
 				for (let k = 0; k < resolution; k++) {
 					let pointIndex = j + k
-					const point = points[pointIndex]
+					let point = points[pointIndex]
 
 					if (!point) continue
 
@@ -507,7 +511,7 @@
 	})
 
 	// Clones
-	const clonesArray = new Array(maxClones).fill(null)
+	let clonesArray = new Array(maxClones).fill(null)
 
 	onMount(() => {
 		if (!parent) return
