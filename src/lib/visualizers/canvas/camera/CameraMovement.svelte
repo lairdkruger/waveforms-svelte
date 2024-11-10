@@ -82,16 +82,16 @@
 		// Have to target the camera used by OrbitControls
 		const camera = orbitControls.object as PerspectiveCamera
 
-		if ($orbit()) {
+		if (orbit()) {
 			orbitControls.autoRotate = true
-			orbitControls.autoRotateSpeed = $orbitSpeed()
+			orbitControls.autoRotateSpeed = orbitSpeed()
 		} else {
 			orbitControls.autoRotate = false
-			camera.position.set($positionX(), $positionY(), $positionZ())
-			orbitControls.target = new Vector3($targetX(), $targetY(), $targetZ())
+			camera.position.set(positionX(), positionY(), positionZ())
+			orbitControls.target = new Vector3(targetX(), targetY(), targetZ())
 		}
 
-		camera.fov = $fov()
+		camera.fov = fov()
 		camera.updateProjectionMatrix()
 
 		orbitControls.update()

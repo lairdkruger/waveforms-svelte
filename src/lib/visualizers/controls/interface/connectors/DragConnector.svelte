@@ -1,30 +1,32 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
-	import { onDestroy } from 'svelte'
+	import { onDestroy, onMount } from 'svelte'
 
 	const { controls } = getVisualizerContext()
 	const controlPanelRef = controls.controlPanelRef
 	const draggedSignal = controls.draggedSignal
 	const dragStartCoord = controls.dragStartCoord
-	let dragMouseCoord = [0, 0]
 
-	let initialized = false
+	let dragMouseCoord = $state([0, 0])
+	let initialized = $state(false)
 
-	$: if ($controlPanelRef && !initialized) {
-		$controlPanelRef.addEventListener('mousemove', (e) => controlMouseCoords(e))
-		initialized = true
-	}
+	onMount(() => {
+		if (controlPanelRef && !initialized) {
+			controlPanelRef.addEventListener('mousemove', (e) => controlMouseCoords(e))
+			initialized = true
+		}
+	})
 
 	onDestroy(() => {
-		$controlPanelRef?.removeEventListener('mousemove', (e) => controlMouseCoords(e))
+		controlPanelRef?.removeEventListener('mousemove', (e) => controlMouseCoords(e))
 	})
 
 	// Handle mouse move for drag events etc
-	$: controlMouseCoords = (event: MouseEvent) => {
-		if (!$controlPanelRef) return null
-		if (!$draggedSignal) return null
+	function controlMouseCoords(event: MouseEvent) {
+		if (!controlPanelRef) return null
+		if (!draggedSignal) return null
 
-		const dragBounds = $controlPanelRef.getBoundingClientRect()
+		const dragBounds = controlPanelRef.getBoundingClientRect()
 
 		const x = event.clientX - dragBounds.left
 		const y = event.clientY - dragBounds.top
@@ -33,14 +35,14 @@
 	}
 </script>
 
-{#if $draggedSignal}
+{#if draggedSignal}
 	<div class="dragConnector">
 		<svg width="100%" height="100%" fill="none" xmlns="http://www.w3.org/2000/svg">
 			<polyline
 				class="vertical"
-				points="{$dragStartCoord[0]}, 
-						{$dragStartCoord[1]} 
-						{$dragStartCoord[0]}, 
+				points="{dragStartCoord[0]}, 
+						{dragStartCoord[1]} 
+						{dragStartCoord[0]}, 
 						{dragMouseCoord[1]}"
 				fill="none"
 				stroke="#000"
@@ -48,7 +50,7 @@
 			/>
 			<polyline
 				class="horizontal"
-				points="{$dragStartCoord[0]}, 
+				points="{dragStartCoord[0]}, 
 						{dragMouseCoord[1]} 
 						{dragMouseCoord[0]}, 
 						{dragMouseCoord[1]}"

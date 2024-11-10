@@ -9,38 +9,44 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import { spring } from 'svelte/motion'
 
-	export let controlId: string
+	interface Props {
+		controlId: string
+	}
+
+	let { controlId }: Props = $props()
 
 	const { controls, audioAnalyzer, midi } = getVisualizerContext()
 	const control = controls.getControl(controlId)
 	const config = control.config
-	$: signalConfig = $config.signal?.config
+	let signalConfig = config.signal?.config
 	const midiListening = midi.listening
 
-	$: midiActive = $signalConfig?.booster?.context === 'midi'
-	$: midiLabel = () => {
-		if ($midiListening) {
+	let midiActive = $derived(signalConfig?.booster?.context === 'midi')
+	let midiLabel = $derived.by(() => {
+		if (midiListening) {
 			return 'Key?'
 		} else if (midiActive) {
 			// First four characters of midi function id, without the get_
-			return $signalConfig?.booster?.id.slice(3, 7)
+			return signalConfig?.booster?.id.slice(3, 7)
 		} else {
 			return 'MIDI'
 		}
-	}
+	})
 
 	let expanded = false
 	const opacity = spring(0)
 	const width = spring(16)
 	const height = spring(16)
 
-	$: opacity.set(expanded ? 1 : 0)
-	$: width.set(expanded ? 139 : 16)
-	$: height.set(expanded ? 173 : 16)
+	$effect(() => {
+		opacity.set(expanded ? 1 : 0)
+		width.set(expanded ? 139 : 16)
+		height.set(expanded ? 173 : 16)
+	})
 </script>
 
 <div class="signalOptions">
-	<button class="icon" on:click={() => (expanded = !expanded)}>
+	<button class="icon" onclick={() => (expanded = !expanded)}>
 		<OptionsIcon />
 	</button>
 
@@ -64,34 +70,22 @@
 				<div class="buttons">
 					<button
 						class="button"
-						class:enabled={$signalConfig?.behaviour === 'straight'}
-						on:click={() =>
-							signalConfig?.update((config) => {
-								config.behaviour = 'straight'
-								return config
-							})}
+						class:enabled={signalConfig?.behaviour === 'straight'}
+						onclick={() => (config.behaviour = 'straight')}
 					>
 						<OptionsStraightIcon />
 					</button>
 					<button
 						class="button"
-						class:enabled={$signalConfig?.behaviour === 'loop'}
-						on:click={() =>
-							signalConfig?.update((config) => {
-								config.behaviour = 'loop'
-								return config
-							})}
+						class:enabled={signalConfig?.behaviour === 'loop'}
+						onclick={() => (config.behaviour = 'loop')}
 					>
 						<OptionsLoopIcon />
 					</button>
 					<button
 						class="button"
-						class:enabled={$signalConfig?.behaviour === 'pingpong'}
-						on:click={() =>
-							signalConfig?.update((config) => {
-								config.behaviour = 'pingpong'
-								return config
-							})}
+						class:enabled={signalConfig?.behaviour === 'pingpong'}
+						onclick={() => (config.behaviour = 'pingpong')}
 					>
 						<OptionsPingPongIcon />
 					</button>
@@ -105,34 +99,22 @@
 				<div class="buttons">
 					<button
 						class="button"
-						class:enabled={$signalConfig?.ease === 'linear'}
-						on:click={() =>
-							signalConfig?.update((config) => {
-								config.ease = 'linear'
-								return config
-							})}
+						class:enabled={signalConfig?.ease === 'linear'}
+						onclick={() => (config.ease = 'linear')}
 					>
 						<EaseLinearIcon />
 					</button>
 					<button
 						class="button"
-						class:enabled={$signalConfig?.ease === 'in'}
-						on:click={() =>
-							signalConfig?.update((config) => {
-								config.ease = 'in'
-								return config
-							})}
+						class:enabled={signalConfig?.ease === 'in'}
+						onclick={() => (config.ease = 'in')}
 					>
 						<EaseInIcon />
 					</button>
 					<button
 						class="button"
-						class:enabled={$signalConfig?.ease === 'out'}
-						on:click={() =>
-							signalConfig?.update((config) => {
-								config.ease = 'out'
-								return config
-							})}
+						class:enabled={signalConfig?.ease === 'out'}
+						onclick={() => (config.ease = 'out')}
 					>
 						<EaseOutIcon />
 					</button>
@@ -146,56 +128,36 @@
 				<div class="buttons">
 					<button
 						class="button textLabel"
-						class:enabled={$signalConfig?.booster?.id === 'getBassPeaked'}
-						on:click={() =>
-							signalConfig?.update((config) => {
-								config.booster = audioAnalyzer.signals.getBassPeaked()
-								return config
-							})}
+						class:enabled={signalConfig?.booster?.id === 'getBassPeaked'}
+						onclick={() => (config.booster = audioAnalyzer.signals.getBassPeaked())}
 					>
 						<span class="cpLabel">Bass</span>
 					</button>
 					<button
 						class="button textLabel"
-						class:enabled={$signalConfig?.booster?.id === 'getMidsPeaked'}
-						on:click={() =>
-							signalConfig?.update((config) => {
-								config.booster = audioAnalyzer.signals.getMidsPeaked()
-								return config
-							})}
+						class:enabled={signalConfig?.booster?.id === 'getMidsPeaked'}
+						onclick={() => (config.booster = audioAnalyzer.signals.getMidsPeaked())}
 					>
 						<span class="cpLabel">Mids</span>
 					</button>
 					<button
 						class="button textLabel"
-						class:enabled={$signalConfig?.booster?.id === 'getHighsPeaked'}
-						on:click={() =>
-							signalConfig?.update((config) => {
-								config.booster = audioAnalyzer.signals.getHighsPeaked()
-								return config
-							})}
+						class:enabled={signalConfig?.booster?.id === 'getHighsPeaked'}
+						onclick={() => (config.booster = audioAnalyzer.signals.getHighsPeaked())}
 					>
 						<span class="cpLabel">High</span>
 					</button>
 					<button
 						class="button textLabel"
-						class:enabled={$signalConfig?.booster?.id === 'getVolumePeaked'}
-						on:click={() =>
-							signalConfig?.update((config) => {
-								config.booster = audioAnalyzer.signals.getVolumePeaked()
-								return config
-							})}
+						class:enabled={signalConfig?.booster?.id === 'getVolumePeaked'}
+						onclick={() => (config.booster = audioAnalyzer.signals.getVolumePeaked())}
 					>
 						<span class="cpLabel">Volume</span>
 					</button>
 					<button
 						class="button textLabel"
-						class:enabled={!$signalConfig?.booster}
-						on:click={() =>
-							signalConfig?.update((config) => {
-								config.booster = undefined
-								return config
-							})}
+						class:enabled={!signalConfig?.booster}
+						onclick={() => (config.booster = undefined)}
 					>
 						<span class="cpLabel">None</span>
 					</button>
@@ -204,10 +166,10 @@
 				<div class="buttons">
 					<button
 						class="button textLabel"
-						class:enabled={$signalConfig?.booster?.context === 'midi'}
-						on:click={async () => {
+						class:enabled={signalConfig?.booster?.context === 'midi'}
+						onclick={async () => {
 							// Toggle midiListening off if already midiListening
-							if ($midiListening) {
+							if (midiListening) {
 								midi.cancelListenForMidiInput()
 								return
 							}
@@ -215,13 +177,10 @@
 							const midiSignalId = await midi.listenForMidiInput()
 							if (!midiSignalId || !signalConfig) return null
 
-							signalConfig.update((config) => {
-								if (midi.signals[midiSignalId]) config.booster = midi.signals[midiSignalId]
-								return config
-							})
+							if (midi.signals[midiSignalId]) config.booster = midi.signals[midiSignalId]
 						}}
 					>
-						<span class="">{midiLabel()}</span>
+						<span class="">{midiLabel}</span>
 					</button>
 				</div>
 			</div>

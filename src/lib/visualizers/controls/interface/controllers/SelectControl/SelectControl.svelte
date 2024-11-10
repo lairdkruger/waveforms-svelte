@@ -2,24 +2,24 @@
 	import DropdownIcon from '$lib/svgs/DropdownIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import type { ControlId, SelectControlConfig } from '$lib/visualizers/controls/types'
-	import type { Writable } from 'svelte/store'
 	import InputNode from '../../connectors/InputNode.svelte'
-	import type SelectControl from '../../../library/controls/SelectControl'
+	import type SelectControl from '../../../library/controls/SelectControl.svelte'
 	import MidiSignalButton from '../../midi/MidiSignalButton.svelte'
 
-	export let controlId: ControlId
+	interface Props {
+		controlId: ControlId
+	}
+
+	let { controlId }: Props = $props()
 
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId) as SelectControl
-	const config = control.config as Writable<SelectControlConfig>
-	$: hasSignalInput = $config.signal !== undefined
+	const config = control.config as SelectControlConfig
+	let hasSignalInput = $derived(config.signal !== undefined)
 
 	const handleChange = (event: Event) => {
 		const target = event.target as HTMLSelectElement
-		config.update((config) => {
-			config.defaultValue = target.value
-			return config
-		})
+		config.defaultValue = target.value
 	}
 </script>
 
@@ -36,15 +36,15 @@
 
 	<div class="g-controller">
 		<div class="select">
-			<span class="cpHeading">{$config.defaultValue}</span>
+			<span class="cpHeading">{config.defaultValue}</span>
 			<div class="dropdownIcon">
 				<DropdownIcon />
 			</div>
 
 			<select
 				class="selectInput"
-				value={$config.defaultValue}
-				on:change={handleChange}
+				value={config.defaultValue}
+				onchange={handleChange}
 				disabled={hasSignalInput}
 			>
 				{#each control.settings.values as value}

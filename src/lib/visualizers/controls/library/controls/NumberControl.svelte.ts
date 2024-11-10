@@ -1,5 +1,5 @@
 import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
-import ControlBase from './ControlBase'
+import ControlBase from './ControlBase.svelte'
 import type {
 	ControlId,
 	ControlOptions,
@@ -12,8 +12,8 @@ import { inRange, map } from '$lib/visualizers/utils/Maths'
 
 export default class NumberControl extends ControlBase {
 	settings: NumberControlSettings
-	config: Writable<NumberControlConfig>
-	output: Readable<NumberOutput>
+	config: NumberControlConfig = $state(this.populateConfig())
+	output: NumberOutput = $derived(this.deriveOutput(this.config))
 
 	constructor(
 		id: ControlId,
@@ -24,8 +24,8 @@ export default class NumberControl extends ControlBase {
 		super('number', id, options)
 
 		this.settings = this.populateSettings(settings)
-		this.config = writable(this.populateConfig(config))
-		this.output = derived(this.config, ($config) => this.deriveOutput($config))
+		this.config = this.populateConfig(config)
+		// this.output = $derived(this.deriveOutput(this.config))
 	}
 
 	populateSettings(settings?: Partial<NumberControlSettings>) {
@@ -54,7 +54,7 @@ export default class NumberControl extends ControlBase {
 					? this.settings.transformer(config.defaultValue)
 					: config.defaultValue
 
-			const signalOutput = get(config.signal.output)()
+			const signalOutput = config.signal.output()
 			const output = map(signalOutput, 0, 1, config.range[0], config.range[1])
 
 			return this.settings.transformer ? this.settings.transformer(output) : output
@@ -64,61 +64,47 @@ export default class NumberControl extends ControlBase {
 	}
 
 	setLowerRange(value: number) {
-		this.config.update((config) => {
-			config.range[0] = value
+		this.config.range[0] = value
 
-			// Revalidate default value
-			if (!inRange(config.defaultValue, config.range[0], config.range[1])) {
-				config.defaultValue = value
-			}
-
-			return config
-		})
+		// Revalidate default value
+		if (!inRange(this.config.defaultValue, this.config.range[0], this.config.range[1])) {
+			this.config.defaultValue = value
+		}
 	}
 
 	setUpperRange(value: number) {
-		this.config.update((config) => {
-			config.range[1] = value
+		this.config.range[1] = value
 
-			// Revalidate default value
-			if (!inRange(config.defaultValue, config.range[0], config.range[1])) {
-				config.defaultValue = value
-			}
-
-			return config
-		})
+		// Revalidate default value
+		if (!inRange(this.config.defaultValue, this.config.range[0], this.config.range[1])) {
+			this.config.defaultValue = value
+		}
 	}
 
 	setDefaultValue(value: number) {
-		this.config.update((config) => {
-			config.defaultValue = value
+		this.config.defaultValue = value
 
-			// Revalidate range values
-			if (config.range[0] < config.range[1]) {
-				if (value > config.range[1]) {
-					config.range[1] = config.defaultValue
-				}
-
-				if (value < config.range[0]) {
-					config.range[0] = config.defaultValue
-				}
-			} else {
-				if (value > config.range[0]) {
-					config.range[0] = config.defaultValue
-				}
-
-				if (value < config.range[1]) {
-					config.range[1] = config.defaultValue
-				}
+		// Revalidate range values
+		if (this.config.range[0] < this.config.range[1]) {
+			if (value > this.config.range[1]) {
+				this.config.range[1] = this.config.defaultValue
 			}
-
-			return config
-		})
+			if (value < this.config.range[0]) {
+				this.config.range[0] = this.config.defaultValue
+			}
+		} else {
+			if (value > this.config.range[0]) {
+				this.config.range[0] = this.config.defaultValue
+			}
+			if (value < this.config.range[1]) {
+				this.config.range[1] = this.config.defaultValue
+			}
+		}
 	}
 
 	extractConfig(): SerializedControlConfig {
-		const signalConfig = get(this.config).signal?.extractConfig()
-		const config = { ...get(this.config), signal: signalConfig }
+		const signalConfig = this.config.signal?.extractConfig()
+		const config = { ...this.config, signal: signalConfig }
 		return config
 	}
 }

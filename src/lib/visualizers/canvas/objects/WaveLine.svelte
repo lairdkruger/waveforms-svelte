@@ -279,7 +279,7 @@
 	// @ts-ignore
 	const material = new MeshLineMaterial({
 		color: materialColor,
-		lineWidth: $lineThickness(),
+		lineWidth: lineThickness(),
 		sizeAttenuation: true
 	})
 	const meshline = new MeshLine(geometry, material)
@@ -297,8 +297,8 @@
 	const colorHistory: ColorType[] = new Array(maxClones + 1).fill(materialColor)
 
 	function createLine() {
-		const size = $lineSize()
-		const shape = $lineShape()
+		const size = lineSize()
+		const shape = lineShape()
 
 		// Populate line array with points
 		// Extra loop iteration to close the line
@@ -324,7 +324,7 @@
 
 	// Update line graphic to use current line data
 	function updateLinePoints() {
-		const symmetry = $lineSymmetry()
+		const symmetry = lineSymmetry()
 
 		// Shorten line resolution as symmetry increases and segments become shorter
 		const lineSegmentShortener = Math.max(symmetry / 2, 1)
@@ -336,7 +336,7 @@
 			symmetrySegments.push([symmetrySegmentLength * s, symmetrySegmentLength * (s + 1) - 1])
 		}
 
-		const resolution = $lineResolution()
+		const resolution = lineResolution()
 
 		// Loop through point while maintaining linear sequence, but apply mirrored line data based on symmetry array
 		for (let i = 0; i < symmetrySegments.length; i++) {
@@ -345,7 +345,7 @@
 
 				// Reverse how the audioValue is applied for every second segment
 				if (i % 2 === 0) {
-					if ($lineType() === 'Spectrum') {
+					if (lineType() === 'Spectrum') {
 						audioValue =
 							audioAnalyzer.mapSpectrum(
 								j,
@@ -353,14 +353,14 @@
 								symmetrySegments[i][1],
 								lineSegmentShortener
 							) * audioAnalyzer.spectrumMultiplier
-					} else if ($lineType() === 'Waveform') {
+					} else if (lineType() === 'Waveform') {
 						audioValue = audioAnalyzer.mapWaveform(
 							j,
 							symmetrySegments[i][0],
 							symmetrySegments[i][1],
 							lineSegmentShortener
 						)
-					} else if ($lineType() === 'Wavetrum') {
+					} else if (lineType() === 'Wavetrum') {
 						audioValue =
 							audioAnalyzer.mapSpectrum(
 								j,
@@ -377,7 +377,7 @@
 							)
 					}
 				} else {
-					if ($lineType() === 'Spectrum') {
+					if (lineType() === 'Spectrum') {
 						audioValue =
 							audioAnalyzer.mapSpectrum(
 								j,
@@ -385,14 +385,14 @@
 								symmetrySegments[i][0],
 								lineSegmentShortener
 							) * audioAnalyzer.spectrumMultiplier
-					} else if ($lineType() === 'Waveform') {
+					} else if (lineType() === 'Waveform') {
 						audioValue = audioAnalyzer.mapWaveform(
 							j,
 							symmetrySegments[i][1],
 							symmetrySegments[i][0],
 							lineSegmentShortener
 						)
-					} else if ($lineType() === 'Wavetrum') {
+					} else if (lineType() === 'Wavetrum') {
 						audioValue =
 							audioAnalyzer.mapSpectrum(
 								j,
@@ -418,46 +418,46 @@
 					if (!point) continue
 
 					point.x =
-						$lineShape() === 'Circle'
-							? Math.cos(point.angle) * $lineSize()
-							: map(pointIndex, 0, numPoints - 1, -$lineSize(), $lineSize())
+						lineShape() === 'Circle'
+							? Math.cos(point.angle) * lineSize()
+							: map(pointIndex, 0, numPoints - 1, -lineSize(), lineSize())
 
-					point.y = $lineShape() === 'Circle' ? Math.sin(point.angle) * $lineSize() : 0
+					point.y = lineShape() === 'Circle' ? Math.sin(point.angle) * lineSize() : 0
 
 					// Update xy positions if direction is set to parallel
 					let x = point.x
 					let y = point.y
 					let z = point.z
 
-					if ($lineShape() === 'Circle') {
+					if (lineShape() === 'Circle') {
 						x =
-							$lineDirection() === 'Parallel'
-								? point.x + Math.cos(point.angle) * (audioValue * $lineIntensity())
+							lineDirection() === 'Parallel'
+								? point.x + Math.cos(point.angle) * (audioValue * lineIntensity())
 								: point.x
 
 						y =
-							$lineDirection() === 'Parallel'
-								? point.y + Math.sin(point.angle) * (audioValue * $lineIntensity())
+							lineDirection() === 'Parallel'
+								? point.y + Math.sin(point.angle) * (audioValue * lineIntensity())
 								: point.y
 
 						z =
-							$lineDirection() === 'Parallel'
+							lineDirection() === 'Parallel'
 								? point.z
-								: point.z + audioValue * $lineIntensity()
+								: point.z + audioValue * lineIntensity()
 					}
 
-					if ($lineShape() === 'Line') {
+					if (lineShape() === 'Line') {
 						x = point.x
 
 						y =
-							$lineDirection() === 'Parallel'
-								? point.y + audioValue * $lineIntensity()
+							lineDirection() === 'Parallel'
+								? point.y + audioValue * lineIntensity()
 								: point.y
 
 						z =
-							$lineDirection() === 'Parallel'
+							lineDirection() === 'Parallel'
 								? point.z
-								: point.z + audioValue * $lineIntensity()
+								: point.z + audioValue * lineIntensity()
 					}
 
 					pointPositions[pointIndex] = [x, y, z] // use z coord instead
@@ -469,7 +469,7 @@
 		meshline.geometry.setPoints(pointsArray)
 
 		// Shuffle points history
-		if ($flowShape()) {
+		if (flowShape()) {
 			for (let i = maxClones; i > 0; i--) {
 				pointsArrayHistory[i] = pointsArrayHistory[i - 1]
 			}
@@ -479,16 +479,16 @@
 	}
 
 	function updateLineProperties() {
-		meshline.material.uniforms.lineWidth.value = $lineThickness()
-		materialColor.set(...$lineColor())
+		meshline.material.uniforms.lineWidth.value = lineThickness()
+		materialColor.set(...lineColor())
 
 		// Shuffle color history
-		if ($flowColors()) {
+		if (flowColors()) {
 			for (let i = maxClones; i > 0; i--) {
 				colorHistory[i] = colorHistory[i - 1]
 			}
 		}
-		colorHistory[0] = $lineColor()
+		colorHistory[0] = lineColor()
 
 		meshline.material.uniforms.color.value = materialColor
 
@@ -496,8 +496,8 @@
 	}
 
 	function updateGroup() {
-		parent.position.set($linePositionX(), $linePositionY(), $linePositionZ())
-		parent.rotation.set($rotationX(), $rotationY(), $rotationZ())
+		parent.position.set(linePositionX(), linePositionY(), linePositionZ())
+		parent.rotation.set(rotationX(), rotationY(), rotationZ())
 	}
 
 	webglContext.onFrame(() => {

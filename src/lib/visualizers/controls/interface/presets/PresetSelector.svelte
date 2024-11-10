@@ -2,8 +2,8 @@
 	import { browser } from '$app/environment'
 	import DropdownIcon from '$lib/svgs/DropdownIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
-	import { get } from 'svelte/store'
 	import type { PresetId } from '../../types/presets'
+	import { onMount } from 'svelte'
 
 	const { controls } = getVisualizerContext()
 
@@ -19,7 +19,9 @@
 	}
 
 	// Listen for midi events as these can also be used to select presets
-	$: if (browser) {
+	onMount(() => {
+		if (!browser) return
+
 		window.addEventListener('midiMessage', (event: Event) => {
 			// @ts-ignore
 			const { midiSignalId, value } = event.detail
@@ -27,26 +29,26 @@
 
 			// Search the presets objects for a preset that has a midi binding currently matching the midiControlId
 			// If so, change to that preset
-			for (const [presetId, preset] of Object.entries($presets)) {
-				if (get(preset.midiBinding) === midiSignalId) {
+			for (const [presetId, preset] of Object.entries(presets)) {
+				if (preset.midiBinding === midiSignalId) {
 					controls.changePreset(presetId)
 				}
 			}
 		})
-	}
+	})
 </script>
 
 <div class="wrapper">
 	<div class="selector">
 		<div class="dropdown">
-			<span class="cpHeading">{$presets[$currentPresetId].options.label}</span>
+			<span class="cpHeading">{presets[currentPresetId].options.label}</span>
 			<div class="dropdownIcon">
 				<DropdownIcon />
 			</div>
 		</div>
 
-		<select class="select" value={$presets[$currentPresetId].id} on:change={handleChange}>
-			{#each Object.entries($presets) as [presetId, preset] (presetId)}
+		<select class="select" value={presets[currentPresetId].id} on:change={handleChange}>
+			{#each Object.entries(presets) as [presetId, preset] (presetId)}
 				<option value={preset.id}>
 					{preset.options?.label}
 				</option>

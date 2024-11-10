@@ -2,11 +2,14 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import Control from './Control.svelte'
 
-	export let groupId: string
-	export let folderExpanded: boolean
+	interface Props {
+		groupId: string
+		folderExpanded: boolean
+	}
+
+	let { groupId, folderExpanded }: Props = $props()
 
 	const { controls } = getVisualizerContext()
-	$: preset = controls.presets.preset
 
 	const group = controls.controls.groups[groupId]
 	const controlsIds = Object.keys(controls.controls.controls)

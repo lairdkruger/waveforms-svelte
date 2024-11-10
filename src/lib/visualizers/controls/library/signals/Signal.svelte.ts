@@ -8,8 +8,7 @@ import type {
 	SignalOutput,
 	Ticker
 } from '../../types'
-import { map, mapLoop, mapPingPong } from '$lib/visualizers/utils/Maths'
-import { clamp } from 'three/src/math/MathUtils'
+import { clamp, map, mapLoop, mapPingPong } from '$lib/visualizers/utils/Maths'
 import bezier, { getBezierValues } from '$lib/visualizers/utils/CubicBezier'
 
 export default class Signal {
@@ -19,8 +18,8 @@ export default class Signal {
 	defaultFunction: NumberOutput
 	range: [NumberOutput, NumberOutput]
 
-	config: Writable<SignalConfig>
-	output: Readable<SignalOutput>
+	config: SignalConfig = $state(this.populateConfig())
+	output: SignalOutput = $derived(this.deriveOutput(this.config))
 
 	ticker: Ticker = {
 		value: 0
@@ -39,8 +38,8 @@ export default class Signal {
 		this.defaultFunction = defaultFunction
 		this.range = range
 
-		this.config = writable(this.populateConfig(config))
-		this.output = derived(this.config, ($config) => this.deriveOutput($config))
+		this.config = this.populateConfig(config)
+		// this.output = $derived(this.deriveOutput(this.config))
 	}
 
 	populateConfig(config?: Partial<SignalConfig>) {
@@ -66,7 +65,7 @@ export default class Signal {
 
 		// When signal is being boosted: it always returns 1
 		const booster = config.booster
-		const isBoosted = booster ? get(booster.output)() === 1 || normalizedOutput === 1 : false
+		const isBoosted = booster ? booster.output() === 1 || normalizedOutput === 1 : false
 		if (isBoosted) return () => 1
 
 		// Bezier curves
@@ -107,7 +106,7 @@ export default class Signal {
 	}
 
 	extractConfig(): SerializedSignalConfig {
-		const config = { ...get(this.config), id: this.id, context: this.context }
+		const config = { ...this.config, id: this.id, context: this.context }
 		return { ...config, booster: config.booster?.extractConfig() }
 	}
 }

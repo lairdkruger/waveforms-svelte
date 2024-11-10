@@ -4,7 +4,11 @@
 	import { slide } from 'svelte/transition'
 	import Group from './Group.svelte'
 
-	export let folderId: string
+	interface Props {
+		folderId: string
+	}
+
+	let { folderId }: Props = $props()
 
 	const { controls } = getVisualizerContext()
 	const folder = controls.controls.folders[folderId]
@@ -12,11 +16,11 @@
 	const relevantGroups = Object.entries(groups).filter(([, group]) => group.folder === folder.id)
 
 	// Only expand the first folder by default
-	let expanded = folder.id === Object.keys(controls.controls.folders)[0]
+	let expanded = $state(folder.id === Object.keys(controls.controls.folders)[0])
 </script>
 
 <div class="folder">
-	<button class="head" on:click={() => (expanded = !expanded)}>
+	<button class="head" onclick={() => (expanded = !expanded)}>
 		<div class="label">
 			<h3 class="cpHeading">{folder.label}</h3>
 		</div>
@@ -24,8 +28,8 @@
 			<div class="folderExpandIcon">
 				<ExpandIcon active={expanded} />
 			</div>
-			<div class="lineHorizontal" />
-			<div class="lineVertical" />
+			<div class="lineHorizontal"></div>
+			<div class="lineVertical"></div>
 		</div>
 	</button>
 	<div class="accordion">

@@ -6,7 +6,7 @@ export default class Preset {
 	id
 	options
 	configs: PresetConfigs
-	midiBinding: Writable<MidiControlId | null>
+	midiBinding: MidiControlId | null = $state(null)
 
 	constructor(
 		id: PresetId,
@@ -21,7 +21,7 @@ export default class Preset {
 
 		this.configs = configs
 
-		this.midiBinding = writable(midiBinding)
+		this.midiBinding = midiBinding ?? null
 	}
 
 	populateOptions(options: Partial<PresetOptions>) {

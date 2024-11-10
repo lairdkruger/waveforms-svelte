@@ -1,4 +1,4 @@
-import type Signal from '../library/signals/Signal'
+import type Signal from '../library/signals/Signal.svelte'
 import type { ColorStop } from './primitives'
 import type { SerializedSignalConfig } from './signals'
 

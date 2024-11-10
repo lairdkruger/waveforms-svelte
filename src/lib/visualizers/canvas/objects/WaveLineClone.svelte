@@ -13,14 +13,14 @@
 	interface Props {
 		parent: Group
 		index: number
-		clones: Readable<NumberOutput>
-		cloneSpacing: Readable<NumberOutput>
+		clones: NumberOutput
+		cloneSpacing: NumberOutput
 		pointsArrayHistory: number[][]
 		colorHistory: ColorType[]
-		flowShape: Readable<NumberOutput>
-		flowColors: Readable<NumberOutput>
-		lineShape: Readable<SelectOutput>
-		lineThickness: Readable<NumberOutput>
+		flowShape: NumberOutput
+		flowColors: NumberOutput
+		lineShape: SelectOutput
+		lineThickness: NumberOutput
 	}
 
 	let {
@@ -39,7 +39,7 @@
 	const webglContext = getWebglContext()
 
 	// Derived
-	let isVisible = $derived(index < $clones())
+	let isVisible = $derived(index < clones())
 	const cloneIndex = index + 1
 
 	// Components
@@ -48,13 +48,13 @@
 	// @ts-ignore
 	const material = new MeshLineMaterial({
 		color: materialColor,
-		lineWidth: $lineThickness(),
+		lineWidth: lineThickness(),
 		sizeAttenuation: true
 	})
 	const mesh = new MeshLine(geometry, material)
 
 	function updateLinePoints() {
-		if ($flowShape()) {
+		if (flowShape()) {
 			if (pointsArrayHistory[cloneIndex] !== null)
 				mesh.geometry.setPoints(pointsArrayHistory[cloneIndex])
 		} else {
@@ -63,9 +63,9 @@
 	}
 
 	function updateLineProperties() {
-		mesh.material.uniforms.lineWidth.value = $lineThickness()
+		mesh.material.uniforms.lineWidth.value = lineThickness()
 
-		if ($flowColors()) {
+		if (flowColors()) {
 			if (colorHistory[cloneIndex] !== null) materialColor.set(...colorHistory[cloneIndex])
 		} else {
 			materialColor.set(...colorHistory[0])
@@ -77,12 +77,12 @@
 		let scale = 1
 		let offset = 0
 
-		if ($lineShape() === 'Circle') {
-			scale = 1 + $cloneSpacing() * cloneIndex
+		if (lineShape() === 'Circle') {
+			scale = 1 + cloneSpacing() * cloneIndex
 		}
 
-		if ($lineShape() === 'Line') {
-			offset = $cloneSpacing() * cloneIndex
+		if (lineShape() === 'Line') {
+			offset = cloneSpacing() * cloneIndex
 		}
 
 		mesh.scale.set(scale, scale, scale)

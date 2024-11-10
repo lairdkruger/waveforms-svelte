@@ -45,7 +45,7 @@
 	)
 
 	webglContext.onFrame(() => {
-		materialColor.setRGB(...$color())
+		materialColor.setRGB(...color())
 		mesh.material.color.set(materialColor)
 	})
 

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
-	import Signal from '$lib/visualizers/controls/library/signals/Signal'
+	import Signal from '$lib/visualizers/controls/library/signals/Signal.svelte'
 
 	const { controls, audioAnalyzer } = getVisualizerContext()
 

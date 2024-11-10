@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { page } from '$app/stores'
 	import { onMount } from 'svelte'
 	import { getVisualizerContext } from '../../contexts/visualizer.svelte'
@@ -108,4 +108,4 @@
 			controls.loadUserPreset(preset, controlConfigs)
 		}
 	})
-</script>
+</script> -->

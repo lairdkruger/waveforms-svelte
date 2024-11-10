@@ -12,7 +12,7 @@
 	let controlPanel: HTMLDivElement
 	const { controls } = getVisualizerContext()
 
-	$: if (controlPanel) controls.controlPanelRef.set(controlPanel)
+	$: if (controlPanel) controls.controlPanelRef = controlPanel
 </script>
 
 <div class="wrapper" class:hidden={uiContext.uiHidden}>

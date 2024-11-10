@@ -1,5 +1,5 @@
 import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
-import ControlBase from './ControlBase'
+import ControlBase from './ControlBase.svelte'
 import type {
 	ControlId,
 	ControlOptions,
@@ -11,8 +11,8 @@ import type {
 import { closest2, lerpColors, map } from '$lib/visualizers/utils/Maths'
 
 export default class ColorControl extends ControlBase {
-	config: Writable<ColorControlConfig>
-	output: Readable<ColorOutput>
+	config: ColorControlConfig = $state(this.populateConfig())
+	output: ColorOutput = $derived(this.deriveOutput(this.config))
 
 	constructor(
 		id: ControlId,
@@ -21,12 +21,12 @@ export default class ColorControl extends ControlBase {
 	) {
 		super('color', id, options)
 
-		this.config = writable(this.populateConfig(config))
-		this.output = derived(this.config, ($config) => this.deriveOutput($config))
+		this.config = this.populateConfig(config)
+		// this.output = $derived(this.deriveOutput(this.config))
 
 		// Force ordering of gradient on any changes
-		this.config.subscribe((config) => {
-			config.gradient = config.gradient.sort((a, b) => a.coord - b.coord)
+		$effect(() => {
+			this.config.gradient = this.config.gradient.sort((a, b) => a.coord - b.coord)
 		})
 	}
 
@@ -45,7 +45,7 @@ export default class ColorControl extends ControlBase {
 
 	deriveOutput(config: ColorControlConfig): ColorOutput {
 		function outputFunction() {
-			const mixAmount = config.signal ? get(config.signal.output)() : config.defaultValue
+			const mixAmount = config.signal ? config.signal.output() : config.defaultValue
 
 			// Get and return the two colors whose mix amounts are closest to the current mix amount
 			function getColorsMix(mix: number, gradient: ColorStop[]): [ColorStop, ColorStop] {
@@ -75,8 +75,8 @@ export default class ColorControl extends ControlBase {
 	}
 
 	extractConfig(): SerializedControlConfig {
-		const signalConfig = get(this.config).signal?.extractConfig()
-		const config = { ...get(this.config), signal: signalConfig }
+		const signalConfig = this.config.signal?.extractConfig()
+		const config = { ...this.config, signal: signalConfig }
 		return config
 	}
 }

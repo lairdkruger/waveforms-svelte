@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
-	import type ColorControl from '$lib/visualizers/controls/library/controls/ColorControl'
+	import type ColorControl from '$lib/visualizers/controls/library/controls/ColorControl.svelte'
 	import type { ColorControlConfig, ControlId } from '$lib/visualizers/controls/types'
 	import { denormalizeRgb } from '$lib/visualizers/utils/ColorFunctions'
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
@@ -8,22 +8,26 @@
 	import { onDestroy, onMount } from 'svelte'
 	import { spring } from 'svelte/motion'
 	import ColorPicker from './ColorPicker.svelte'
-	import { get, type Writable } from 'svelte/store'
+	import { get } from 'svelte/store'
 
-	export let controlId: ControlId
-	export let colorStopId: string
-	export let trackWidth: number
+	interface Props {
+		controlId: ControlId
+		colorStopId: string
+		trackWidth: number
+	}
+
+	let { controlId, colorStopId, trackWidth }: Props = $props()
 
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId) as ColorControl
-	const config = control.config as Writable<ColorControlConfig>
+	const config = control.config as ColorControlConfig
 
-	let initialCoord = $config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord
-	$: cssColor = denormalizeRgb(
-		$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
+	let initialCoord = config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord
+	let cssColor = $derived(
+		denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
 	)
 
-	let colorPickerActive = false
+	let colorPickerActive = $state(false)
 
 	// Dimensions
 	const colorStopWidth = 8
@@ -33,25 +37,25 @@
 	const position = spring(map(initialCoord, 0, 1, 0, width))
 
 	// Tie defaultValue to position (instant preset changes)
-	$: {
-		const colorStop = $config.gradient.find((colorStop) => colorStop.id === colorStopId)!
-		let valueMapped = map(colorStop.coord, 0, 1, 0, width)
-
+	$effect(() => {
+		let valueMapped = map(
+			config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord,
+			0,
+			1,
+			0,
+			width
+		)
 		position.set(valueMapped, { hard: true })
-	}
+	})
 
 	// Tie position to control defaultValue
-	$: {
-		config.update((config) => {
-			let valueMapped = map($position, 0, width, 0, 1)
-			let valueClamped = clamp(valueMapped, 0, 1)
+	$effect(() => {
+		let valueMapped = map($position, 0, width, 0, 1)
+		let valueClamped = clamp(valueMapped, 0, 1)
 
-			const colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
-			colorStop.coord = valueClamped
-
-			return config
-		})
-	}
+		const colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
+		colorStop.coord = valueClamped
+	})
 
 	// Gestures
 	let gesture: DragGesture
@@ -84,7 +88,7 @@
 		background-color: rgb({cssColor});
 	"
 >
-	<div class="g-outliner noBlend" />
+	<div class="g-outliner noBlend"></div>
 
 	{#if colorPickerActive}
 		<div class="colorPicker">
@@ -92,7 +96,11 @@
 		</div>
 	{/if}
 
-	<button class="colorPickerToggle" on:click={() => (colorPickerActive = !colorPickerActive)} />
+	<button
+		class="colorPickerToggle"
+		onclick={() => (colorPickerActive = !colorPickerActive)}
+		aria-label="Open color picker"
+	></button>
 </div>
 
 <style>

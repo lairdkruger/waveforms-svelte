@@ -9,9 +9,9 @@
 	const presetId = controls.presets.preset
 	const presets = controls.presets.presets
 
-	$: presetMidiBinding = $presets[$presetId].midiBinding
+	let presetMidiBinding = presets[presetId].midiBinding
 
-	$: formData = $page.form?.id === 'presetSaver' ? $page.form : undefined
+	let formData = $page.form?.id === 'presetSaver' ? $page.form : undefined
 	$: disabled = formData?.success
 
 	let submitted = false

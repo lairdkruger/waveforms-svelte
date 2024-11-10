@@ -3,44 +3,40 @@
 	import InputIcon from '$lib/svgs/InputIcon.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 
-	export let controlId: string
-	export let boolean: boolean = false
+	interface Props {
+		controlId: string
+		boolean?: boolean
+	}
+
+	let { controlId, boolean }: Props = $props()
 
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId)
 	const config = control.config
 
 	const draggedSignal = controls.draggedSignal
-	$: hasSignalInput = $config.signal ? true : false
+	let hasSignalInput = $derived(config.signal ? true : false)
 </script>
 
 <div
 	class="g-inputNode"
-	on:pointerenter={() => {
-		if ($draggedSignal) {
+	onpointerenter={() => {
+		if (draggedSignal) {
 			controls.draggedSignalTarget.set(control)
 		}
 	}}
-	on:pointerleave={() => {
-		if ($draggedSignal) {
+	onpointerleave={() => {
+		if (draggedSignal) {
 			controls.draggedSignalTarget.set(null)
 		}
 	}}
-	on:pointerup={() => {
+	onpointerup={() => {
 		// Set controller input to signal function
-		// @ts-expect-error
-		config.update((config) => {
-			config.signal = $draggedSignal ?? undefined
-			return config
-		})
+		config.signal = draggedSignal ?? undefined
 	}}
-	on:pointerdown={() => {
+	onpointerdown={() => {
 		if (hasSignalInput) {
-			// @ts-expect-error
-			config.update((config) => {
-				config.signal = undefined
-				return config
-			})
+			config.signal = undefined
 		}
 	}}
 >

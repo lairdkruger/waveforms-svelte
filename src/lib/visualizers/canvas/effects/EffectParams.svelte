@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import { getWebglContext } from '$lib/visualizers/contexts/webgl.svelte'
-	import Signal from '$lib/visualizers/controls/library/signals/Signal'
+	import Signal from '$lib/visualizers/controls/library/signals/Signal.svelte'
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { Matrix3 } from 'three'
 
@@ -171,14 +171,14 @@
 	webglContext.onFrame(() => {
 		if (!webglContext.persistance) return
 
-		webglContext.persistance.uniforms.amount.value = $persistanceAmount()
+		webglContext.persistance.uniforms.amount.value = persistanceAmount()
 
-		const uvScaleX = 1 + $persistanceScaleX() / 1000
-		const uvScaleY = 1 + $persistanceScaleY() / 1000
-		const uvRotation = $persistanceRotation() / 100
+		const uvScaleX = 1 + persistanceScaleX() / 1000
+		const uvScaleY = 1 + persistanceScaleY() / 1000
+		const uvRotation = persistanceRotation() / 100
 
-		const targetX = Math.cos($persistanceTargetAngle()) * $persistanceTargetRadius()
-		const targetY = Math.sin($persistanceTargetAngle()) * $persistanceTargetRadius()
+		const targetX = Math.cos(persistanceTargetAngle()) * persistanceTargetRadius()
+		const targetY = Math.sin(persistanceTargetAngle()) * persistanceTargetRadius()
 
 		uvTransformMatrix.setUvTransform(targetX, targetY, uvScaleX, uvScaleY, uvRotation, 0.5, 0.5)
 
@@ -186,11 +186,11 @@
 
 		if (!webglContext.postEffect) return
 
-		webglContext.postEffect.uniforms.squeeze.value = $kaleidoscopeSqueeze()
-		webglContext.postEffect.uniforms.segments.value = $kaleidoscopeSegments()
-		webglContext.postEffect.uniforms.loops.value = $kaleidoscopeLoops()
-		webglContext.postEffect.uniforms.movement.value = $kaleidoscopeMovement()
-		webglContext.postEffect.uniforms.radius.value = $kaleidoscopeRadius()
-		webglContext.postEffect.uniforms.rotation.value = $kaleidoscopeRotation()
+		webglContext.postEffect.uniforms.squeeze.value = kaleidoscopeSqueeze()
+		webglContext.postEffect.uniforms.segments.value = kaleidoscopeSegments()
+		webglContext.postEffect.uniforms.loops.value = kaleidoscopeLoops()
+		webglContext.postEffect.uniforms.movement.value = kaleidoscopeMovement()
+		webglContext.postEffect.uniforms.radius.value = kaleidoscopeRadius()
+		webglContext.postEffect.uniforms.rotation.value = kaleidoscopeRotation()
 	})
 </script>

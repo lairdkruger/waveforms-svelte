@@ -2,7 +2,7 @@
 	import SignalIconBoolean from '$lib/svgs/SignalIconBoolean.svelte'
 	import SignalIconNumber from '$lib/svgs/SignalIconNumber.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
-	import type Signal from '../../library/signals/Signal'
+	import type Signal from '../../library/signals/Signal.svelte'
 	import type { SignalType } from '../../types'
 
 	export let signal: () => Signal
@@ -19,15 +19,15 @@
 	class="signal"
 	on:pointerdown={(e) => {
 		e.stopPropagation()
-		controls.draggedSignal.set(signal())
+		controls.draggedSignal = signal()
 
-		if ($controlPanelRef) {
-			const controlPanelBounds = $controlPanelRef.getBoundingClientRect()
+		if (controlPanelRef) {
+			const controlPanelBounds = controlPanelRef.getBoundingClientRect()
 			const signalIconBounds = signalIcon.getBoundingClientRect()
-			controls.dragStartCoord.set([
+			controls.dragStartCoord = [
 				signalIconBounds.left - controlPanelBounds.left + 7,
 				signalIconBounds.top - controlPanelBounds.top
-			])
+			]
 		}
 	}}
 >

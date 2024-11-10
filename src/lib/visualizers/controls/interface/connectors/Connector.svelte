@@ -2,12 +2,16 @@
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 	import SignalOptions from './SignalOptions.svelte'
 
-	export let controlId: string
+	interface Props {
+		controlId: string
+	}
+
+	let { controlId }: Props = $props()
 
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId)
 	const config = control.config
-	$: signal = $config.signal
+	let signal = config.signal
 
 	const audioSignalWidths: Record<string, string> = {
 		getVolume: '0.441',
@@ -32,7 +36,7 @@
 			"
 	>
 		{#if signal?.context === 'audio'}
-			<div class="inputNodeIndicator" />
+			<div class="inputNodeIndicator"></div>
 		{/if}
 
 		<SignalOptions {controlId} />

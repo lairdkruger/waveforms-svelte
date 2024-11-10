@@ -1,5 +1,5 @@
 import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
-import ControlBase from './ControlBase'
+import ControlBase from './ControlBase.svelte'
 import type {
 	BooleanControlConfig,
 	NumberOutput,
@@ -9,8 +9,8 @@ import type {
 } from '../../types'
 
 export default class BooleanControl extends ControlBase {
-	config: Writable<BooleanControlConfig>
-	output: Readable<NumberOutput>
+	config: BooleanControlConfig = $state(this.populateConfig())
+	output: NumberOutput = $derived(this.deriveOutput(this.config))
 
 	constructor(
 		id: ControlId,
@@ -19,8 +19,8 @@ export default class BooleanControl extends ControlBase {
 	) {
 		super('boolean', id, options)
 
-		this.config = writable(this.populateConfig(config))
-		this.output = derived(this.config, ($config) => this.deriveOutput($config))
+		this.config = this.populateConfig(config)
+		// this.output = $derived(this.deriveOutput(this.config))
 	}
 
 	populateConfig(config?: Partial<BooleanControlConfig>) {
@@ -36,7 +36,7 @@ export default class BooleanControl extends ControlBase {
 		function outputFunction() {
 			if (!config.signal) return config.defaultValue
 
-			const signalOutput = get(config.signal.output)()
+			const signalOutput = config.signal.output()
 			const output = signalOutput > 0.5 ? 1 : 0
 
 			return output
@@ -46,8 +46,8 @@ export default class BooleanControl extends ControlBase {
 	}
 
 	extractConfig(): SerializedControlConfig {
-		const signalConfig = get(this.config).signal?.extractConfig()
-		const config = { ...get(this.config), signal: signalConfig }
+		const signalConfig = this.config.signal?.extractConfig()
+		const config = { ...this.config, signal: signalConfig }
 		return config
 	}
 }

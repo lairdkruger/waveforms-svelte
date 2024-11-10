@@ -1,4 +1,4 @@
-import Signal from '../controls/library/signals/Signal'
+import Signal from '../controls/library/signals/Signal.svelte'
 import { map } from '../utils/Maths'
 
 export type AudioInput = 'microphone' | 'browser'

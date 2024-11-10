@@ -6,8 +6,12 @@
 	import NumberControl from '../controllers/NumberControl/NumberControl.svelte'
 	import SelectControl from '../controllers/SelectControl/SelectControl.svelte'
 
-	export let controlId: string
-	export let folderExpanded: boolean
+	interface Props {
+		controlId: string
+		folderExpanded: boolean
+	}
+
+	let { controlId, folderExpanded }: Props = $props()
 
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId)

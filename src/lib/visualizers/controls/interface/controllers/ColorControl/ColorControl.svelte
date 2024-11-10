@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
-	import type ColorControl from '$lib/visualizers/controls/library/controls/ColorControl'
+	import type ColorControl from '$lib/visualizers/controls/library/controls/ColorControl.svelte'
 	import type {
 		ColorControlConfig,
 		ControlId,
 		ColorStop as ColorStopType
 	} from '$lib/visualizers/controls/types'
-	import { get, type Writable } from 'svelte/store'
+	import { get } from 'svelte/store'
 	import { clamp, map } from '$lib/visualizers/utils/Maths'
 	import { DragGesture } from '@use-gesture/vanilla'
 	import { onDestroy, onMount } from 'svelte'
@@ -18,39 +18,41 @@
 	import MidiSignalButton from '../../midi/MidiSignalButton.svelte'
 	import { getUiContext } from '$lib/contexts/ui.svelte'
 
-	export let controlId: ControlId
+	interface Props {
+		controlId: ControlId
+	}
+
+	let { controlId }: Props = $props()
 
 	const uiContext = getUiContext()
 
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId) as ColorControl
-	const config = control.config as Writable<ColorControlConfig>
-	$: hasActiveSignal = $config.signal !== undefined
+	const config = control.config as ColorControlConfig
+	let hasActiveSignal = $derived(config.signal !== undefined)
 
-	$: gradient = gradientToCSS($config.gradient)
+	let gradient = $derived(gradientToCSS(config.gradient))
 
 	// Dimensions
 	const width = 120
 	const handleWidth = 12
 	const trackWidth = width - handleWidth
 
-	const position = spring(map($config.defaultValue, 0, 1, 0, trackWidth))
+	const position = spring(map(config.defaultValue, 0, 1, 0, trackWidth))
 
 	// Tie defaultValue to position (instant preset changes)
-	$: {
-		let valueMapped = map($config.defaultValue, 0, 1, 0, trackWidth)
+	$effect(() => {
+		let valueMapped = map(config.defaultValue, 0, 1, 0, trackWidth)
 		position.set(valueMapped, { hard: true })
-	}
+	})
 
 	// Tie position to control defaultValue
-	$: {
+	$effect(() => {
 		let valueMapped = map($position, 0, trackWidth, 0, 1)
 		let valueClamped = clamp(valueMapped, 0, 1)
-		config.update((config) => {
-			config.defaultValue = valueClamped
-			return config
-		})
-	}
+
+		config.defaultValue = valueClamped
+	})
 
 	const addColorStop = (event: MouseEvent) => {
 		const target = event.target as HTMLDivElement
@@ -66,10 +68,7 @@
 			color: [Math.random(), Math.random(), Math.random()]
 		}
 
-		config.update((config) => {
-			config.gradient.push(newColorStop)
-			return config
-		})
+		config.gradient.push(newColorStop)
 	}
 
 	let gesture: DragGesture
@@ -108,14 +107,15 @@
 		<div class="slider">
 			<button
 				class="track"
-				on:click={(e) => {
+				onclick={(e) => {
 					addColorStop(e)
 				}}
+				aria-label="Add color stop"
 			>
-				<div class="trackGradient" style="background: {gradient}" />
+				<div class="trackGradient" style="background: {gradient}"></div>
 			</button>
 
-			{#each $config.gradient as colorStop (colorStop.id)}
+			{#each config.gradient as colorStop (colorStop.id)}
 				<ColorStop {controlId} colorStopId={colorStop.id} trackWidth={width} />
 			{/each}
 

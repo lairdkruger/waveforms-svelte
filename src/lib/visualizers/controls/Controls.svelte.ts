@@ -1,4 +1,3 @@
-import type AudioAnalyzer from '$lib/visualizers/audio/AudioAnalyzer'
 import type {
 	Control,
 	ControlId,
@@ -20,14 +19,14 @@ import type {
 	SelectControlSettings
 } from './types'
 import type { CurrentControlConfigs, PresetConfigs, PresetId, PresetOptions } from './types/presets'
-import { writable, type Readable, type Writable, get } from 'svelte/store'
-import BooleanControl from './library/controls/BooleanControl'
-import type Signal from './library/signals/Signal'
-import NumberControl from './library/controls/NumberControl'
-import SelectControl from './library/controls/SelectControl'
-import ColorControl from './library/controls/ColorControl'
-import Preset from './library/presets/Preset'
+import BooleanControl from './library/controls/BooleanControl.svelte'
+import type Signal from './library/signals/Signal.svelte'
+import SelectControl from './library/controls/SelectControl.svelte'
+import ColorControl from './library/controls/ColorControl.svelte'
+import Preset from './library/presets/Preset.svelte'
 import type Midi from '../midi/Midi'
+import NumberControl from './library/controls/NumberControl.svelte'
+import type AudioAnalyzer from '../audio/AudioAnalyzer.svelte'
 
 export default class Controls {
 	// Internals
@@ -35,10 +34,10 @@ export default class Controls {
 	_clientStateReady = false
 
 	// States (shared variables that require reactivity)
-	draggedSignal: Writable<Signal | null> = writable(null)
-	draggedSignalTarget: Writable<Control | null> = writable(null)
-	controlPanelRef: Writable<HTMLDivElement | null> = writable(null)
-	dragStartCoord: Writable<[number, number]> = writable([0, 0])
+	draggedSignal: Signal | null = $state(null)
+	draggedSignalTarget: Control | null = $state(null)
+	controlPanelRef: HTMLDivElement | null = $state(null)
+	dragStartCoord: [number, number] = $state([0, 0])
 
 	audioAnalyzer: AudioAnalyzer
 	midi: Midi
@@ -49,12 +48,12 @@ export default class Controls {
 		controls: {}
 	}
 
-	presets: Presets = {
-		preset: writable('default'),
-		presets: writable({
+	presets: Presets = $state({
+		preset: 'default',
+		presets: {
 			default: new Preset('default', { label: 'Default Preset' }, {}, null)
-		})
-	}
+		}
+	})
 
 	constructor(visualizerSlug: string, audioAnalyzer: AudioAnalyzer, midi: Midi) {
 		this.visualizerSlug = visualizerSlug
@@ -66,8 +65,8 @@ export default class Controls {
 	// Utility Functions
 	///////////////////////////////////////////////
 	resetInteractions() {
-		this.draggedSignal.set(null)
-		this.draggedSignalTarget.set(null)
+		this.draggedSignal = null
+		this.draggedSignalTarget = null
 	}
 
 	// Extracts current configs from controls store in a Json stringify friendly format
@@ -160,21 +159,18 @@ export default class Controls {
 		this.controls.controls[control.id] = control
 
 		// Also push control config to default preset
-		this.presets.presets.update((presets) => {
-			let updatedPresets = { ...presets }
-			// @ts-expect-error
-			updatedPresets.default.configs[control.id] = get(control.config)
-			return updatedPresets
-		})
+		let updatedPresets = { ...this.presets.presets }
+		updatedPresets.default.configs[control.id] = control.config
+		this.presets.presets = updatedPresets
 	}
 
 	createBooleanControl(
 		id: string,
 		options?: Partial<ControlOptions>,
 		config?: Partial<BooleanControlConfig>
-	): Readable<NumberOutput> {
+	): NumberOutput {
 		// Escape if already exists
-		if (this.getControl(id)) return this.getControl(id).output as Readable<NumberOutput>
+		if (this.getControl(id)) return this.getControl(id).output as NumberOutput
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
@@ -196,7 +192,7 @@ export default class Controls {
 		settings?: Partial<NumberControlSettings>
 	) {
 		// Escape if already exists
-		if (this.getControl(id)) return this.getControl(id).output as Readable<NumberOutput>
+		if (this.getControl(id)) return this.getControl(id).output as NumberOutput
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
@@ -218,7 +214,7 @@ export default class Controls {
 		config?: Partial<SelectControlConfig>
 	) {
 		// Escape if already exists
-		if (this.getControl(id)) return this.getControl(id).output as Readable<SelectOutput>
+		if (this.getControl(id)) return this.getControl(id).output as SelectOutput
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
@@ -239,7 +235,7 @@ export default class Controls {
 		config?: Partial<ColorControlConfig>
 	) {
 		// Escape if already exists
-		if (this.getControl(id)) return this.getControl(id).output as Readable<ColorOutput>
+		if (this.getControl(id)) return this.getControl(id).output as ColorOutput
 
 		// Create group & folder structure if required
 		const [folder, group] = this.createStructure(id, options)
@@ -282,23 +278,22 @@ export default class Controls {
 	// Requires an existing default state so must be called after all createControl functions in visualizer
 	createPreset(presetId: PresetId, options: PresetOptions, configs: PresetConfigs) {
 		// Escape if preset already exists
-		const presets = get(this.presets.presets)
+		const presets = this.presets.presets
 		if (presets[presetId]) return
 
 		// Create a new preset by recreating existing controls based off merging the default state with the preset configs provided
 		let preset = new Preset(presetId, options, configs)
 
 		// Update state with new preset
-		this.presets.presets.update((presets) => {
-			let updatedPresets = { ...presets }
-			updatedPresets[presetId] = preset
-			return updatedPresets
-		})
+		let updatedPresets = { ...presets }
+		updatedPresets[presetId] = preset
+
+		this.presets.presets = updatedPresets
 	}
 
 	// Handle changing of presets
 	changePreset(presetId: PresetId) {
-		const presets = get(this.presets.presets)
+		const presets = this.presets.presets
 		const preset = presets[presetId]
 
 		// Loop through controls
@@ -308,12 +303,10 @@ export default class Controls {
 
 			// Merge preset config with control config
 			// @ts-expect-error
-			control.config.update((config) => {
-				return { ...config, ...presetConfig }
-			})
+			control.config = { ...control.config, ...presetConfig }
 		}
 
-		this.presets.preset.set(presetId)
+		this.presets.preset = presetId
 	}
 
 	/// Old method for loading user presets from Supabase, we can adjust this to loading localStorage presets from now on

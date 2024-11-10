@@ -1,5 +1,4 @@
-import { derived, writable, type Readable, type Writable, get } from 'svelte/store'
-import ControlBase from './ControlBase'
+import ControlBase from './ControlBase.svelte'
 import type {
 	SelectControlConfig,
 	SelectOutput,
@@ -11,8 +10,8 @@ import type {
 
 export default class SelectControl extends ControlBase {
 	settings: SelectControlSettings
-	config: Writable<SelectControlConfig>
-	output: Readable<SelectOutput>
+	config: SelectControlConfig = $state(this.populateConfig())
+	output: SelectOutput = $derived(this.deriveOutput(this.config))
 
 	currentIndex: number
 	debounce: boolean
@@ -27,8 +26,8 @@ export default class SelectControl extends ControlBase {
 		super('select', id, options)
 
 		this.settings = this.populateSettings(settings)
-		this.config = writable(this.populateConfig(config))
-		this.output = derived(this.config, ($config) => this.deriveOutput($config))
+		this.config = this.populateConfig(config)
+		// this.output = $derived(this.deriveOutput(this.config))
 
 		this.currentIndex = 0
 		this.debounce = false
@@ -61,7 +60,7 @@ export default class SelectControl extends ControlBase {
 		const outputFunction = () => {
 			if (!config.signal) return config.defaultValue
 
-			const signalOutput = get(config.signal.output)()
+			const signalOutput = config.signal.output()
 			const cycleOutput = signalOutput > 0.5
 
 			// Cycle with debouncer
@@ -77,8 +76,8 @@ export default class SelectControl extends ControlBase {
 	}
 
 	extractConfig(): SerializedControlConfig {
-		const signalConfig = get(this.config).signal?.extractConfig()
-		const config = { ...get(this.config), signal: signalConfig }
+		const signalConfig = this.config.signal?.extractConfig()
+		const config = { ...this.config, signal: signalConfig }
 		return config
 	}
 }

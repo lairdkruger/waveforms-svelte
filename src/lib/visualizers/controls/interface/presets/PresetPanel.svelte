@@ -1,24 +1,24 @@
 <script lang="ts">
-	import MidiPresetButton from '../midi/MidiPresetButton.svelte'
-	import PresetCreator from './PresetCreator.svelte'
-	import PresetDeleter from './PresetDeleter.svelte'
-	import PresetSaver from './PresetSaver.svelte'
+	// import MidiPresetButton from '../midi/MidiPresetButton.svelte'
+	// import PresetCreator from './PresetCreator.svelte'
+	// import PresetDeleter from './PresetDeleter.svelte'
+	// import PresetSaver from './PresetSaver.svelte'
 	import PresetSelector from './PresetSelector.svelte'
 </script>
 
 <div class="wrapper">
 	<div class="presetSelector">
 		<PresetSelector />
-		<MidiPresetButton />
+		<!-- <MidiPresetButton /> -->
 	</div>
 
 	<div class="preset-creator">
-		<PresetCreator />
+		<!-- <PresetCreator /> -->
 	</div>
 
 	<div class="preset-savers">
-		<PresetSaver />
-		<PresetDeleter />
+		<!-- <PresetSaver /> -->
+		<!-- <PresetDeleter /> -->
 	</div>
 </div>
 

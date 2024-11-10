@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
-	import type ColorControl from '$lib/visualizers/controls/library/controls/ColorControl'
+	import type ColorControl from '$lib/visualizers/controls/library/controls/ColorControl.svelte'
 	import type { ColorControlConfig, ControlId } from '$lib/visualizers/controls/types'
 	import {
 		denormalizeRgb,
@@ -12,28 +12,38 @@
 	import { DragGesture } from '@use-gesture/vanilla'
 	import { onDestroy, onMount } from 'svelte'
 	import { spring } from 'svelte/motion'
-	import { get, type Writable } from 'svelte/store'
+	import { get } from 'svelte/store'
 
-	export let controlId: ControlId
-	export let colorStopId: string
+	interface Props {
+		controlId: ControlId
+		colorStopId: string
+	}
+
+	let { controlId, colorStopId }: Props = $props()
 
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId) as ColorControl
-	const config = control.config as Writable<ColorControlConfig>
+	const config = control.config as ColorControlConfig
 
-	let initialSat = rgbToHsv(
-		denormalizeRgb($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
-	)[1]
-	let initialLight = rgbToHsv(
-		denormalizeRgb($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
-	)[2]
-
-	$: cssColor = denormalizeRgb(
-		$config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color
+	let initialSat = $state(
+		rgbToHsv(
+			denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+		)[1]
+	)
+	let initialLight = $state(
+		rgbToHsv(
+			denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+		)[2]
 	)
 
-	$: hsl = rgbToHsv(
-		denormalizeRgb($config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+	let cssColor = $state(
+		denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+	)
+
+	let hsl = $state(
+		rgbToHsv(
+			denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
+		)
 	)
 
 	// Dimensions
@@ -52,22 +62,20 @@
 		const rgb = hsvToRgb([hsl[0], saturation, lightness])
 		const normalizedRgb = normalizeRgb(rgb)
 
-		config.update((config) => {
-			const colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
-			colorStop.color = normalizedRgb
+		const colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
+		colorStop.color = normalizedRgb
 
-			// Sync local states
-			cssColor = denormalizeRgb(colorStop.color)
-			hsl = rgbToHsv(denormalizeRgb(colorStop.color))
-
-			return config
-		})
+		// Sync local states
+		cssColor = denormalizeRgb(colorStop.color)
+		hsl = rgbToHsv(denormalizeRgb(colorStop.color))
 	}
 
 	const positionSat = spring(map(initialSat, 0, 100, 0, trackWidth))
 	const positionLight = spring(map(initialLight, 0, 100, trackHeight, 0))
 
-	$: updateControl($positionSat, $positionLight)
+	// TODO: might bug
+	positionSat.subscribe((value) => updateControl(value, get(positionLight)))
+	positionLight.subscribe((value) => updateControl(get(positionSat), value))
 
 	const handlePointerDown = (event: MouseEvent) => {
 		const target = event.target as HTMLDivElement
@@ -113,7 +121,7 @@
 	style="
 		background-color: hsl({hsl[0]}, 100%, 50%)
 	"
-	on:pointerdown={handlePointerDown}
+	onpointerdown={handlePointerDown}
 >
 	<div
 		bind:this={gestureTarget}
@@ -123,7 +131,7 @@
 			background-color: rgb({cssColor});
 		"
 	>
-		<div class="g-outliner" />
+		<div class="g-outliner"></div>
 	</div>
 </div>
 

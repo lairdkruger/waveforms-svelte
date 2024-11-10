@@ -5,13 +5,17 @@
 	import InputNode from '../../connectors/InputNode.svelte'
 	import MidiSignalButton from '../../midi/MidiSignalButton.svelte'
 
-	export let controlId: ControlId
+	interface Props {
+		controlId: ControlId
+	}
+
+	let { controlId }: Props = $props()
 
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId)
-	const config = control.config as Writable<BooleanControlConfig>
+	const config = control.config as BooleanControlConfig
 
-	$: hasActiveSignal = $config.signal !== undefined
+	let hasActiveSignal = $derived(config.signal !== undefined)
 </script>
 
 <div class="g-control">
@@ -31,13 +35,13 @@
 			style="
 					visibility: {hasActiveSignal ? 'hidden' : 'visible'}
 				"
-			on:click={() => {
-				const value = $config.defaultValue === 1 ? 0 : 1
-				$config.defaultValue = value
+			onclick={() => {
+				const value = config.defaultValue === 1 ? 0 : 1
+				config.defaultValue = value
 			}}
 		>
-			{#if $config.defaultValue === 1}
-				<div class="checkboxInner" />
+			{#if config.defaultValue === 1}
+				<div class="checkboxInner"></div>
 			{/if}
 		</button>
 	</div>

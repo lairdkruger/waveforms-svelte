@@ -1,5 +1,4 @@
 import type { Ease } from '$lib/visualizers/utils/CubicBezier'
-import type { Writable } from 'svelte/store'
 import type {
 	BooleanControlConfig,
 	ColorControlConfig,
@@ -13,9 +12,8 @@ import type { ControlOptions, Folder, FolderOptions, Group, GroupOptions } from 
 import type { PresetId } from './presets'
 import type { Color, ColorStop } from './primitives'
 import type { SignalBehaviour, SignalConfig } from './signals'
-import type { Preset as PresetDb } from 'supabase'
-import type Preset from '../library/presets/Preset'
-import type Signal from '../library/signals/Signal'
+import type Preset from '../library/presets/Preset.svelte'
+import type Signal from '../library/signals/Signal.svelte'
 import type { MidiControlId } from '$lib/visualizers/midi/Midi'
 
 export interface ControlsInternals {
@@ -25,7 +23,7 @@ export interface ControlsInternals {
 export interface ControlsStates {
 	draggedSignal: SignalConfig | null
 	draggedSignalTarget: string | null
-	controlPanelRef: Writable<HTMLDivElement | null>
+	controlPanelRef: HTMLDivElement | null
 	dragStartCoord: [number, number]
 	dragMouseCoords: [number, number]
 }
@@ -117,7 +115,6 @@ export interface ControlsActions {
 		// Presets
 		createPreset: (presetId: string, configs: Record<string, ControlConfig>) => void
 		changePreset: (presetId: string) => void
-		loadUserPreset: (preset: PresetDb) => void
 		setPresetMidiBinding: (presetId: PresetId, midiControlId: MidiControlId) => void
 	}
 }
@@ -129,8 +126,8 @@ export interface Controls {
 }
 
 export interface Presets {
-	preset: Writable<PresetId>
-	presets: Writable<Record<PresetId, Preset>>
+	preset: PresetId
+	presets: Record<PresetId, Preset>
 }
 
 export interface ControlsState

@@ -3,7 +3,7 @@
 	import type { ControlId, NumberControlConfig } from '$lib/visualizers/controls/types'
 	import { get, type Writable } from 'svelte/store'
 	import ValidNumberInput from './ValidNumberInput.svelte'
-	import type NumberControl from '$lib/visualizers/controls/library/controls/NumberControl'
+	import type NumberControl from '$lib/visualizers/controls/library/controls/NumberControl.svelte'
 	import { onDestroy, onMount } from 'svelte'
 	import { DragGesture } from '@use-gesture/vanilla'
 	import { spring } from 'svelte/motion'
@@ -12,16 +12,21 @@
 	import MidiSignalButton from '../../midi/MidiSignalButton.svelte'
 	import { getUiContext } from '$lib/contexts/ui.svelte'
 
-	export let controlId: ControlId
+	interface Props {
+		controlId: ControlId
+	}
+
+	let { controlId }: Props = $props()
 
 	const uiContext = getUiContext()
 
 	const { controls } = getVisualizerContext()
 	const control = controls.getControl(controlId) as NumberControl
-	const config = control.config as Writable<NumberControlConfig>
-	$: hasActiveSignal = $config.signal !== undefined
+	const config = control.config as NumberControlConfig
 
-	let initialValue = $config.defaultValue
+	let hasActiveSignal = $derived(config.signal !== undefined)
+
+	let initialValue = config.defaultValue
 
 	// Dimensions
 	const width = 72
@@ -31,17 +36,18 @@
 	const position = spring(initialValue)
 
 	// Tie defaultValue to position (instant preset changes)
-	$: {
-		let valueMapped = map($config.defaultValue, $config.range[0], $config.range[1], 0, trackWidth)
+	$effect(() => {
+		let valueMapped = map(config.defaultValue, config.range[0], config.range[1], 0, trackWidth)
 		position.set(valueMapped, { hard: true })
-	}
+	})
 
 	// Tie position to control defaultValue
-	$: {
-		let valueMapped = map($position, 0, trackWidth, $config.range[0], $config.range[1])
-		let valueClamped = clamp(valueMapped, $config.range[0], $config.range[1])
+	$effect(() => {
+		let valueMapped = map($position, 0, trackWidth, config.range[0], config.range[1])
+		let valueClamped = clamp(valueMapped, config.range[0], config.range[1])
+
 		control.setDefaultValue(valueClamped)
-	}
+	})
 
 	let gesture: DragGesture
 	let gestureTarget: HTMLDivElement
@@ -78,12 +84,13 @@
 
 	<div class="controller">
 		<ValidNumberInput
-			controlValue={$config.range[0]}
+			controlValue={config.range[0]}
 			onValidated={(value) => control.setLowerRange(value)}
 			disabled={control.settings?.rangeReadOnly}
 		/>
 		<div class="slider">
-			<div class="track" />
+			<div class="track"></div>
+
 			<div
 				class="handleWrapper"
 				style="
@@ -97,17 +104,17 @@
 						transform: translate({$position}px, 0px)
 					"
 				>
-					<div class="handleBar" />
+					<div class="handleBar"></div>
 					<ValidNumberInput
 						isHandle={true}
-						controlValue={$config.defaultValue}
+						controlValue={config.defaultValue}
 						onValidated={(value) => control.setDefaultValue(value)}
 					/>
 				</div>
 			</div>
 		</div>
 		<ValidNumberInput
-			controlValue={$config.range[1]}
+			controlValue={config.range[1]}
 			onValidated={(value) => control.setUpperRange(value)}
 			disabled={control.settings?.rangeReadOnly}
 		/>

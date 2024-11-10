@@ -1,5 +1,5 @@
 import type { Ease } from '$lib/visualizers/utils/CubicBezier'
-import type Signal from '../library/signals/Signal'
+import type Signal from '../library/signals/Signal.svelte'
 import type { SignalContext } from './functions'
 
 export type SignalId = string

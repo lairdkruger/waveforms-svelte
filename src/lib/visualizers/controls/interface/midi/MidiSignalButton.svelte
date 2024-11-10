@@ -1,35 +1,41 @@
 <script lang="ts">
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 
-	export let controlId: string
+	interface Props {
+		controlId: string
+	}
+
+	let { controlId }: Props = $props()
 
 	const { controls, midi } = getVisualizerContext()
 	const control = controls.getControl(controlId)
 	const controlConfig = control.config
 	const midiListening = midi.listening
 
-	$: midiActive = $controlConfig.signal?.context === 'midi'
-	$: midiLabel = () => {
-		if ($midiListening) {
+	let midiActive = $derived(controlConfig.signal?.context === 'midi')
+	let midiLabel = $derived.by(() => {
+		if (midiListening) {
 			return 'Key?'
 		} else if (midiActive) {
 			// First four characters of midi function id, without the get_
-			return $controlConfig.signal?.id.slice(3, 7)
+			return controlConfig.signal?.id.slice(3, 7)
 		} else {
 			return 'MIDI'
 		}
-	}
+	})
 
 	// Midi events should be cancelled if signal is removed
-	$: if (!$controlConfig.signal) midi.cancelListenForMidiInput()
+	$effect(() => {
+		if (!controlConfig.signal) midi.cancelListenForMidiInput()
+	})
 </script>
 
 <button
 	class="wrapper"
-	class:active={$controlConfig.signal?.context === 'midi'}
-	on:click={async () => {
+	class:active={controlConfig.signal?.context === 'midi'}
+	onclick={async () => {
 		// Toggle listening off if already listening
-		if ($midiListening) {
+		if (midiListening) {
 			midi.cancelListenForMidiInput()
 			return
 		}
@@ -37,14 +43,10 @@
 		const midiSignalId = await midi.listenForMidiInput()
 		if (!midiSignalId) return null
 
-		// @ts-ignore
-		controlConfig.update((config) => {
-			if (midi.signals[midiSignalId]) config.signal = midi.signals[midiSignalId]
-			return config
-		})
+		if (midi.signals[midiSignalId]) controlConfig.signal = midi.signals[midiSignalId]
 	}}
 >
-	<span class="cpLabel">{midiLabel()}</span>
+	<span class="cpLabel">{midiLabel}</span>
 </button>
 
 <style>

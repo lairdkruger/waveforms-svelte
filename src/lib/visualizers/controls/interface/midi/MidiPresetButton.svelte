@@ -5,29 +5,29 @@
 	const midiListening = midi.listening
 	const preset = controls.presets.preset
 	const presets = controls.presets.presets
-	$: presetConfig = $presets[$preset]
-	$: midiBinding = presetConfig.midiBinding
+	let presetConfig = presets[preset]
+	let midiBinding = presetConfig.midiBinding
 
-	$: midiActive = $midiBinding
+	let midiActive = midiBinding
 
-	$: midiLabel = () => {
-		if ($midiListening) {
+	let midiLabel = $derived.by(() => {
+		if (midiListening) {
 			return 'Key?'
 		} else if (midiActive) {
 			// First four characters of midi function id, without the get_
-			return $midiBinding?.slice(3, 7)
+			return midiBinding?.slice(3, 7)
 		} else {
 			return 'MIDI'
 		}
-	}
+	})
 </script>
 
 <button
 	class="wrapper"
 	class:active={midiActive}
-	on:click={async () => {
+	onclick={async () => {
 		// Toggle listening off if already listening
-		if ($midiListening) {
+		if (midiListening) {
 			midi.cancelListenForMidiInput()
 			return
 		}
@@ -36,10 +36,10 @@
 		if (!midiSignalId) return null
 		if (!midi.signals[midiSignalId]) return null
 
-		midiBinding?.set(midiSignalId)
+		midiBinding = midiSignalId
 	}}
 >
-	<span class="cpLabel">{midiLabel()}</span>
+	<span class="cpLabel">{midiLabel}</span>
 </button>
 
 <style>

@@ -21,8 +21,8 @@
 			</div>
 			<div class="diagram">
 				<div class="volumeIcon">
-					<div class="volumeIconLine" />
-					<div class="volumeIconLine" />
+					<div class="volumeIconLine"></div>
+					<div class="volumeIconLine"></div>
 				</div>
 				<div class="diagramLabel">
 					<span class="cpLabel">Volume</span>
@@ -51,11 +51,11 @@
 			</div>
 			<div class="diagram">
 				<div class="spectrumIcon">
-					<div class="spectrumIconLine" />
-					<div class="spectrumIconLine" />
-					<div class="spectrumIconLine" />
-					<div class="spectrumIconLine" />
-					<div class="spectrumIconLine" />
+					<div class="spectrumIconLine"></div>
+					<div class="spectrumIconLine"></div>
+					<div class="spectrumIconLine"></div>
+					<div class="spectrumIconLine"></div>
+					<div class="spectrumIconLine"></div>
 				</div>
 				<div class="diagramLabel">
 					<div class="spectrumDiagramLabels">

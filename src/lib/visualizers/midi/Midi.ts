@@ -1,7 +1,7 @@
 import { camelcase } from '$lib/visualizers/utils/Strings'
 import { writable } from 'svelte/store'
-import Signal from '../controls/library/signals/Signal'
 import { browser } from '$app/environment'
+import Signal from '../controls/library/signals/Signal.svelte'
 
 export type MidiDeviceId = string // Format midiDeviceName
 export type MidiControlId = string // Format [midiControlNumber]-[SignalType]_[Midi-Device-Name]
@@ -55,6 +55,8 @@ export default class Midi {
 
 	// Construct midiControlId from midi message
 	constructMidiControlId(message: MIDIMessageEvent): MidiControlId {
+		if (!message.data) return ''
+
 		const event = message.data[0]
 		const eventType = this.getMidiEventType(event)
 		const controlNumber = message.data[1]
