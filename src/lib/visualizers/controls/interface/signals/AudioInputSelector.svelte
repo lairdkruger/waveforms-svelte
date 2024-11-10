@@ -3,12 +3,12 @@
 	import type { AudioInput } from '$lib/visualizers/audio/AudioAnalyzer.svelte'
 	import { getVisualizerContext } from '$lib/visualizers/contexts/visualizer.svelte'
 
-	const { audioAnalyzer } = getVisualizerContext()
+	const visualizerContext = getVisualizerContext()
 	let value: AudioInput
 
 	const handleChange = () => {
 		// Update audio context
-		audioAnalyzer.changeAudioInput(value)
+		visualizerContext.audioAnalyzer.changeAudioInput(value)
 	}
 </script>
 

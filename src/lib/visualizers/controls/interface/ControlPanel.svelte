@@ -6,13 +6,16 @@
 	import DragConnector from './connectors/DragConnector.svelte'
 	import PresetPanel from './presets/PresetPanel.svelte'
 	import { getUiContext } from '$lib/contexts/ui.svelte'
+	import { onMount } from 'svelte'
 
 	const uiContext = getUiContext()
 
-	let controlPanel: HTMLDivElement
-	const { controls } = getVisualizerContext()
+	let controlPanel: HTMLDivElement | null = $state(null)
+	const visualizerContext = getVisualizerContext()
 
-	$: if (controlPanel) controls.controlPanelRef = controlPanel
+	onMount(() => {
+		visualizerContext.controls.controlPanelRef = controlPanel
+	})
 </script>
 
 <div class="wrapper" class:hidden={uiContext.uiHidden}>
@@ -20,7 +23,7 @@
 		<div
 			class="controls"
 			bind:this={controlPanel}
-			on:pointerup={() => controls.resetInteractions()}
+			onpointerup={() => visualizerContext.controls.resetInteractions()}
 		>
 			<ControlsPanel />
 		</div>

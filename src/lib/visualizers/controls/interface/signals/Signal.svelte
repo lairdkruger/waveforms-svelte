@@ -5,26 +5,29 @@
 	import type Signal from '../../library/signals/Signal.svelte'
 	import type { SignalType } from '../../types'
 
-	export let signal: () => Signal
-	export let type: SignalType
+	interface Props {
+		signal: () => Signal
+		type: SignalType
+	}
 
-	const { controls } = getVisualizerContext()
-	const controlPanelRef = controls.controlPanelRef
+	let { signal, type }: Props = $props()
+
+	let visualizerContext = getVisualizerContext()
 
 	let signalIcon: HTMLDivElement
 </script>
 
 <div
-	id={signal().id}
 	class="signal"
-	on:pointerdown={(e) => {
+	onpointerdown={(e) => {
 		e.stopPropagation()
-		controls.draggedSignal = signal()
+		visualizerContext.controls.draggedSignal = signal()
 
-		if (controlPanelRef) {
-			const controlPanelBounds = controlPanelRef.getBoundingClientRect()
-			const signalIconBounds = signalIcon.getBoundingClientRect()
-			controls.dragStartCoord = [
+		if (visualizerContext.controls.controlPanelRef) {
+			let controlPanelBounds = visualizerContext.controls.controlPanelRef.getBoundingClientRect()
+			let signalIconBounds = signalIcon.getBoundingClientRect()
+
+			visualizerContext.controls.dragStartCoord = [
 				signalIconBounds.left - controlPanelBounds.left + 7,
 				signalIconBounds.top - controlPanelBounds.top
 			]

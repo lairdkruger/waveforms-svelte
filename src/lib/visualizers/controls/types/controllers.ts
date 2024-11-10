@@ -1,7 +1,7 @@
-import type BooleanControl from '../library/controls/BooleanControl.svelte.js'
-import type ColorControl from '../library/controls/ColorControl.svelte.js'
-import type NumberControl from '../library/controls/NumberControl.svelte.js'
-import type SelectControl from '../library/controls/SelectControl'
+import type BooleanControl from '../library/controls/BooleanControl.svelte'
+import type ColorControl from '../library/controls/ColorControl.svelte'
+import type NumberControl from '../library/controls/NumberControl.svelte'
+import type SelectControl from '../library/controls/SelectControl.svelte'
 import type { Transformer } from './functions'
 
 // Controller types

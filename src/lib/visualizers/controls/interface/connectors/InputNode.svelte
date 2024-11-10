@@ -10,11 +10,11 @@
 
 	let { controlId, boolean }: Props = $props()
 
-	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId)
-	const config = control.config
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId)
+	let config = control.config
 
-	const draggedSignal = controls.draggedSignal
+	let draggedSignal = visualizerContext.controls.draggedSignal
 	let hasSignalInput = $derived(config.signal ? true : false)
 </script>
 
@@ -22,12 +22,12 @@
 	class="g-inputNode"
 	onpointerenter={() => {
 		if (draggedSignal) {
-			controls.draggedSignalTarget.set(control)
+			visualizerContext.controls.draggedSignalTarget = control
 		}
 	}}
 	onpointerleave={() => {
 		if (draggedSignal) {
-			controls.draggedSignalTarget.set(null)
+			visualizerContext.controls.draggedSignalTarget = null
 		}
 	}}
 	onpointerup={() => {

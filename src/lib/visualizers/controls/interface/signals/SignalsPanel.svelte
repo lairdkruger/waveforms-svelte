@@ -3,9 +3,9 @@
 	import AudioInputSelector from './AudioInputSelector.svelte'
 	import Signal from './Signal.svelte'
 
-	const { audioAnalyzer } = getVisualizerContext()
+	const visualizerContext = getVisualizerContext()
 
-	const signals = audioAnalyzer.getSignals()
+	let signals = visualizerContext.audioAnalyzer.getSignals()
 </script>
 
 <div class="signalsPanel">
