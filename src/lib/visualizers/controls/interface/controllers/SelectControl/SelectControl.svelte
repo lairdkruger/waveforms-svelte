@@ -12,14 +12,16 @@
 
 	let { controlId }: Props = $props()
 
-	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId) as SelectControl
-	const config = control.config as SelectControlConfig
+	const visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId) as SelectControl
+	let config = control.config
 	let hasSignalInput = $derived(config.signal !== undefined)
 
 	const handleChange = (event: Event) => {
 		const target = event.target as HTMLSelectElement
 		config.defaultValue = target.value
+
+		console.log('SelectControl handleChange', config.defaultValue)
 	}
 </script>
 

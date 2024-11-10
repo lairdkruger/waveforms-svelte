@@ -18,11 +18,13 @@
 
 	let { controlId, colorStopId, trackWidth }: Props = $props()
 
-	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId) as ColorControl
-	const config = control.config as ColorControlConfig
+	let { controls } = getVisualizerContext()
+	let control = controls.getControl(controlId) as ColorControl
+	let config = control.config
 
-	let initialCoord = config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord
+	let initialCoord = $state(
+		config.gradient.find((colorStop) => colorStop.id === colorStopId)!.coord
+	)
 	let cssColor = $derived(
 		denormalizeRgb(config.gradient.find((colorStop) => colorStop.id === colorStopId)!.color)
 	)
@@ -53,7 +55,7 @@
 		let valueMapped = map($position, 0, width, 0, 1)
 		let valueClamped = clamp(valueMapped, 0, 1)
 
-		const colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
+		let colorStop = config.gradient.find((colorStop) => colorStop.id === colorStopId)!
 		colorStop.coord = valueClamped
 	})
 

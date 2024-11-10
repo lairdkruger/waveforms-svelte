@@ -26,9 +26,10 @@
 
 	const uiContext = getUiContext()
 
-	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId) as ColorControl
-	const config = control.config as ColorControlConfig
+	let { controls } = getVisualizerContext()
+	let control = controls.getControl(controlId) as ColorControl
+	let config = control.config
+
 	let hasActiveSignal = $derived(config.signal !== undefined)
 
 	let gradient = $derived(gradientToCSS(config.gradient))
