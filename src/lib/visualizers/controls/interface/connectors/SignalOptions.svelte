@@ -15,28 +15,25 @@
 
 	let { controlId }: Props = $props()
 
-	const { controls, audioAnalyzer, midi } = getVisualizerContext()
-	const control = controls.getControl(controlId)
-	const config = control.config
-	let signalConfig = config.signal?.config
-	const midiListening = midi.listening
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId)
 
-	let midiActive = $derived(signalConfig?.booster?.context === 'midi')
+	let midiActive = $derived(control.config.signal?.config?.booster?.context === 'midi')
 	let midiLabel = $derived.by(() => {
-		if (midiListening) {
+		if (visualizerContext.midi.listening) {
 			return 'Key?'
 		} else if (midiActive) {
 			// First four characters of midi function id, without the get_
-			return signalConfig?.booster?.id.slice(3, 7)
+			return control.config.signal?.config?.booster?.id.slice(3, 7)
 		} else {
 			return 'MIDI'
 		}
 	})
 
-	let expanded = false
-	const opacity = spring(0)
-	const width = spring(16)
-	const height = spring(16)
+	let expanded = $state(false)
+	let opacity = spring(0)
+	let width = spring(16)
+	let height = spring(16)
 
 	$effect(() => {
 		opacity.set(expanded ? 1 : 0)
@@ -70,22 +67,31 @@
 				<div class="buttons">
 					<button
 						class="button"
-						class:enabled={signalConfig?.behaviour === 'straight'}
-						onclick={() => (config.behaviour = 'straight')}
+						class:enabled={control.config.signal?.config?.behaviour === 'straight'}
+						onclick={() => {
+							if (control.config.signal?.config)
+								control.config.signal.config.behaviour = 'straight'
+						}}
 					>
 						<OptionsStraightIcon />
 					</button>
 					<button
 						class="button"
-						class:enabled={signalConfig?.behaviour === 'loop'}
-						onclick={() => (config.behaviour = 'loop')}
+						class:enabled={control.config.signal?.config?.behaviour === 'loop'}
+						onclick={() => {
+							if (control.config.signal?.config)
+								control.config.signal.config.behaviour = 'loop'
+						}}
 					>
 						<OptionsLoopIcon />
 					</button>
 					<button
 						class="button"
-						class:enabled={signalConfig?.behaviour === 'pingpong'}
-						onclick={() => (config.behaviour = 'pingpong')}
+						class:enabled={control.config.signal?.config?.behaviour === 'pingpong'}
+						onclick={() => {
+							if (control.config.signal?.config)
+								control.config.signal.config.behaviour = 'pingpong'
+						}}
 					>
 						<OptionsPingPongIcon />
 					</button>
@@ -99,22 +105,28 @@
 				<div class="buttons">
 					<button
 						class="button"
-						class:enabled={signalConfig?.ease === 'linear'}
-						onclick={() => (config.ease = 'linear')}
+						class:enabled={control.config.signal?.config?.ease === 'linear'}
+						onclick={() => {
+							if (control.config.signal?.config) control.config.signal.config.ease = 'linear'
+						}}
 					>
 						<EaseLinearIcon />
 					</button>
 					<button
 						class="button"
-						class:enabled={signalConfig?.ease === 'in'}
-						onclick={() => (config.ease = 'in')}
+						class:enabled={control.config.signal?.config?.ease === 'in'}
+						onclick={() => {
+							if (control.config.signal?.config) control.config.signal.config.ease = 'in'
+						}}
 					>
 						<EaseInIcon />
 					</button>
 					<button
 						class="button"
-						class:enabled={signalConfig?.ease === 'out'}
-						onclick={() => (config.ease = 'out')}
+						class:enabled={control.config.signal?.config?.ease === 'out'}
+						onclick={() => {
+							if (control.config.signal?.config) control.config.signal.config.ease = 'out'
+						}}
 					>
 						<EaseOutIcon />
 					</button>
@@ -128,36 +140,55 @@
 				<div class="buttons">
 					<button
 						class="button textLabel"
-						class:enabled={signalConfig?.booster?.id === 'getBassPeaked'}
-						onclick={() => (config.booster = audioAnalyzer.signals.getBassPeaked())}
+						class:enabled={control.config.signal?.config?.booster?.id === 'getBassPeaked'}
+						onclick={() => {
+							if (control.config.signal?.config)
+								control.config.signal.config.booster =
+									visualizerContext.audioAnalyzer.signals.getBassPeaked()
+						}}
 					>
 						<span class="cpLabel">Bass</span>
 					</button>
 					<button
 						class="button textLabel"
-						class:enabled={signalConfig?.booster?.id === 'getMidsPeaked'}
-						onclick={() => (config.booster = audioAnalyzer.signals.getMidsPeaked())}
+						class:enabled={control.config.signal?.config?.booster?.id === 'getMidsPeaked'}
+						onclick={() => {
+							if (control.config.signal?.config)
+								control.config.signal.config.booster =
+									visualizerContext.audioAnalyzer.signals.getMidsPeaked()
+						}}
 					>
 						<span class="cpLabel">Mids</span>
 					</button>
 					<button
 						class="button textLabel"
-						class:enabled={signalConfig?.booster?.id === 'getHighsPeaked'}
-						onclick={() => (config.booster = audioAnalyzer.signals.getHighsPeaked())}
+						class:enabled={control.config.signal?.config?.booster?.id === 'getHighsPeaked'}
+						onclick={() => {
+							if (control.config.signal?.config)
+								control.config.signal.config.booster =
+									visualizerContext.audioAnalyzer.signals.getHighsPeaked()
+						}}
 					>
 						<span class="cpLabel">High</span>
 					</button>
 					<button
 						class="button textLabel"
-						class:enabled={signalConfig?.booster?.id === 'getVolumePeaked'}
-						onclick={() => (config.booster = audioAnalyzer.signals.getVolumePeaked())}
+						class:enabled={control.config.signal?.config?.booster?.id === 'getVolumePeaked'}
+						onclick={() => {
+							if (control.config.signal?.config)
+								control.config.signal.config.booster =
+									visualizerContext.audioAnalyzer.signals.getVolumePeaked()
+						}}
 					>
 						<span class="cpLabel">Volume</span>
 					</button>
 					<button
 						class="button textLabel"
-						class:enabled={!signalConfig?.booster}
-						onclick={() => (config.booster = undefined)}
+						class:enabled={control.config.signal?.config?.booster === undefined}
+						onclick={() => {
+							if (control.config.signal?.config)
+								control.config.signal.config.booster = undefined
+						}}
 					>
 						<span class="cpLabel">None</span>
 					</button>
@@ -166,18 +197,20 @@
 				<div class="buttons">
 					<button
 						class="button textLabel"
-						class:enabled={signalConfig?.booster?.context === 'midi'}
+						class:enabled={control.config.signal?.config?.booster?.context === 'midi'}
 						onclick={async () => {
 							// Toggle midiListening off if already midiListening
-							if (midiListening) {
-								midi.cancelListenForMidiInput()
+							if (visualizerContext.midi.listening) {
+								visualizerContext.midi.cancelListenForMidiInput()
 								return
 							}
 
-							const midiSignalId = await midi.listenForMidiInput()
-							if (!midiSignalId || !signalConfig) return null
+							const midiSignalId = await visualizerContext.midi.listenForMidiInput()
+							if (!midiSignalId || !control.config.signal?.config) return null
 
-							if (midi.signals[midiSignalId]) config.booster = midi.signals[midiSignalId]
+							if (visualizerContext.midi.signals[midiSignalId])
+								control.config.signal.config.booster =
+									visualizerContext.midi.signals[midiSignalId]
 						}}
 					>
 						<span class="">{midiLabel}</span>

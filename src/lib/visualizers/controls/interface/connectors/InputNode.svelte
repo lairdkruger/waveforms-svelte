@@ -21,18 +21,18 @@
 <div
 	class="g-inputNode"
 	onpointerenter={() => {
-		if (draggedSignal) {
+		if (visualizerContext.controls.draggedSignal) {
 			visualizerContext.controls.draggedSignalTarget = control
 		}
 	}}
 	onpointerleave={() => {
-		if (draggedSignal) {
+		if (visualizerContext.controls.draggedSignal) {
 			visualizerContext.controls.draggedSignalTarget = null
 		}
 	}}
 	onpointerup={() => {
 		// Set controller input to signal function
-		config.signal = draggedSignal ?? undefined
+		config.signal = visualizerContext.controls.draggedSignal ?? undefined
 	}}
 	onpointerdown={() => {
 		if (hasSignalInput) {

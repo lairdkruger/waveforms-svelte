@@ -8,10 +8,8 @@
 
 	let { controlId }: Props = $props()
 
-	const { controls } = getVisualizerContext()
-	const control = controls.getControl(controlId)
-	const config = control.config
-	let signal = config.signal
+	let visualizerContext = getVisualizerContext()
+	let control = visualizerContext.controls.getControl(controlId)
 
 	const audioSignalWidths: Record<string, string> = {
 		getVolume: '0.441',
@@ -25,17 +23,17 @@
 	}
 </script>
 
-{#if signal?.context === 'audio'}
+{#if control.config.signal?.context === 'audio'}
 	<div
 		class="connector"
 		style="
-			width: {signal?.context === 'audio'
-			? `calc(${audioSignalWidths[signal?.id]} * var(--cpPanelWidth))`
+			width: {control.config.signal?.context === 'audio'
+			? `calc(${audioSignalWidths[control.config.signal?.id]} * var(--cpPanelWidth))`
 			: '24px'};
-			height: {signal?.context !== 'audio' ? '0%' : '100000%'}
+			height: {control.config.signal?.context !== 'audio' ? '0%' : '100000%'}
 			"
 	>
-		{#if signal?.context === 'audio'}
+		{#if control.config.signal?.context === 'audio'}
 			<div class="inputNodeIndicator"></div>
 		{/if}
 
